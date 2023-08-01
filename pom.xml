@@ -13,42 +13,15 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>kloc_CRM</name>
 	<description>CRM Project</description>
-	<packaging>jar</packaging>
+	
 	<properties>
 		<java.version>17</java.version>
-		<maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
 	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.heroku.sdk/heroku-maven-plugin -->
-<dependency>
-    <groupId>com.heroku.sdk</groupId>
-    <artifactId>heroku-maven-plugin</artifactId>
-    <version>3.0.7</version>
-</dependency>
-<!-- https://mvnrepository.com/artifact/com.heroku.sdk/heroku-deploy -->
-<dependency>
-    <groupId>com.heroku.sdk</groupId>
-    <artifactId>heroku-deploy</artifactId>
-    <version>3.0.7</version>
-    
-</dependency>
-<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
-
-
-<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-<!--<dependency>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.11.0</version>
-    
-</dependency>-->
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -112,13 +85,6 @@
     <version>0.11.5</version>
     <scope>runtime</scope>
  	</dependency>
- 	<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
-<dependency>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <version>3.5.0</version>
-</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -130,10 +96,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
-			
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -147,27 +111,10 @@
 				</configuration>
 			</plugin>
 			<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-site-plugin</artifactId>
-    <version>3.12.2</version>
+  <groupId>com.heroku.sdk</groupId>
+  <artifactId>heroku-maven-plugin</artifactId>
+  <version>3.0.7</version>
 </plugin>
-<!-- <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-     <version>3.5.0</version>
-    </plugin>  
--->
- <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            
-            <!-- Update this to the latest version that supports your Java version -->
-            <configuration>
-                <release>17</release> <!-- Specify the Java release version you are using -->
-            </configuration>
-        </plugin>
-
 		</plugins>
 	</build>
-
 </project>
