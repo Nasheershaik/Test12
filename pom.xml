@@ -39,18 +39,15 @@
     
 </dependency>
 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
-<dependency>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-jar-plugin</artifactId>
-    <version>3.3.0</version>
-</dependency>
+
 
 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-<dependency>
+<!--<dependency>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
     <version>3.11.0</version>
-</dependency>
+    
+</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -147,12 +144,21 @@
     <artifactId>maven-site-plugin</artifactId>
     <version>3.12.2</version>
 </plugin>
-<!--
+
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-dependency-plugin</artifactId>
-    
-</plugin>-->
+     <version>3.5.0</version>
+    </plugin>
+ <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            
+            <!-- Update this to the latest version that supports your Java version -->
+            <configuration>
+                <release>17</release> <!-- Specify the Java release version you are using -->
+            </configuration>
+        </plugin>
 
 		</plugins>
 	</build>
