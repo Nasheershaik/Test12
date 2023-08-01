@@ -21,6 +21,18 @@
 	</properties>
 	<dependencies>
 		<dependency>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-site-plugin</artifactId>
+  <version>4.0.0-M8</version>
+  <type>maven-plugin</type>
+</dependency>
+<dependency>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-dependency-plugin</artifactId>
+  <version>3.6.0</version>
+  <type>maven-plugin</type>
+</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
@@ -126,16 +138,7 @@
                 <release>17</release> <!-- Set the release to Java 16 -->
             </configuration>
         </plugin>
-        <plugin>
- <groupId>org.apache.maven.plugins</groupId>
- <artifactId>maven-site-plugin</artifactId>
- <version>3.12.1</version>
-</plugin>
-<plugin>
- <groupId>org.apache.maven.plugins</groupId>
- <artifactId>maven-dependency-plugin</artifactId>
- <version>3.6.0</version>
- </plugin>
+     
  <plugin>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-validator-plugin</artifactId>
