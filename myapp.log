@@ -5637,3 +5637,204 @@ Caused by: java.lang.ClassNotFoundException: com.kloc.crm.Repository.UserReposit
 [INFO ] 2023-08-01 16:04:54 [restartedMain] TomcatWebServer -Tomcat started on port(s): 8080 (http) with context path '' 
 [INFO ] 2023-08-01 16:04:54 [restartedMain] KlocCrmApplication -Started KlocCrmApplication in 30.926 seconds (process running for 1635.474) 
 [INFO ] 2023-08-01 16:05:08 [restartedMain] ConditionEvaluationDeltaLoggingListener -Condition evaluation unchanged 
+[INFO ] 2023-08-01 16:13:59 [File Watcher] LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener -Restarting due to 3 class path changes (0 additions, 0 deletions, 3 modifications) 
+[INFO ] 2023-08-01 16:13:59 [Thread-19] StandardService -Stopping service [Tomcat] 
+[WARN ] 2023-08-01 16:13:59 [Thread-19] WebappClassLoaderBase -The web application [ROOT] appears to have started a thread named [HikariPool-5 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.6/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.6/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.6/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.6/java.lang.Thread.run(Thread.java:833) 
+[INFO ] 2023-08-01 16:13:59 [Thread-19] LocalContainerEntityManagerFactoryBean -Closing JPA EntityManagerFactory for persistence unit 'default' 
+[INFO ] 2023-08-01 16:13:59 [Thread-19] HikariDataSource -HikariPool-5 - Shutdown initiated... 
+[INFO ] 2023-08-01 16:13:59 [Thread-19] HikariDataSource -HikariPool-5 - Shutdown completed. 
+[INFO ] 2023-08-01 16:14:00 [restartedMain] KlocCrmApplication -Starting KlocCrmApplication using Java 17.0.6 with PID 1916 (C:\crm\target\classes started by sh in C:\crm) 
+[DEBUG] 2023-08-01 16:14:00 [restartedMain] KlocCrmApplication -Running with Spring Boot v3.1.1, Spring v6.0.10 
+[INFO ] 2023-08-01 16:14:00 [restartedMain] KlocCrmApplication -No active profile set, falling back to 1 default profile: "default" 
+[INFO ] 2023-08-01 16:14:01 [restartedMain] RepositoryConfigurationDelegate -Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] RepositoryConfigurationDelegate -Finished Spring Data repository scanning in 945 ms. Found 12 JPA repository interfaces. 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] TomcatWebServer -Tomcat initialized with port(s): 8080 (http) 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] StandardService -Starting service [Tomcat] 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] StandardEngine -Starting Servlet engine: [Apache Tomcat/10.1.10] 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] [/] -Initializing Spring embedded WebApplicationContext 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] ServletWebServerApplicationContext -Root WebApplicationContext: initialization completed in 2309 ms 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] LogHelper -HHH000204: Processing PersistenceUnitInfo [name: default] 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] SpringPersistenceUnitInfo -No LoadTimeWeaver setup: ignoring JPA class transformer 
+[WARN ] 2023-08-01 16:14:02 [restartedMain] HikariConfig -HikariPool-6 - maxLifetime is less than 30000ms, setting to default 1800000ms. 
+[INFO ] 2023-08-01 16:14:02 [restartedMain] HikariDataSource -HikariPool-6 - Starting... 
+[INFO ] 2023-08-01 16:14:05 [restartedMain] HikariPool -HikariPool-6 - Added connection com.mysql.cj.jdbc.ConnectionImpl@32611878 
+[INFO ] 2023-08-01 16:14:05 [restartedMain] HikariDataSource -HikariPool-6 - Start completed. 
+[WARN ] 2023-08-01 16:14:05 [restartedMain] deprecation -HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead 
+[INFO ] 2023-08-01 16:14:05 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-01 16:14:05 [restartedMain] JtaPlatformInitiator -HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform] 
+[INFO ] 2023-08-01 16:14:26 [restartedMain] LocalContainerEntityManagerFactoryBean -Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[WARN ] 2023-08-01 16:14:26 [restartedMain] JpaBaseConfiguration$JpaWebConfiguration -spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+[WARN ] 2023-08-01 16:14:27 [restartedMain] UserDetailsServiceAutoConfiguration -
+
+Using generated security password: 63a5ca7d-82c8-4e38-8d3f-34823bd60821
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+ 
+[INFO ] 2023-08-01 16:14:27 [restartedMain] DefaultSecurityFilterChain -Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7df0be73, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@435721a, org.springframework.security.web.context.SecurityContextHolderFilter@57531377, org.springframework.security.web.header.HeaderWriterFilter@1af6f869, org.springframework.security.web.csrf.CsrfFilter@55d73e4, org.springframework.security.web.authentication.logout.LogoutFilter@4f6bb10d, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3672f9ac, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@36fc8937, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@45e20ccf, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@241d0c59, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@397f882a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1be40f92, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@9d1afee, org.springframework.security.web.access.ExceptionTranslationFilter@20f0593e, org.springframework.security.web.access.intercept.AuthorizationFilter@217a5c2] 
+[INFO ] 2023-08-01 16:14:27 [restartedMain] OptionalLiveReloadServer -LiveReload server is running on port 35729 
+[INFO ] 2023-08-01 16:14:27 [restartedMain] TomcatWebServer -Tomcat started on port(s): 8080 (http) with context path '' 
+[INFO ] 2023-08-01 16:14:27 [restartedMain] KlocCrmApplication -Started KlocCrmApplication in 27.387 seconds (process running for 2207.755) 
+[INFO ] 2023-08-01 16:14:27 [restartedMain] ConditionEvaluationDeltaLoggingListener -Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   SpringBootWebSecurityConfiguration.SecurityFilterChainConfiguration matched:
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   UserDetailsServiceAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+      - @ConditionalOnBean (types: org.springframework.security.config.annotation.ObjectPostProcessor; SearchStrategy: all) found bean 'objectPostProcessor'; @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder,org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector,org.springframework.security.oauth2.client.registration.ClientRegistrationRepository,org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+    None
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+ 
+[INFO ] 2023-08-01 16:15:22 [File Watcher] LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener -Restarting due to 87 class path changes (0 additions, 87 deletions, 0 modifications) 
+[INFO ] 2023-08-01 16:15:23 [Thread-26] StandardService -Stopping service [Tomcat] 
+[INFO ] 2023-08-01 16:15:23 [Thread-26] LocalContainerEntityManagerFactoryBean -Closing JPA EntityManagerFactory for persistence unit 'default' 
+[INFO ] 2023-08-01 16:15:23 [Thread-26] HikariDataSource -HikariPool-6 - Shutdown initiated... 
+[INFO ] 2023-08-01 16:15:23 [Thread-26] HikariDataSource -HikariPool-6 - Shutdown completed. 
+[INFO ] 2023-08-01 16:15:23 [restartedMain] KlocCrmApplication -Starting KlocCrmApplication using Java 17.0.6 with PID 1916 (C:\crm\target\classes started by sh in C:\crm) 
+[DEBUG] 2023-08-01 16:15:23 [restartedMain] KlocCrmApplication -Running with Spring Boot v3.1.1, Spring v6.0.10 
+[INFO ] 2023-08-01 16:15:23 [restartedMain] KlocCrmApplication -No active profile set, falling back to 1 default profile: "default" 
+[INFO ] 2023-08-01 16:15:24 [restartedMain] RepositoryConfigurationDelegate -Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[INFO ] 2023-08-01 16:15:24 [restartedMain] RepositoryConfigurationDelegate -Finished Spring Data repository scanning in 111 ms. Found 12 JPA repository interfaces. 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] TomcatWebServer -Tomcat initialized with port(s): 8080 (http) 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] StandardService -Starting service [Tomcat] 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] StandardEngine -Starting Servlet engine: [Apache Tomcat/10.1.10] 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] [/] -Initializing Spring embedded WebApplicationContext 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] ServletWebServerApplicationContext -Root WebApplicationContext: initialization completed in 1635 ms 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] LogHelper -HHH000204: Processing PersistenceUnitInfo [name: default] 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] SpringPersistenceUnitInfo -No LoadTimeWeaver setup: ignoring JPA class transformer 
+[WARN ] 2023-08-01 16:15:25 [restartedMain] HikariConfig -HikariPool-7 - maxLifetime is less than 30000ms, setting to default 1800000ms. 
+[INFO ] 2023-08-01 16:15:25 [restartedMain] HikariDataSource -HikariPool-7 - Starting... 
+[INFO ] 2023-08-01 16:15:28 [restartedMain] HikariPool -HikariPool-7 - Added connection com.mysql.cj.jdbc.ConnectionImpl@552924a7 
+[INFO ] 2023-08-01 16:15:28 [restartedMain] HikariDataSource -HikariPool-7 - Start completed. 
+[WARN ] 2023-08-01 16:15:28 [restartedMain] deprecation -HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead 
+[INFO ] 2023-08-01 16:15:28 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-01 16:15:28 [restartedMain] JtaPlatformInitiator -HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform] 
+[INFO ] 2023-08-01 16:15:51 [restartedMain] LocalContainerEntityManagerFactoryBean -Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[DEBUG] 2023-08-01 16:15:51 [restartedMain] JwtAuthenticationFilter -Filter 'jwtAuthenticationFilter' configured for use 
+[WARN ] 2023-08-01 16:15:53 [restartedMain] JpaBaseConfiguration$JpaWebConfiguration -spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+[INFO ] 2023-08-01 16:15:53 [restartedMain] DefaultSecurityFilterChain -Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@219f42d4, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@300c4b4d, org.springframework.security.web.context.SecurityContextHolderFilter@4c6875d6, org.springframework.security.web.header.HeaderWriterFilter@44c7e3c9, org.springframework.security.web.authentication.logout.LogoutFilter@683f27a5, com.kloc.crm.security.JwtAuthenticationFilter@492306fc, org.springframework.security.web.session.ConcurrentSessionFilter@33976167, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@374a1e39, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6f62f08a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@25c0ab2e, org.springframework.security.web.session.SessionManagementFilter@6c3688c2, org.springframework.security.web.access.ExceptionTranslationFilter@4bd69ad1, org.springframework.security.web.access.intercept.AuthorizationFilter@777d009b] 
+[INFO ] 2023-08-01 16:15:53 [restartedMain] OptionalLiveReloadServer -LiveReload server is running on port 35729 
+[INFO ] 2023-08-01 16:15:53 [restartedMain] TomcatWebServer -Tomcat started on port(s): 8080 (http) with context path '' 
+[INFO ] 2023-08-01 16:15:53 [restartedMain] KlocCrmApplication -Started KlocCrmApplication in 30.361 seconds (process running for 2294.308) 
+[INFO ] 2023-08-01 16:16:07 [restartedMain] ConditionEvaluationDeltaLoggingListener -Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+    None
+
+
+Negative matches:
+-----------------
+
+   SpringBootWebSecurityConfiguration.SecurityFilterChainConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   UserDetailsServiceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder,org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector,org.springframework.security.oauth2.client.registration.ClientRegistrationRepository,org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository; SearchStrategy: all) found beans of type 'org.springframework.security.authentication.AuthenticationManager' authenticationManager and found beans of type 'org.springframework.security.core.userdetails.UserDetailsService' userDetailServiceImpl and found beans of type 'org.springframework.security.authentication.AuthenticationProvider' daoAuthenticationProvider (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+ 
+[INFO ] 2023-08-01 16:17:31 [File Watcher] LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener -Restarting due to 3 class path changes (0 additions, 0 deletions, 3 modifications) 
+[INFO ] 2023-08-01 16:17:31 [Thread-30] StandardService -Stopping service [Tomcat] 
+[WARN ] 2023-08-01 16:17:31 [Thread-30] WebappClassLoaderBase -The web application [ROOT] appears to have started a thread named [HikariPool-7 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.6/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.6/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.6/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.6/java.lang.Thread.run(Thread.java:833) 
+[INFO ] 2023-08-01 16:17:31 [Thread-30] LocalContainerEntityManagerFactoryBean -Closing JPA EntityManagerFactory for persistence unit 'default' 
+[INFO ] 2023-08-01 16:17:31 [Thread-30] HikariDataSource -HikariPool-7 - Shutdown initiated... 
+[INFO ] 2023-08-01 16:17:31 [Thread-30] HikariDataSource -HikariPool-7 - Shutdown completed. 
+[INFO ] 2023-08-01 16:17:31 [restartedMain] KlocCrmApplication -Starting KlocCrmApplication using Java 17.0.6 with PID 1916 (C:\crm\target\classes started by sh in C:\crm) 
+[DEBUG] 2023-08-01 16:17:31 [restartedMain] KlocCrmApplication -Running with Spring Boot v3.1.1, Spring v6.0.10 
+[INFO ] 2023-08-01 16:17:31 [restartedMain] KlocCrmApplication -No active profile set, falling back to 1 default profile: "default" 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] RepositoryConfigurationDelegate -Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] RepositoryConfigurationDelegate -Finished Spring Data repository scanning in 63 ms. Found 12 JPA repository interfaces. 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] TomcatWebServer -Tomcat initialized with port(s): 8080 (http) 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] StandardService -Starting service [Tomcat] 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] StandardEngine -Starting Servlet engine: [Apache Tomcat/10.1.10] 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] [/] -Initializing Spring embedded WebApplicationContext 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] ServletWebServerApplicationContext -Root WebApplicationContext: initialization completed in 518 ms 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] LogHelper -HHH000204: Processing PersistenceUnitInfo [name: default] 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] SpringPersistenceUnitInfo -No LoadTimeWeaver setup: ignoring JPA class transformer 
+[WARN ] 2023-08-01 16:17:32 [restartedMain] HikariConfig -HikariPool-8 - maxLifetime is less than 30000ms, setting to default 1800000ms. 
+[INFO ] 2023-08-01 16:17:32 [restartedMain] HikariDataSource -HikariPool-8 - Starting... 
+[INFO ] 2023-08-01 16:17:35 [restartedMain] HikariPool -HikariPool-8 - Added connection com.mysql.cj.jdbc.ConnectionImpl@797ac0aa 
+[INFO ] 2023-08-01 16:17:35 [restartedMain] HikariDataSource -HikariPool-8 - Start completed. 
+[WARN ] 2023-08-01 16:17:35 [restartedMain] deprecation -HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead 
+[INFO ] 2023-08-01 16:17:35 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-01 16:17:35 [restartedMain] JtaPlatformInitiator -HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform] 
+[INFO ] 2023-08-01 16:18:00 [restartedMain] LocalContainerEntityManagerFactoryBean -Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[DEBUG] 2023-08-01 16:18:00 [restartedMain] JwtAuthenticationFilter -Filter 'jwtAuthenticationFilter' configured for use 
+[WARN ] 2023-08-01 16:18:02 [restartedMain] JpaBaseConfiguration$JpaWebConfiguration -spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+[INFO ] 2023-08-01 16:18:02 [restartedMain] DefaultSecurityFilterChain -Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2138604e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ced7683, org.springframework.security.web.context.SecurityContextHolderFilter@6d8a5ac5, org.springframework.security.web.header.HeaderWriterFilter@4d94539f, org.springframework.security.web.authentication.logout.LogoutFilter@5399ca20, com.kloc.crm.security.JwtAuthenticationFilter@3337e86c, org.springframework.security.web.session.ConcurrentSessionFilter@1250e09c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@26df440, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@793ba2b3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5de8562a, org.springframework.security.web.session.SessionManagementFilter@41b74355, org.springframework.security.web.access.ExceptionTranslationFilter@14cd6d0e, org.springframework.security.web.access.intercept.AuthorizationFilter@1a31f8b9] 
+[INFO ] 2023-08-01 16:18:02 [restartedMain] OptionalLiveReloadServer -LiveReload server is running on port 35729 
+[INFO ] 2023-08-01 16:18:02 [restartedMain] TomcatWebServer -Tomcat started on port(s): 8080 (http) with context path '' 
+[INFO ] 2023-08-01 16:18:02 [restartedMain] KlocCrmApplication -Started KlocCrmApplication in 30.508 seconds (process running for 2422.78) 
+[INFO ] 2023-08-01 16:18:15 [restartedMain] ConditionEvaluationDeltaLoggingListener -Condition evaluation unchanged 
