@@ -123,9 +123,10 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.11.0</version>
             <configuration>
-                <release>17</release> <!-- Set the release to Java 16 -->
+             <source>1.8</source>
+             <target>1.8</target>
             </configuration>
-        </plugin>
+        </plugin> 
         <plugin>
  <groupId>org.apache.maven.plugins</groupId>
  <artifactId>maven-site-plugin</artifactId>

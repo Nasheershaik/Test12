@@ -65,7 +65,7 @@ public class TaskController
         logger.info("Task created successfully. Task ID: {}", createdTask.getTaskId());
         logger.debug("Created task details: {}", createdTask);
 
-        return new ResponseEntity<>(createdTask, HttpStatus.OK);
+        return new ResponseEntity<Task>(createdTask, HttpStatus.OK);
 	}
 	/**
      * Retrieves all task statuses for a given task ID.
