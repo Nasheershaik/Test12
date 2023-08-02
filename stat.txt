@@ -45,7 +45,7 @@ The Contact is not Intrested,Task_Outcome,Intrested,Task
 The Contact is not able to reach,Task_Outcome,Not able to reach,Task
 The Contact has postponed,Task_Outcome,Postponed,Task
 The Contact is other,Task_Outcome,Other,Task
-The Offering Type is Project,Offering_Status,Project,Offering
+The Offering Type is Product,Offering_Status,Product,Offering
 The Offering Type is Service,Offering_Status,Service,Offering
 The Offering Category is Fixed Bid Project,Offering_Status,Fixed Bid Project,Offering
 The Offering Category is Variable Bid Project,Offering_Status,Variable Bid Project,Offering
