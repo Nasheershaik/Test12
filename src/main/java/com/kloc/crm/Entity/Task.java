@@ -47,13 +47,13 @@ public class Task
 	@Column(name="taskId")
 	private String taskId;
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JsonBackReference("salesPerson")
+//	@JsonBackReference("salesPerson")
 	private SalesPerson salesPerson;  // The salesperson associated with the task
 	private String taskDescription;  // Description of the task
 	private LocalDate startDate;  // Start date of the task
 	private LocalDate dueDate;  // Due date of the task
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JsonBackReference("assignedManager")
+//	@JsonBackReference("assignedManager")
 	private User assignedManager;  // The manager assigned to the task
 	@ManyToOne
 	private Contact contactId;  // The contact associated with the task

@@ -74,7 +74,7 @@ public class SalesPerson {
     // User associated with the salesperson
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "userId")
-    @JsonBackReference("user")
+   // @JsonBackReference("user")
     private User user;
     
     // Constructors, getters, and setters would typically be defined here

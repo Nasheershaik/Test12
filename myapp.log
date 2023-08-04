@@ -6025,3 +6025,89 @@ Consider defining a bean of type 'com.kloc.crm.Repository.UserRepository' in you
 [INFO ] 2023-08-02 15:42:23 [restartedMain] TomcatWebServer -Tomcat started on port(s): 8080 (http) with context path '' 
 [INFO ] 2023-08-02 15:42:23 [restartedMain] KlocCrmApplication -Started KlocCrmApplication in 34.176 seconds (process running for 1591.865) 
 [INFO ] 2023-08-02 15:42:38 [restartedMain] ConditionEvaluationDeltaLoggingListener -Condition evaluation unchanged 
+[INFO ] 2023-08-02 15:58:20 [File Watcher] LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener -Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification) 
+[INFO ] 2023-08-02 15:58:20 [Thread-7] StandardService -Stopping service [Tomcat] 
+[WARN ] 2023-08-02 15:58:20 [Thread-7] WebappClassLoaderBase -The web application [ROOT] appears to have started a thread named [HikariPool-2 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.6/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.6/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.6/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.6/java.lang.Thread.run(Thread.java:833) 
+[INFO ] 2023-08-02 15:58:20 [Thread-7] LocalContainerEntityManagerFactoryBean -Closing JPA EntityManagerFactory for persistence unit 'default' 
+[INFO ] 2023-08-02 15:58:20 [Thread-7] HikariDataSource -HikariPool-2 - Shutdown initiated... 
+[INFO ] 2023-08-02 15:58:20 [Thread-7] HikariDataSource -HikariPool-2 - Shutdown completed. 
+[INFO ] 2023-08-02 15:58:21 [restartedMain] KlocCrmApplication -Starting KlocCrmApplication using Java 17.0.6 with PID 1300 (C:\crm\target\classes started by sh in C:\crm) 
+[DEBUG] 2023-08-02 15:58:21 [restartedMain] KlocCrmApplication -Running with Spring Boot v3.1.1, Spring v6.0.10 
+[INFO ] 2023-08-02 15:58:21 [restartedMain] KlocCrmApplication -No active profile set, falling back to 1 default profile: "default" 
+[INFO ] 2023-08-02 15:58:21 [restartedMain] RepositoryConfigurationDelegate -Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[INFO ] 2023-08-02 15:58:22 [restartedMain] RepositoryConfigurationDelegate -Finished Spring Data repository scanning in 160 ms. Found 12 JPA repository interfaces. 
+[WARN ] 2023-08-02 15:58:22 [restartedMain] AnnotationConfigServletWebServerApplicationContext -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server 
+[INFO ] 2023-08-02 15:58:22 [restartedMain] ConditionEvaluationReportLogger -
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled. 
+[ERROR] 2023-08-02 15:58:22 [restartedMain] LoggingFailureAnalysisReporter -
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'server.port' to java.lang.Integer:
+
+    Property: server.port
+    Value: "${PORT}"
+    Origin: class path resource [application.properties] - 7:13
+    Reason: failed to convert java.lang.String to java.lang.Integer (caused by java.lang.NumberFormatException: For input string: "${PORT}")
+
+Action:
+
+Update your application's configuration
+ 
+[INFO ] 2023-08-02 15:58:57 [restartedMain] KlocCrmApplication -Starting KlocCrmApplication using Java 17.0.6 with PID 1300 (C:\crm\target\classes started by sh in C:\crm) 
+[DEBUG] 2023-08-02 15:58:57 [restartedMain] KlocCrmApplication -Running with Spring Boot v3.1.1, Spring v6.0.10 
+[INFO ] 2023-08-02 15:58:57 [restartedMain] KlocCrmApplication -No active profile set, falling back to 1 default profile: "default" 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] RepositoryConfigurationDelegate -Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] RepositoryConfigurationDelegate -Finished Spring Data repository scanning in 123 ms. Found 12 JPA repository interfaces. 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] TomcatWebServer -Tomcat initialized with port(s): 8080 (http) 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] StandardService -Starting service [Tomcat] 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] StandardEngine -Starting Servlet engine: [Apache Tomcat/10.1.10] 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] [/] -Initializing Spring embedded WebApplicationContext 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] ServletWebServerApplicationContext -Root WebApplicationContext: initialization completed in 1012 ms 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] LogHelper -HHH000204: Processing PersistenceUnitInfo [name: default] 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] SpringPersistenceUnitInfo -No LoadTimeWeaver setup: ignoring JPA class transformer 
+[WARN ] 2023-08-02 15:58:58 [restartedMain] HikariConfig -HikariPool-3 - maxLifetime is less than 30000ms, setting to default 1800000ms. 
+[INFO ] 2023-08-02 15:58:58 [restartedMain] HikariDataSource -HikariPool-3 - Starting... 
+[INFO ] 2023-08-02 15:59:02 [restartedMain] HikariPool -HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@589c33ef 
+[INFO ] 2023-08-02 15:59:02 [restartedMain] HikariDataSource -HikariPool-3 - Start completed. 
+[WARN ] 2023-08-02 15:59:02 [restartedMain] deprecation -HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead 
+[INFO ] 2023-08-02 15:59:02 [restartedMain] BytecodeProviderInitiator -HHH000021: Bytecode provider name : bytebuddy 
+[INFO ] 2023-08-02 15:59:02 [restartedMain] JtaPlatformInitiator -HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform] 
+[INFO ] 2023-08-02 15:59:28 [restartedMain] LocalContainerEntityManagerFactoryBean -Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[DEBUG] 2023-08-02 15:59:28 [restartedMain] JwtAuthenticationFilter -Filter 'jwtAuthenticationFilter' configured for use 
+[WARN ] 2023-08-02 15:59:30 [restartedMain] JpaBaseConfiguration$JpaWebConfiguration -spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+[INFO ] 2023-08-02 15:59:30 [restartedMain] DefaultSecurityFilterChain -Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@517def64, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6208a7b5, org.springframework.security.web.context.SecurityContextHolderFilter@7918b837, org.springframework.security.web.header.HeaderWriterFilter@239020, org.springframework.security.web.authentication.logout.LogoutFilter@51284187, com.kloc.crm.security.JwtAuthenticationFilter@5a53f1ed, org.springframework.security.web.session.ConcurrentSessionFilter@75b97dbc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@652685a4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@27de853, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@b0abaef, org.springframework.security.web.session.SessionManagementFilter@66503d9e, org.springframework.security.web.access.ExceptionTranslationFilter@711fb65a, org.springframework.security.web.access.intercept.AuthorizationFilter@3dcfaa40] 
+[INFO ] 2023-08-02 15:59:31 [restartedMain] OptionalLiveReloadServer -LiveReload server is running on port 35729 
+[INFO ] 2023-08-02 15:59:31 [restartedMain] TomcatWebServer -Tomcat started on port(s): 8080 (http) with context path '' 
+[INFO ] 2023-08-02 15:59:31 [restartedMain] KlocCrmApplication -Started KlocCrmApplication in 33.583 seconds (process running for 2619.667) 
+[INFO ] 2023-08-02 15:59:51 [restartedMain] ConditionEvaluationDeltaLoggingListener -Condition evaluation unchanged 
+[INFO ] 2023-08-02 16:41:11 [RMI TCP Connection(86)-127.0.0.1] SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin -Application shutdown requested. 
+[INFO ] 2023-08-02 16:41:11 [RMI TCP Connection(86)-127.0.0.1] StandardService -Stopping service [Tomcat] 
+[WARN ] 2023-08-02 16:41:11 [RMI TCP Connection(86)-127.0.0.1] WebappClassLoaderBase -The web application [ROOT] appears to have started a thread named [HikariPool-3 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17.0.6/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17.0.6/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17.0.6/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17.0.6/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17.0.6/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17.0.6/java.lang.Thread.run(Thread.java:833) 
+[INFO ] 2023-08-02 16:41:11 [RMI TCP Connection(86)-127.0.0.1] LocalContainerEntityManagerFactoryBean -Closing JPA EntityManagerFactory for persistence unit 'default' 
+[INFO ] 2023-08-02 16:41:11 [RMI TCP Connection(86)-127.0.0.1] HikariDataSource -HikariPool-3 - Shutdown initiated... 
+[INFO ] 2023-08-02 16:41:11 [RMI TCP Connection(86)-127.0.0.1] HikariDataSource -HikariPool-3 - Shutdown completed. 
