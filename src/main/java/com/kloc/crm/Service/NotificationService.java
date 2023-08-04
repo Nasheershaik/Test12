@@ -6,7 +6,6 @@ import java.time.LocalDate;
  *@FileName:NotificationService.java
  */
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.kloc.crm.Entity.*;
@@ -23,7 +22,8 @@ public interface NotificationService {
 	
 	List<Notification> getNotificationsByRemindBefore(LocalDate remindBefore);
 
-	List<Notification> getNotificationTemplatesByRole(String role);
-	
+
+	Notification getNotificationTemplatesByRoleAndType(String role, String notificationtype);
+    
 	
 }

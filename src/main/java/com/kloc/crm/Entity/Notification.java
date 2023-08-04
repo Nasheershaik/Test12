@@ -8,6 +8,7 @@ import java.time.LocalDate;
  */
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
@@ -32,8 +33,6 @@ public class Notification{
 	})
 	private String notificationId;
 	
-	private String notificationType;
-	
 	private String notificationTemplate;
 	
 	private LocalDate remindBefore;
@@ -42,14 +41,10 @@ public class Notification{
 	
 	private String role;
 	
-	
-	@OneToOne
-	@JsonBackReference
-	private Status status;
-	
-	
-	 
-	
+	  @ManyToOne
+	    @JsonBackReference(value="notificationType")
+	    private Status notificationType;
+
 }
 
 

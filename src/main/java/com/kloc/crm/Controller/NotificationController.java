@@ -10,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import com.kloc.crm.Entity.Notification;
-import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Service.NotificationService;
 
 @CrossOrigin("*")
@@ -78,7 +77,7 @@ public class NotificationController {
         Notification existingNotification = notificationService.findByid(notificationId);
         if (existingNotification != null) {
             existingNotification.setSubject(updatedNotification.getSubject());
-            existingNotification.setNotificationType(updatedNotification.getNotificationType());
+   //         existingNotification.setNotificationType(updatedNotification.getNotificationType());
             existingNotification.setNotificationTemplate(updatedNotification.getNotificationTemplate());
             existingNotification.setRemindBefore(updatedNotification.getRemindBefore());
             Notification updatedNotification1 = notificationService.saveNotification(existingNotification);
@@ -111,20 +110,13 @@ public class NotificationController {
         }
     }
 
-    @GetMapping("/template/{role}")
-    public ResponseEntity<List<Notification>> getNotificationTemplateByRole(@PathVariable String role) {
-        Log.debug("Attempting to retrieve notification templates for role: " + role);
-        if (role == null || role.equals("")) {
-            throw new InvalidInput("Role cannot be empty");
-        } else {
-            List<Notification> notificationTemplates = notificationService.getNotificationTemplatesByRole(role);
-            if (!notificationTemplates.isEmpty()) {
-                Log.info("Retrieved notification templates successfully for role: " + role);
-                return ResponseEntity.ok(notificationTemplates);
-            } else {
-                Log.info("No notification templates found for role: " + role);
-                return ResponseEntity.notFound().build();
-            }
-        }
-    }
+    @GetMapping("/template/{notificationtype}/{role}")
+    public ResponseEntity<Notification> getNotificationTemplateByRoleAndType(@PathVariable("notificationtype") String notificationtype,
+    		@PathVariable("role") String role) {
+
+    	return new ResponseEntity<Notification>(notificationService.getNotificationTemplatesByRoleAndType(role, notificationtype),HttpStatus.FOUND);
+    	
+   }
 }
+    
+
