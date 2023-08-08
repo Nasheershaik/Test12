@@ -388,7 +388,7 @@ public class UserServiceImpl implements UserService {
  }
 	@Override
 	public List<UserNDto> getAllUserNDto(){
-		List<User> users =userRepository.findAll();
+		List<User> users =userRepository.findAll().stream().filter(e->!e.getReportingTo().equals(null)).toList();
 		List<UserNDto> usersNdtos = new ArrayList<>();
 		for(User user:users) {
 		String uname =	user.getUserName();
@@ -398,11 +398,9 @@ public class UserServiceImpl implements UserService {
 		String role =user.getRole().getStatusValue();
 		String sValue =user.getStatus().getStatusValue();
 		String reportingToId;
-		if(user.getReportingTo().getUserId()!=null) {
+		
 			 reportingToId =user.getReportingTo().getUserId();
-		}else {
-			reportingToId ="";
-		}
+	
 		
 		String reportingUserName =user.getReportingTo().getUserName();
 		
