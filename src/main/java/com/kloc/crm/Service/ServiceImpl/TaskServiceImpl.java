@@ -212,6 +212,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		if(managerId.isEmpty()||managerId.equals(null)) {throw new NullDataException("Enter the Valid ManagerId");}
 		if(contactId.isEmpty()||contactId.equals(null)) {throw new NullDataException("Enter the Valid ContactId");}
 		if(offeringId.isEmpty()||offeringId.equals(null)) {throw new NullDataException("Enter the valid OfferingId");}
+		if(userRepository.findById(managerId).get().getRole().getStatusValue().equals("salesPerson")) {throw new InvalidInput("task cannot assigned by salesperson");}
 		SalesPerson salesPerson=salesPersonRepository.findById(salesPersonId).orElseThrow(()->new DataNotFoundException("SalesPerson is not found:Enter the existing salesPersonId"));
 		task.setSalesPerson(salesPerson);
 		User user=userRepository.findById(managerId).orElseThrow(()->new DataNotFoundException("manager is not found:Enter the existing managerId"));
