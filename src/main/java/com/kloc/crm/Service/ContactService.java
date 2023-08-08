@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kloc.crm.Entity.Contact;
+import com.kloc.crm.dto.ContactDTO;
 public interface ContactService
 {
 	/**
@@ -27,14 +28,14 @@ public interface ContactService
 	 * @param parameter1 contact id which have to be deleter.
 	 * @return understandable responce if contact deleted or not.
 	 */
-	ResponseEntity<String> addContactsFromExcel(MultipartFile file);
+	ResponseEntity<String> addContactsFromExcel(MultipartFile file,String userId);
 	
 	/**
 	 * Retrieves all contacts.
 	 *
 	 * @return A list of all contacts.
 	 */
-	List<Contact> GetAllContact();
+	List<ContactDTO> GetAllContact();
 	
 	/**
 	 * Retrieves a contact by their contact ID.
@@ -42,7 +43,7 @@ public interface ContactService
 	 * @param contactId The ID of the contact to retrieve.
 	 * @return The contact with the specified ID.
 	 */
-	Contact GetContactByContactId(String contactId);
+	ContactDTO GetContactByContactId(String contactId);
 	
 	/**
 	 * Retrieves a contact by their email.
@@ -50,7 +51,7 @@ public interface ContactService
 	 * @param email The email of the contact to retrieve.
 	 * @return The contact with the specified email.
 	 */
-	List<Contact> GetAllContactByemail(String email);
+	List<ContactDTO> GetAllContactByemail(String email);
 	
 	/**
 	 * Retrieves all contacts belonging to a specific company.
@@ -58,7 +59,7 @@ public interface ContactService
 	 * @param company The name of the company.
 	 * @return A list of contacts belonging to the specified company.
 	 */
-	List<Contact> GetAllContactByCompany(String company);
+	List<ContactDTO> GetAllContactByCompany(String company);
 	
 	/**
 	 * Retrieves all contacts with a specific source.
@@ -66,7 +67,7 @@ public interface ContactService
 	 * @param source The source of the contacts.
 	 * @return A list of contacts with the specified source.
 	 */
-	List<Contact> GetAllContactBysource(String source);
+	List<ContactDTO> GetAllContactBysource(String source);
 	
 	/**
 	 * Retrieves all contacts with a specific life cycle stage.
@@ -74,7 +75,7 @@ public interface ContactService
 	 * @param lifeCycleStage The life cycle stage of the contacts.
 	 * @return A list of contacts with the specified life cycle stage.
 	 */
-	List<Contact> GetAllContactByStatusType(String statusType, String statusValue);
+	List<ContactDTO> GetAllContactByStatusType(String statusValue);
 	
 	/**
 	 * Retrieves all contacts with a specific stage date.
@@ -82,7 +83,7 @@ public interface ContactService
 	 * @param stageDate The stage date of the contacts.
 	 * @return A list of contacts with the specified stage date.
 	 */
-	List<Contact> GetAllContactByStageDate(LocalDate stageDate);
+	List<ContactDTO> GetAllContactByStageDate(LocalDate stageDate);
 	
 	/**
 	 * Retrieves all contacts from a specific country.
@@ -90,7 +91,15 @@ public interface ContactService
 	 * @param country The name of the country.
 	 * @return A list of contacts from the specified country.
 	 */
-	List<Contact> GetAllContactBycountry(String country);
+	List<ContactDTO> GetAllContactBycountry(String country);
+	
+	/**
+	 * Retrieves all contacts from a contact created by.
+	 *
+	 * @param country The user id of the contact created by.
+	 * @return A list of contacts from the contact created by.
+	 */
+	List<ContactDTO> GetAllContactOnContactCreatedBy(String contactCreatedBy);
 	
 	/**
 	 * Updates a contact by their contact ID.

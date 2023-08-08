@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kloc.crm.Entity.Contact;
 import com.kloc.crm.Service.ContactService;
+import com.kloc.crm.dto.ContactDTO;
 
 @CrossOrigin("*")
 @RestController
@@ -54,10 +55,10 @@ public class ContactController
 	 *
 	 * @RequestBody contact The contact object to be created.
 	 */
-	@PostMapping("add_contact_from_excel")
-	private ResponseEntity<String> addContactsFromExcel(@RequestParam("Contacts") MultipartFile contactsFromExcel) 
+	@PostMapping("add_contact_from_excel/{userId}")
+	private ResponseEntity<String> addContactsFromExcel(@RequestParam("Contacts") MultipartFile contactsFromExcel, @PathVariable String userId) 
 	{
-		return contactService.addContactsFromExcel(contactsFromExcel);
+		return contactService.addContactsFromExcel(contactsFromExcel,userId);
 	} 
 	
 	/**
@@ -66,9 +67,9 @@ public class ContactController
 	 * @return A list of all contacts.
 	 */
 	@GetMapping("get_all_contact")
-	private ResponseEntity<List<Contact>> GetAllContact() 
+	private ResponseEntity<List<ContactDTO>> GetAllContact() 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContact(),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContact(),HttpStatus.OK);
 	}
 	
 	/**
@@ -78,9 +79,9 @@ public class ContactController
 	 * @return       The contact with the specified ID.
 	 */
 	@GetMapping("get_contact_by_contactId/{contactId}")
-	private ResponseEntity<Contact> GetContactByContactId(@PathVariable String contactId) 
+	private ResponseEntity<ContactDTO> GetContactByContactId(@PathVariable String contactId) 
 	{
-		return new ResponseEntity<Contact>(contactService.GetContactByContactId(contactId),HttpStatus.FOUND);
+		return new ResponseEntity<ContactDTO>(contactService.GetContactByContactId(contactId),HttpStatus.OK);
 	}
 	
 	/**
@@ -89,11 +90,10 @@ public class ContactController
 	 * @PathVariable email The email of the contact to retrieve.
 	 * @return 		 The contact with the specified email.
 	 */
-//	have to change api url
-	@GetMapping("get_contact_by_email/{email}")
-	private ResponseEntity<List<Contact>> GetAllContactByemail(@PathVariable String email) 
+	@GetMapping("get_all_contact_by_email/{email}")
+	private ResponseEntity<List<ContactDTO>> GetAllContactByemail(@PathVariable String email) 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContactByemail(email),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactByemail(email),HttpStatus.OK);
 	}
 	/**
 	 * Retrieves all contacts belonging to a specific company.
@@ -102,9 +102,9 @@ public class ContactController
 	 * @return 		 A list of contacts belonging to the specified company.
 	 */
 	@GetMapping("get_all_contact_by_company/{company}")
-	private ResponseEntity<List<Contact>> GetAllContactByCompany(@PathVariable String company) 
+	private ResponseEntity<List<ContactDTO>> GetAllContactByCompany(@PathVariable String company) 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContactByCompany(company),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactByCompany(company),HttpStatus.OK);
 	}
 	/**
 	 * Retrieves all contacts with a specific source.
@@ -113,9 +113,9 @@ public class ContactController
 	 * @return 		 A list of contacts with the specified source.
 	 */
 	@GetMapping("get_all_contact_by_source/{source}")
-	private ResponseEntity<List<Contact>> GetAllContactBysource(@PathVariable String source) 
+	private ResponseEntity<List<ContactDTO>> GetAllContactBysource(@PathVariable String source) 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContactBysource(source),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactBysource(source),HttpStatus.OK);
 	}
 	/**
 	 * Retrieves all contacts with a specific Status.
@@ -124,10 +124,10 @@ public class ContactController
 	 * @PathVariable Status Value of the contacts.
 	 * @return 		 A list of contacts with the specified Status.
 	 */
-	@GetMapping("get_all_contact_by_status_type_status_value/{statusType}/{statusValue}")
-	private ResponseEntity<List<Contact>> GetAllContactByStatusType(@PathVariable String statusType,@PathVariable String statusValue) 
+	@GetMapping("get_all_contact_by_status_type_status_value/{statusValue}")
+	private ResponseEntity<List<ContactDTO>> GetAllContactByStatusType(@PathVariable String statusValue) 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContactByStatusType(statusType, statusValue),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactByStatusType(statusValue),HttpStatus.OK);
 	}
 	
 	/**
@@ -137,9 +137,9 @@ public class ContactController
 	 * @return		 A list of contacts with the specified stage date.
 	 */
 	@GetMapping("get_all_contact_by_stageDate/{stageDate}")
-	private ResponseEntity<List<Contact>> GetAllContactByStageDate(@PathVariable LocalDate stageDate) 
+	private ResponseEntity<List<ContactDTO>> GetAllContactByStageDate(@PathVariable LocalDate stageDate) 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContactByStageDate(stageDate),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactByStageDate(stageDate),HttpStatus.OK);
 	}
 	
 	/**
@@ -149,9 +149,21 @@ public class ContactController
 	 * @return		 A list of contacts from the specified country.
 	 */
 	@GetMapping("get_all_contact_by_country/{country}")
-	private ResponseEntity<List<Contact>> GetAllContactBycountry(@PathVariable String country) 
+	private ResponseEntity<List<ContactDTO>> GetAllContactBycountry(@PathVariable String country) 
 	{
-		return new ResponseEntity<List<Contact>>(contactService.GetAllContactBycountry(country),HttpStatus.FOUND);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactBycountry(country),HttpStatus.OK);
+	}
+	
+	/**
+	 * Retrieves all contacts from a contact created by.
+	 *
+	 * @PathVariableountry  The user id of the contact created by.
+	 * @return				A list of contacts from the contact created by.
+	 */
+	@GetMapping("get_all_contact_by_contact_created_by/{contactCreatedBy}")
+	private ResponseEntity<List<ContactDTO>> GetAllContactOnContactCreatedBy(@PathVariable String contactCreatedBy) 
+	{
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactOnContactCreatedBy(contactCreatedBy),HttpStatus.OK);
 	}
 	
 	/**
@@ -177,6 +189,4 @@ public class ContactController
 	{
 		return contactService.deleteContactByContactId(contactId);
 	}
-	
-	
 }

@@ -32,7 +32,7 @@ public class LogFileHandler {
 //			}
 //		}
 //    }
-	 @Scheduled(cron="0 0/5 9 * * ?") // 120000 milliseconds = 2 minutes
+	 @Scheduled(cron="0 0 9 1 1/3 ?") // 120000 milliseconds = 2 minutes
 	    public void clearLogFile() {
 	        File logFile = new File("./myapp.log");
 			System.out.println("xyz");

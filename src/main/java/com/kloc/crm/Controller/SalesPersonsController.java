@@ -84,5 +84,11 @@ public class SalesPersonsController {
     public ResponseEntity<List<SalesPerson>> getAllSalesPersonsByTheirTargets(@PathVariable("target") int target){
     	return new ResponseEntity<List<SalesPerson>>(salesPersonService.getAllSalesPersonsByTarget(target),HttpStatus.OK);
     }
+    
+    @GetMapping("/getIdByEmail/{email}")
+    public ResponseEntity<String> getSalesPersonIdByUsersEmail(@PathVariable("email") String email){
+    	return new ResponseEntity<>(salesPersonService.getSalesPersonIdByEmail(email),HttpStatus.OK);
+    	
+    }
 }
 

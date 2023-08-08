@@ -29,6 +29,8 @@ import com.kloc.crm.Repository.UserRepository;
 import com.kloc.crm.Service.SalesPersonService;
 import com.kloc.crm.Service.StatusService;
 import com.kloc.crm.Service.UserService;
+import com.kloc.crm.dto.UserDto;
+import com.kloc.crm.dto.UserNDto;
 
 
 @RestController
@@ -125,35 +127,117 @@ public class UserController {
      * @param reportingTo  The manager's name to filter Users by
      * @return             A list of User objects reporting to the specified manager with HTTP status OK
      */
-    @GetMapping("/getUserByMgrName/{reportingTo}")
+    @GetMapping("/getUserByMgrId/{reportingTo}")
     public ResponseEntity<List<User>> getAllUsersWhoAreReportingTo(@PathVariable("reportingTo") String reportingTo) {
         return new ResponseEntity<>(userService.getUserByManagerName(reportingTo), HttpStatus.OK);
     }
     
-    @PutMapping("/updateUser/{userId}/{statusValue}")
-    public ResponseEntity<User> updateUserByTheirId(@RequestBody User user,@PathVariable("userId") String userId,@PathVariable("statusValue") String statusValue){
-    	return new ResponseEntity<User>(userService.updateUser(user, userId,statusValue),HttpStatus.OK);
+    @GetMapping("/getUserByEmail/{email}")
+    public ResponseEntity<User> getUserByTheirEmail(@PathVariable("email") String email){
+    	return new ResponseEntity<User>(userService.getUserByEmail(email),HttpStatus.OK);
     }
     
-    @PostMapping("/updatePassword")
-    public User updatePassword(Principal p, @RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword){
-    	if(newPassword.isEmpty()) {throw new InvalidInput("password can not  be empty");}
-    	String email =p.getName();
-    User currentlyUser	=userRepository.findByEmail(email);
-   
- boolean f =  passwordEncoder.matches(oldPassword, currentlyUser.getPassword());
-    if(f) {
-    	System.out.println("Matches with old password");
-    	currentlyUser.setPassword(passwordEncoder.encode(newPassword) );
-    	
-    	return userRepository.save(currentlyUser);
-
+    
+    @PutMapping("/updateUser/{userId}")
+    public ResponseEntity<User> updateUserByTheirId(@RequestBody User user,@PathVariable("userId") String userId){
+    	return new ResponseEntity<User>(userService.updateUser(user, userId),HttpStatus.OK);
     }
+    
+//    @PostMapping("/updatePassword/{email}")
+//    public User updatePassword(Principal p, @RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword){
+//    	if(newPassword.isEmpty()) {throw new InvalidInput("password can not  be empty");}
+//    	String email =p.getName();
+//    User currentlyUser	=userRepository.findByEmail(email);
+//   
+// boolean f =  passwordEncoder.matches(oldPassword, currentlyUser.getPassword());
+//    if(f) {
+//    	System.out.println("Matches with old password");
+//    	currentlyUser.setPassword(passwordEncoder.encode(newPassword) );
+//    	
+//    	return userRepository.save(currentlyUser);
+//
+//    }
+//    else {
+//    	throw  new InvalidInput("old password does not match");
+//    }
+//    
+//   
+//    }
+    
+    @PutMapping("/updatePassword/{email}/{oldPassword}/{newPassword}")
+    public ResponseEntity<String> updatePassword(@PathVariable("email") String email,@PathVariable("oldPassword") String oldPassword,@PathVariable("newPassword") String newPassword){
+    	User existingUser	 =userRepository.findByEmail(email);
+    	if(existingUser==null) {
+    		return new ResponseEntity<>("User Not Found With This mail Id",HttpStatus.UNAUTHORIZED);
+    	}
+    
+    	boolean f = passwordEncoder.matches(oldPassword,existingUser.getPassword());
+    	System.out.println(f);
+    	if(f){
+    	if(newPassword!=null && newPassword !="") {
+    		
+    		existingUser.setPassword(passwordEncoder.encode(newPassword));
+    		userRepository.save(existingUser);
+    		return new ResponseEntity<>("Password Changed Successfully",HttpStatus.OK);
+    	}
+    	else {
+    		return new ResponseEntity<>("Please enter valid Password",HttpStatus. UNAUTHORIZED);
+    	}
+	  
+  }
     else {
-    	throw  new InvalidInput("old password does not match");
+    	return new ResponseEntity<>("Password Does not Matches",HttpStatus.UNAUTHORIZED);
     }
     
-    
     }
     
+    @PutMapping("/updateStatus/{userId}/{statusValue}")
+    public ResponseEntity<User> updateUserStatus(@PathVariable String userId,@PathVariable String statusValue){
+    	return new ResponseEntity<User>(userService.updateStatus(userId, statusValue),HttpStatus.OK);
+  
+    }
+    
+    @GetMapping("/getReportingToPerson/{userId}")
+    public ResponseEntity<User> getReportingToUserByTheirSubordinatesId(@PathVariable("userId") String userId){
+    	return new ResponseEntity<User>(userService.getReportingToByUserId(userId),HttpStatus.OK);
+    	
+    }
+    
+    @GetMapping("/getUserRoleAndStatusByUserId/{userId}")
+    public ResponseEntity<UserNDto> getUserRoleAndStatusByUserid(@PathVariable String userId){
+    	return new ResponseEntity<UserNDto>(userService.getUserRoleAndStatusValueById(userId),HttpStatus.OK);
+    }
+    
+  @GetMapping("/getRoleValueAndReportingTo/{email}")
+   public ResponseEntity<UserDto> getUserRolevalueReportingTo(@PathVariable("email") String email){   
+	  return new ResponseEntity<UserDto>(userService.getUserRoleAndStatusvalueAndreportingToByEmailId(email),HttpStatus.OK);
+   }
+  
+  
+  @GetMapping("/getAllUsersNDtos")
+  public ResponseEntity<List<UserNDto>> getAllUsersNdtosList(){
+	  return new ResponseEntity<List<UserNDto>>(userService.getAllUserNDto(),HttpStatus.OK);
+  }
+  
+  @GetMapping("/getAllByRole/{role}")
+  public ResponseEntity<List<UserNDto>> getAllUsersListBasedOntheirRoles(@PathVariable("role") String role){
+	  return new ResponseEntity<List<UserNDto>>(userService.getUsersByTheirRoles(role),HttpStatus.OK);
+  }
+  
+  @GetMapping("/getAllUsersByTheirName/{name}")
+  public ResponseEntity<List<UserNDto>> getAllUsersByTheirNames(@PathVariable("name") String name){
+	  return new ResponseEntity<List<UserNDto>>(userService.getUsersBasedOnTheirName(name),HttpStatus.OK);
+  }
+  
+  @GetMapping("gBId/{userId}")
+  public ResponseEntity<UserNDto> getUserBasedOnHisId(@PathVariable("userId") String userId){
+	  return new ResponseEntity<UserNDto>(userService.getUserBasedOnTheirid(userId),HttpStatus.OK);
+  }
+  
+  @PutMapping("/updateByAdmin/{userId}/{role}/{reportingUserId}")
+  public ResponseEntity<String> updateStatusByAdmin(@PathVariable("userId") String userId,@PathVariable("role") String role,@PathVariable("reportingUserId") String reportingUserId){
+	  return new ResponseEntity<String>(userService.updateUserByAdmin(userId, role, reportingUserId),HttpStatus.OK);
+  }
+    
+
 }

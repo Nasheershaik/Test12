@@ -8,6 +8,8 @@ package com.kloc.crm.Service;
 import java.util.List;
 
 import com.kloc.crm.Entity.User;
+import com.kloc.crm.dto.UserDto;
+import com.kloc.crm.dto.UserNDto;
 
 
 /**
@@ -45,7 +47,7 @@ public interface UserService {
      * @param id    The ID of the User to update
      * @return      The updated User object
      */
-    User updateUser(User user, String id,String statusValue);
+    User updateUser(User user, String id);
     
     /**
      * Retrieves a User by their username.
@@ -76,5 +78,24 @@ public interface UserService {
      * @return             A  User object based on email
      */
 	User getUserByEmail(String email);
+	
+	User getReportingToByUserId(String userId);
+	
+	User updateStatus(String userId,String statusValue);
+	
+	UserNDto getUserRoleAndStatusValueById(String userId);
+	
+	UserDto getUserRoleAndStatusvalueAndreportingToByEmailId(String email);
+	
+	List<UserNDto> getAllUserNDto();
+	
+	 String updateUserByAdmin(String userId,String srole ,String reportingUserId);
+	 
+	 List<UserNDto> getUsersByTheirRoles(String role);
+	 
+	 List<UserNDto> getUsersBasedOnTheirName(String name);
+	 
+	 UserNDto getUserBasedOnTheirid(String userId);
+	
 }
 

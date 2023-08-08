@@ -53,7 +53,7 @@ public interface SalesPersonService {
     SalesPerson updateSalesPerson(SalesPerson sp, String id);
     
     
-    
+    String getSalesPersonIdByEmail(String email);
     
 }
 

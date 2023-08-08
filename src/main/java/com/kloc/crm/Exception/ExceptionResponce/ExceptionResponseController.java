@@ -1,14 +1,17 @@
 /**
- * @author: windows
- * @Created_Date:Jul 16, 2023
- * @File_Name:ExceptionResponseController.java
+ * This class is a controller advice that handles various exceptions thrown in the application
+ * and provides appropriate responses. It centralizes exception handling to avoid code duplication
+ * in individual controller classes.
  *
+ * @author Ankush
+ * @created_date Jul 16, 2023
+ * @file_name ExceptionResponseController.java
  */
 package com.kloc.crm.Exception.ExceptionResponce;
+
 import javax.naming.NotContextException;
 import org.hibernate.PropertyValueException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,148 +19,235 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartException;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.kloc.crm.Exception.DataNotFoundException;
 import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Exception.NullDataException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
-/**
- * @author windows
- *
- */
-@SuppressWarnings("unused")
+import jakarta.servlet.ServletException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @ControllerAdvice
-public class ExceptionResponseController
+public class ExceptionResponseController 
 {
-	/**
-	 * If Data not found then this response goes to the user.
-	 *
-	 * @param Accept the Exception.
-	 * @return Understandable Response to the user.
-	 */
-	@ExceptionHandler(InternalError.class)
-	private ResponseEntity<String> InternalError(InternalError internalError) 
-	{
-		return new ResponseEntity<String>(internalError.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	/**
-	 * If Data not found then this response goes to the user.
-	 *
-	 * @param Accept the Exception.
-	 * @return Understandable Response to the user.
-	 */
-	@ExceptionHandler(DataNotFoundException.class)
-	private ResponseEntity<String> DataNotFoundExceptionResponse(DataNotFoundException dataNotFoundException) 
-	{
-		return new ResponseEntity<String>("Data Not found with corrsponding id please enter valid id",HttpStatus.NOT_FOUND);
-	}
-	
-	/**
-	 * If Data not found then this response goes to the user.
-	 *
-	 * @param Accept the Exception.
-	 * @return Understandable Response to the user.
-	 */
-	@ExceptionHandler(NullDataException.class)
-	private ResponseEntity<String> DataNotFoundExceptionResponse(NullDataException nullDataException) 
-	{
-		return new ResponseEntity<String>(nullDataException.getMessage(),HttpStatus.BAD_REQUEST);
-	}
-	
-	/**
-	 * Description of the method.
-	 *
-	 * @param parameter1 Description of the parameter.
-	 * @return Description of the return value.
-	 */
-	@ExceptionHandler(InvalidInput.class)
-	private ResponseEntity<String> InternalServerErrorResponse(InvalidInput invalidInput)
-	{
-		return new ResponseEntity<String>(invalidInput.getMessage(), HttpStatus.BAD_REQUEST);
-	}
-	
-	/**
-	 * Description of the method.
-	 *
-	 * @param parameter1 Description of the parameter.
-	 * @return Description of the return value.
-	 */
-	@ExceptionHandler(NotContextException.class)
-	private ResponseEntity<String> NoContentException(NotContextException contextException)
-	{
-		return new ResponseEntity<String>("There is no content with respective this credentials",HttpStatus.BAD_REQUEST);
-	}
-	
-	/**
-	 * Description of the method.
-	 *
-	 * @param parameter1 Description of the parameter.
-	 * @return Description of the return value.
-	 */
-	@ExceptionHandler(NullPointerException.class)
-	private ResponseEntity<String> NullPointerException(NullPointerException nullPointerException) 
-	{
-		return new ResponseEntity<String>("Data not found.",HttpStatus.NOT_FOUND);
-	}
-	
-	
-	/**
-	 * Description of the method.
-	 *
-	 * @param parameter1 Description of the parameter.
-	 * @return Description of the return value.
-	 */
-	@ExceptionHandler(InternalServerError.class)
-	private ResponseEntity<String> InternalServerErrorResponse(InternalServerError internalServerError)
-	{
-		return new ResponseEntity<String>("Something went Wrong.", HttpStatus.BAD_REQUEST);
-	}
-	
-	/**
-	 * Description of the method.
-	 *
-	 * @param parameter1 Description of the parameter.
-	 * @return Description of the return value.
-	 */
-	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	private ResponseEntity<String> MethodArgumentTypeMismatchExceptionResponse(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException)
-	{
-		return new ResponseEntity<String>("Please Check Inputs.", HttpStatus.BAD_REQUEST);
-	}
-	
-	
-	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	private ResponseEntity<String> httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException httpRequestMethodNotSupportedException)
-	{
-		return new ResponseEntity<String>("Please change your http method request ",HttpStatus.BAD_REQUEST);
-	}
-	
-	@ResponseBody
-	@ExceptionHandler(io.jsonwebtoken.security.SignatureException.class)
-	private ResponseEntity<String> JwtSignatureExceptionHandler(io.jsonwebtoken.security.SignatureException signatureException)
-	{
-		return new ResponseEntity<String>("Your JWT token is manipulated,please enter Autogenerated Token without manipulation",HttpStatus.UNAUTHORIZED);
-	}
-	
-	@ExceptionHandler(JsonParseException.class)
-	private ResponseEntity<String> jsonParseExceptionHandler(JsonParseException parseException)
-	{
-		return new ResponseEntity<String>("only whiteSpace is allowed in between the tokens please remove unwanted character ",HttpStatus.BAD_REQUEST);
-		
-	}
-	
-	@ExceptionHandler(MalformedJwtException.class)
-	private ResponseEntity<String> jwtMalformedJwtException(MalformedJwtException exception)
-	{
-		return new ResponseEntity<String>("Please enter valid JWt token ",HttpStatus.UNAUTHORIZED);
-	}
-	
-	@ExceptionHandler(PropertyValueException.class)
-	private ResponseEntity<String> notNullPropertyValueException(PropertyValueException notnullException)
-	{
-		return new ResponseEntity<String>("please enter the value within notnull field",HttpStatus.BAD_REQUEST);
-	}
-	
+
+    // Logger to record exception information
+    private static final Logger logger = Logger.getLogger(ExceptionResponseController.class.getName());
+
+    // Exception message constants
+    private static final String METHOD_ARGUMENT_MISMATCH_MSG = "Invalid input for one or more request parameters.";
+    private static final String DATA_NOT_FOUND_MSG = "Data not found";
+    private static final String INTERNAL_SERVER_ERROR_MSG = "Internal Server Error";
+    private static final String METHOD_NOT_ALLOWED_MSG = "Please change your http method request";
+    private static final String NO_CONTENT_MSG = "There is no content with respective this credentials";
+    private static final String NOT_VALID_MSG = "Input not valid";
+    private static final String JSON_PARSE_MSG = "Only whiteSpace is allowed in between the tokens, please remove unwanted characters";
+    private static final String JWT_SIGNATURE_MSG = "Your JWT token is manipulated, please enter Autogenerated Token without manipulation";
+    private static final String JWT_TOKEN_NOT_VALID = "Please enter a valid JWT token";
+    private static final String MULTIPART_REQUEST_MSG = "Multipart request error";
+    private static final String ARRAY_INDEX_MSG = "Array Index Out of Bounds Exception occurred";
+    private static final String SERVLET_REQUEST_MSG = "Servlet Exception occurred";
+    
+    
+    /**
+     * Exception handler for DataNotFoundException. It returns a NOT_FOUND response
+     * with a message indicating the data was not found.
+     */
+    @ExceptionHandler(DataNotFoundException.class)
+    private ResponseEntity<String> handleDataNotFoundException(DataNotFoundException dataNotFoundException)
+    {
+        logger.log(Level.INFO, "DataNotFoundException occurred: " + dataNotFoundException.getMessage(), dataNotFoundException);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DATA_NOT_FOUND_MSG + ": " + dataNotFoundException.getMessage());
+    }
+
+    /**
+     * Exception handler for InvalidInput. It returns a BAD_REQUEST response with a message
+     * indicating that the input provided by the client is not valid.
+     */
+    @ExceptionHandler(InvalidInput.class)
+    private ResponseEntity<String> handleInvalidInputException(InvalidInput invalidInput)
+    {
+        logger.log(Level.WARNING, "InvalidInput occurred: " + invalidInput.getMessage(), invalidInput);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(NOT_VALID_MSG + ": " + invalidInput.getMessage());
+    }
+
+    /**
+     * Exception handler for NotContextException. It returns an UNAUTHORIZED response
+     * with a message indicating the client is not authorized to access the resource.
+     */
+    @ExceptionHandler(NotContextException.class)
+    private ResponseEntity<String> handleNotContextException(NotContextException contextException)
+    {
+        logger.log(Level.WARNING, "NotContextException occurred: " + contextException.getMessage(), contextException);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(NO_CONTENT_MSG);
+    }
+
+    /**
+     * Exception handler for NullDataException. It returns a BAD_REQUEST response with a message
+     * indicating that the requested data was not found.
+     */
+    @ExceptionHandler(NullDataException.class)
+    private ResponseEntity<String> handleNullDataException(NullDataException nullDataException) 
+    {
+        logger.log(Level.WARNING, "NullDataException occurred: " + nullDataException.getMessage(), nullDataException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DATA_NOT_FOUND_MSG + ": " + nullDataException.getMessage());
+    }
+
+    /**
+     * Exception handler for NullPointerException. It returns a NOT_FOUND response with a message
+     * indicating that the requested data was not found due to a NullPointerException.
+     */
+    @ExceptionHandler(NullPointerException.class)
+    private ResponseEntity<String> handleNullPointerException(NullPointerException nullPointerException) 
+    {
+        logger.log(Level.WARNING, "NullPointerException occurred: " + nullPointerException.getMessage(), nullPointerException);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DATA_NOT_FOUND_MSG + ": " + nullPointerException.getMessage());
+    }
+
+    /**
+     * Exception handler for InternalError. It returns an INTERNAL_SERVER_ERROR response with a message
+     * indicating an internal server error occurred.
+     */
+    @ExceptionHandler(InternalError.class)
+    private ResponseEntity<String> handleInternalError(InternalError internalError)
+    {
+        logger.log(Level.SEVERE, "InternalError occurred: " + internalError.getMessage(), internalError);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG + ": " + internalError.getMessage());
+    }
+
+    /**
+     * Exception handler for InternalServerError. It returns an INTERNAL_SERVER_ERROR response with a message
+     * indicating an internal server error occurred.
+     */
+    @ExceptionHandler(InternalServerError.class)
+    private ResponseEntity<String> handleInternalServerError(InternalServerError internalServerError)
+    {
+        logger.log(Level.WARNING, "InternalServerError occurred: " + internalServerError.getMessage(), internalServerError);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG + ": " + internalServerError.getMessage());
+    }
+
+    /**
+     * Exception handler for MethodArgumentTypeMismatchException. It returns a BAD_REQUEST response with a message
+     * indicating that the provided request parameters are not valid.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    private ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) 
+    {
+        logger.log(Level.WARNING, "MethodArgumentTypeMismatchException occurred: " + methodArgumentTypeMismatchException.getMessage(), methodArgumentTypeMismatchException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(METHOD_ARGUMENT_MISMATCH_MSG);
+    }
+
+    /**
+     * Exception handler for HttpRequestMethodNotSupportedException. It returns a METHOD_NOT_ALLOWED response
+     * with a message indicating that the HTTP method used is not supported for the requested resource.
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    private ResponseEntity<String> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException httpRequestMethodNotSupportedException)
+    {
+        logger.log(Level.WARNING, "HttpRequestMethodNotSupportedException occurred: " + httpRequestMethodNotSupportedException.getMessage(), httpRequestMethodNotSupportedException);
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(METHOD_NOT_ALLOWED_MSG);
+    }
+
+    /**
+     * Exception handler for SignatureException. It returns an UNAUTHORIZED response with a message
+     * indicating that the provided JWT token has an invalid signature.
+     */
+    @ResponseBody
+    @ExceptionHandler(SignatureException.class)
+    private ResponseEntity<String> handleJwtSignatureException(SignatureException signatureException) 
+    {
+        logger.log(Level.WARNING, "JwtSignatureException occurred: " + signatureException.getMessage(), signatureException);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JWT_SIGNATURE_MSG);
+    }
+
+    /**
+     * Exception handler for JsonParseException. It returns a BAD_REQUEST response with a message
+     * indicating that the JSON payload in the request is not well-formed.
+     */
+    @ExceptionHandler(JsonParseException.class)
+    private ResponseEntity<String> handleJsonParseException(JsonParseException parseException)
+    {
+        logger.log(Level.WARNING, "JsonParseException occurred: " + parseException.getMessage(), parseException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(JSON_PARSE_MSG);
+    }
+
+    /**
+     * Exception handler for MalformedJwtException. It returns a BAD_REQUEST response with a message
+     * indicating that the provided JWT token is not valid.
+     */
+    @ExceptionHandler(MalformedJwtException.class)
+    private ResponseEntity<String> handleMalformedJwtException(MalformedJwtException exception) 
+    {
+        logger.log(Level.WARNING, "MalformedJwtException occurred: " + exception.getMessage(), exception);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(JWT_TOKEN_NOT_VALID);
+    }
+
+    /**
+     * Exception handler for PropertyValueException. It returns a BAD_REQUEST response with a message
+     * indicating that the provided input data is not valid.
+     */
+    @ExceptionHandler(PropertyValueException.class)
+    private ResponseEntity<String> handlePropertyValueException(PropertyValueException notnullException)
+    {
+        logger.log(Level.WARNING, "PropertyValueException occurred: " + notnullException.getMessage(), notnullException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(NOT_VALID_MSG);
+    }
+
+    /**
+     * Exception handler for MultipartException. It handles exceptions related to file upload
+     * and returns a BAD_REQUEST response with a message indicating the issue with the multipart request.
+     *
+     * @param multipartException The MultipartException instance representing the file upload issue.
+     */
+    @ExceptionHandler(MultipartException.class)
+    private ResponseEntity<String> handleMultipartException(MultipartException multipartException)
+    {
+        logger.log(Level.WARNING, "MultipartException occurred: " + multipartException.getMessage(), multipartException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MULTIPART_REQUEST_MSG + ": Please check your request type.");
+    }
+    
+    /**
+     * Exception handler for ServletException. It handles exceptions related to servlet errors.
+     * Returns a BAD_REQUEST response with a message indicating the issue with the servlet request.
+     *
+     * @param servletException The ServletException instance representing the servlet error.
+     * @return A ResponseEntity containing the response body and status code.
+     */
+    @ExceptionHandler(ServletException.class)
+    private ResponseEntity<String> handleServletException(ServletException servletException)
+    {
+        logger.log(Level.WARNING, "ServletException occurred: " + servletException.getMessage(), servletException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SERVLET_REQUEST_MSG + ": Please check your servlet request.");
+    }
+
+    /**
+     * Exception handler for ArrayIndexOutOfBoundsException. It handles exceptions related to array index out of bounds errors.
+     * Returns a BAD_REQUEST response with a message indicating the issue with the array index.
+     *
+     * @param arrayIndexOutOfBoundsException The ArrayIndexOutOfBoundsException instance representing the error.
+     * @return A ResponseEntity containing the response body and status code.
+     */
+    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
+    private ResponseEntity<String> handleArrayIndexOutOfBoundsException(ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException)
+    {
+        logger.log(Level.WARNING, "ArrayIndexOutOfBoundsException occurred: " + arrayIndexOutOfBoundsException.getMessage(), arrayIndexOutOfBoundsException);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ARRAY_INDEX_MSG + ": Please check your size of input.");
+    }
+    
+    /**
+     * Catch-all exception handler for any unhandled exceptions. It returns an INTERNAL_SERVER_ERROR
+     * response with a generic message and advises the client to contact support.
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    private ResponseEntity<String> handleUnhandledException(Exception exception) 
+    {
+        logger.log(Level.SEVERE, "Unhandled Exception occurred: " + exception.getMessage(), exception);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG + ": Please contact support.");
+    }
 }

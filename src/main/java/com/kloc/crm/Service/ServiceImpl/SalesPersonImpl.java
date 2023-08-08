@@ -151,4 +151,23 @@ public class SalesPersonImpl implements SalesPersonService {
 				return findByTarget;
 		}
 	}
+
+	@Override
+	public String getSalesPersonIdByEmail(String email) {
+	User user	=userRepository.findByEmail(email);
+	String userId = user.getUserId();
+	String 	salesPersonId = null;
+	//salesPersonRepository.findBy
+	List<SalesPerson> salesPersons =salesPersonRepository.findAll();
+		for(SalesPerson sp:salesPersons) {
+			if(sp.getUser().getUserId().equals(userId)) {
+				salesPersonId	 = sp.getSalespersonId();
+			}
+	  
+		}
+	return salesPersonId;
+	
+	}
+	
+	
 }

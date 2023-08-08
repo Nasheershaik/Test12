@@ -52,7 +52,6 @@ public class Contact
 	@JoinColumn(name = "source_id")
 	private Status source;
 	private String otherSourcetype;
-//	private String source;
 	private String websiteURL;
 	private String contactDestination;
 	private String contactDepartment;

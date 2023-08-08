@@ -14,6 +14,7 @@ package com.kloc.crm.Controller;
 // all user and necessary imports for this class
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,8 +25,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.kloc.crm.Entity.Contact;
 import com.kloc.crm.Entity.Offering;
 import com.kloc.crm.Service.OfferingService;
+import com.kloc.crm.dto.OfferingDTO;
 
 @CrossOrigin("*")
 @RestController
@@ -54,9 +58,9 @@ public class OfferingController
 	 * @return						:	The offering with the specified ID.
 	 */
 	@GetMapping("get_offering_by_offeringId/{offeringId}")
-	private Offering GetOfferingByOfferingID(@PathVariable String offeringId)
+	private ResponseEntity<OfferingDTO> GetOfferingByOfferingID(@PathVariable String offeringId)
 	{
-		return offeringService.GetOfferingByOfferingID(offeringId);
+		return new ResponseEntity<OfferingDTO>(offeringService.GetOfferingByOfferingID(offeringId),HttpStatus.OK);
 	}
 	
 	/**
@@ -65,9 +69,9 @@ public class OfferingController
 	 * @return 	: 	A list of all offerings.
 	 */
 	@GetMapping("get_all_offering")
-	private List<Offering> GetAllOffering() 
+	private ResponseEntity<List<OfferingDTO>> GetAllOffering() 
 	{
-		return offeringService.GetAllOffering();
+		return new ResponseEntity<List<OfferingDTO>>(offeringService.GetAllOffering(),HttpStatus.OK);
 	}
 	
 	/**
@@ -79,6 +83,7 @@ public class OfferingController
 	@PutMapping("update_offering_by_offeringId/{offeringId}")
 	private ResponseEntity<String> updateOfferingByOfferingId(@RequestBody Offering offering, @PathVariable String offeringId)
 	{
+		
 		 return offeringService.updateOfferingByOfferingId(offering,offeringId);
 	}
 	

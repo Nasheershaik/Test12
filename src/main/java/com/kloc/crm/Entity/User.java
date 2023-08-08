@@ -65,7 +65,7 @@ public class User implements UserDetails {
     private String userName;
     
     // Email address of the user
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
     
  // Password associated with the user
@@ -93,7 +93,6 @@ public class User implements UserDetails {
    @ManyToOne//(cascade = CascadeType.p)
    //mapping with status table
    @JsonBackReference("status")
-   
    private Status status;
     
 	public String getUserId() {

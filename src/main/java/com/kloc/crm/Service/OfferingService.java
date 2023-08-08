@@ -12,6 +12,7 @@ package com.kloc.crm.Service;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import com.kloc.crm.Entity.Offering;
+import com.kloc.crm.dto.OfferingDTO;
 public interface OfferingService
 {
 	/**
@@ -27,14 +28,14 @@ public interface OfferingService
 	 * @param offeringId	:  	offeringId the ID of the offering to retrieve.
 	 * @return 				:	The offer details with the specified offering id.
 	 */
-	Offering GetOfferingByOfferingID(String offeringId);
+	OfferingDTO GetOfferingByOfferingID(String offeringId);
 	
 	/**
 	 * Retrieves all offers present in the database.
 	 *
 	 * @return 	: 	A list of all offers.
 	 */
-	List<Offering> GetAllOffering() ;
+	List<OfferingDTO> GetAllOffering() ;
 	
 	
 	/**
