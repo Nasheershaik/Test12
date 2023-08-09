@@ -42,7 +42,6 @@ public class Notification{
 	private String role;
 	
 	  @ManyToOne
-	    @JsonBackReference(value="notificationType")
 	    private Status notificationType;
 
 }
