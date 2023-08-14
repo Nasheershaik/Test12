@@ -14,6 +14,7 @@ import lombok.Setter;
 @Component
 public class UserNDto {
 	
+	private String userId;
 	private String userName;
 	private String email;
 	private long mobileNo;

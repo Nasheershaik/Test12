@@ -127,6 +127,7 @@ public class UserController {
      * @param reportingTo  The manager's name to filter Users by
      * @return             A list of User objects reporting to the specified manager with HTTP status OK
      */
+    //it will give list of all user who are reporting to a particular id
     @GetMapping("/getUserByMgrId/{reportingTo}")
     public ResponseEntity<List<User>> getAllUsersWhoAreReportingTo(@PathVariable("reportingTo") String reportingTo) {
         return new ResponseEntity<>(userService.getUserByManagerName(reportingTo), HttpStatus.OK);
@@ -139,8 +140,8 @@ public class UserController {
     
     
     @PutMapping("/updateUser/{userId}")
-    public ResponseEntity<User> updateUserByTheirId(@RequestBody User user,@PathVariable("userId") String userId){
-    	return new ResponseEntity<User>(userService.updateUser(user, userId),HttpStatus.OK);
+    public ResponseEntity<UserNDto> updateUserByTheirId(@RequestBody User user,@PathVariable("userId") String userId){
+    	return new ResponseEntity<UserNDto>(userService.updateUser(user, userId),HttpStatus.OK);
     }
     
 //    @PostMapping("/updatePassword/{email}")
@@ -192,8 +193,8 @@ public class UserController {
     }
     
     @PutMapping("/updateStatus/{userId}/{statusValue}")
-    public ResponseEntity<User> updateUserStatus(@PathVariable String userId,@PathVariable String statusValue){
-    	return new ResponseEntity<User>(userService.updateStatus(userId, statusValue),HttpStatus.OK);
+    public ResponseEntity<UserNDto> updateUserStatus(@PathVariable String userId,@PathVariable String statusValue){
+    	return new ResponseEntity<UserNDto>(userService.updateStatus(userId, statusValue),HttpStatus.OK);
   
     }
     
@@ -229,10 +230,17 @@ public class UserController {
 	  return new ResponseEntity<List<UserNDto>>(userService.getUsersBasedOnTheirName(name),HttpStatus.OK);
   }
   
-  @GetMapping("gBId/{userId}")
+  @GetMapping("getDtoById/{userId}")
   public ResponseEntity<UserNDto> getUserBasedOnHisId(@PathVariable("userId") String userId){
 	  return new ResponseEntity<UserNDto>(userService.getUserBasedOnTheirid(userId),HttpStatus.OK);
   }
+  
+  @GetMapping("/getAllBasedOnReportingId/{reportingId}")
+  public  ResponseEntity<List<UserNDto>> getAllUsersWhoAreReportingToParticularId(@PathVariable("reportingId") String reportingId){
+	  return new ResponseEntity<List<UserNDto>>(userService.getAllUsersWhoAreReportingToThisId(reportingId),HttpStatus.OK);
+  }
+  
+  
   
   @PutMapping("/updateByAdmin/{userId}/{role}/{reportingUserId}")
   public ResponseEntity<String> updateStatusByAdmin(@PathVariable("userId") String userId,@PathVariable("role") String role,@PathVariable("reportingUserId") String reportingUserId){

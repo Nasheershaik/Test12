@@ -116,5 +116,6 @@ public interface ContactService
 	 * @return understandable responce if contact deleted or not.
 	 */
 	ResponseEntity<String> deleteContactByContactId(String contactId);
+	List<ContactDTO> getAllContactCreateddByMail(String contactCreatedBy);
 	
 }

@@ -23,7 +23,7 @@ public interface UserService {
      * @param user  The User object to be created
      * @return      The created User object
      */
-    User createUser(User user,String reportingTo );//String value);
+    UserNDto createUser(User user,String reportingTo );//String value);
     
     /**
      * Retrieves a list of all Users.
@@ -47,7 +47,7 @@ public interface UserService {
      * @param id    The ID of the User to update
      * @return      The updated User object
      */
-    User updateUser(User user, String id);
+    UserNDto updateUser(User user, String id);
     
     /**
      * Retrieves a User by their username.
@@ -81,7 +81,7 @@ public interface UserService {
 	
 	User getReportingToByUserId(String userId);
 	
-	User updateStatus(String userId,String statusValue);
+	UserNDto updateStatus(String userId,String statusValue);
 	
 	UserNDto getUserRoleAndStatusValueById(String userId);
 	
@@ -96,6 +96,8 @@ public interface UserService {
 	 List<UserNDto> getUsersBasedOnTheirName(String name);
 	 
 	 UserNDto getUserBasedOnTheirid(String userId);
+	 
+	 List<UserNDto> getAllUsersWhoAreReportingToThisId(String reportingToId);
 	
 }
 

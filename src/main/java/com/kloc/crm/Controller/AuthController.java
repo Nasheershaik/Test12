@@ -10,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +23,14 @@ import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Repository.UserRepository;
 import com.kloc.crm.Service.StatusService;
 import com.kloc.crm.Service.UserService;
+import com.kloc.crm.dto.UserNDto;
 import com.kloc.crm.models.JwtRequest;
 import com.kloc.crm.models.JwtResponse;
 import com.kloc.crm.security.JwtHelper;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class AuthController {
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -54,17 +57,18 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
 		 // Perform authentication
+		
 	    this.doAuthenticate(request.getEmail(), request.getPassword());
-
+//	    System.out.println(request);
 	    // Retrieve updated user details from the database
 	    UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
-
+	    				User user		=userRepository.findByEmail(request.getEmail());
 	    // Generate JWT token
 	    String token = this.helper.generateToken(userDetails);
 
 	    JwtResponse response = JwtResponse.builder()
 	            .jwtToken(token)
-	            .username(userDetails.getUsername())			
+	            .username(userDetails.getUsername()).userId(user.getUserId())		
 	            .build();
 	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -90,13 +94,14 @@ public class AuthController {
 		
 			    // Retrieve user from the database based on the email
 			    User user = userService.getUserByEmail(email);
+			    
 			    if(user.getStatus().getStatusValue().equalsIgnoreCase("deactive")) {
 			    	throw new InvalidInput("User has been deactivated ,Can't login");
 			    }
 
-			    if (user == null) {
-			        throw new BadCredentialsException("Invalid Username or Password!");
-			    }
+//			    if (user == null) {
+//			        throw new BadCredentialsException("Invalid Username or Password!");
+//			    }
 
 			    // Update the email in the authentication object if it has been changed
 			    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
@@ -126,22 +131,23 @@ public class AuthController {
 	    }
 	    
 	    @PostMapping("/saveUser/{reportingTo}")									////,@PathVariable("statusV") String statusV)
-	    public User createUser(@RequestBody User user, @PathVariable String reportingTo){ 
-//	   String email 	=user.getEmail();
-//	   try {
-//	  User existingUser =userRepository.findByEmail(email);
-//	   }
-//	   catch(NullPointerException e) {
-//		   throw new InvalidInput("User alredy exists ")
-//	   }
-//	  if(existingUser!=null){
-//		  throw new InvalidInput("User alredy exists with this mail id");
-//		  
-//	  }
-//	  else {
-//	    	return userService.createUser(user,reportingTo);
-//	    }
+	    public UserNDto createUser(@RequestBody User user, @PathVariable String reportingTo){ 
+	   String email 	=user.getEmail();
+	 //  try {
+	  User existingUser =userRepository.findByEmail(email);
+	 //  }
+	  // catch(NullPointerException e) {
+		//   throw new InvalidInput("User alredy exists ")
+	  // }
+	  if(existingUser!=null){
+		  throw new InvalidInput("User alredy exists with this mail id");
+		  
+  }
+	  else {
 	    	return userService.createUser(user,reportingTo);
+	    }
+//	    	System.out.println("------------------------------------------");
+//	    	return userService.createUser(user,reportingTo);
 	    }
 	
 }

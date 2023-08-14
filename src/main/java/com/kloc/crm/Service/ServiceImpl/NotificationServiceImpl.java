@@ -8,6 +8,7 @@ package com.kloc.crm.Service.ServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,8 @@ public class NotificationServiceImpl implements NotificationService {
         	throw new InvalidInput("specify the notification type");
         }
         Status status=statusRepo.findByStatusValue(notification.getNotificationType().getStatusValue());
-        notification.setNotificationType(status);
+        	notification.setNotificationType(status);
+        
         return  notificationRepo.save(notification);
     }
 
@@ -122,7 +124,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification getNotificationTemplatesByRoleAndType(String role, String notificationtype) {
         return notificationRepo.findAll().stream()
                 .filter(notification -> notification.getRole().equals(role) && notification.getNotificationType().getStatusValue().equals(notificationtype))
-                .findFirst().get();
+                .findFirst().orElseThrow(()->new DataNotFoundException("Wrong Value for Type or Role"));
     }
 
 

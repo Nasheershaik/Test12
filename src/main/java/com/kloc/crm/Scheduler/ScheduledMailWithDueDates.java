@@ -24,49 +24,6 @@ public class ScheduledMailWithDueDates {
 
     @Value("${spring.mail.username}")
     private String sender;
-//    private User user = new User();
-//    private int count;
-//    // Method 1
-//    // To send a simple email using the scheduler
-//    public String sendSimpleMail(User user1,Task task) {
-//        
-//        this.user = user1;
-//        count=0;
-//        return ScheduledMailWithDueDates();
-//    }
-//
-//    @Scheduled(cron = "0 4 11 * * ?")
-//    public String ScheduledMailWithDueDates() 
-//    {   
-//         
-//        if (count<1) {
-//            try {
-//                // Creating a simple mail message
-//                SimpleMailMessage mailMessage = new SimpleMailMessage();
-//
-//                // Setting up necessary details
-//                mailMessage.setFrom(sender);
-//                mailMessage.setTo(user.getEmail());
-//                mailMessage.setCc(user.getReportingTo().getEmail());
-//                mailMessage.setText(
-//                        "Hi.." + user.getUserName() + "\n" + "This is a reminder for an overdue task." + "\n"
-//                                + "Thanks & Regards" + "\n" + "Ritesh Singh");
-//                mailMessage.setSubject("Reminder: Overdue Task");
-//
-//                // Sending the mail
-//                javaMailSender.send(mailMessage);
-//                Email email = new Email();
-//                email.setEmailDate(LocalDate.now());
-//                count++;
-//
-//                return "Reminder Mail Sent Successfully...";
-//            } catch (Exception e) {
-//                return "Error while Sending Reminder Mail";
-//            }
-//        }
-//     
-//        return null;
-//    }
     public String sendSimpleMail(Task task)
     {
     	try {

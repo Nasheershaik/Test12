@@ -361,14 +361,6 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		
 		return task2;
 	}
-//	@Override
-//	public TaskSub TaskUpdate(TaskSub taskSub, String taskSubId) 
-//	{
-//		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7");
-//		System.out.println(taskSub.toString());
-//		return null;
-//	}
-	
 	@Override
 	public TaskSub updateTaskSubByTaskId(TaskSub taskSub, String taskId) 
 	{
@@ -377,55 +369,85 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("Task is not found:Enter the existing the taskId"));
 		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().equals(taskId)).toList();	
 		TaskSub existingTaskSub=list.get(list.size()-1);
+		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")) 
+		{
+			throw new InvalidInput(taskId+" is already completed.So, we can't update the task status");
+		}
+		TaskSub newTaskSub=new TaskSub();
 		if(!taskSub.getTaskStatus().equals(null))
 		{
-		  existingTaskSub.setTaskStatus(statusRepo.findByStatusTypeAndStatusValue("Task_Status", taskSub.getTaskStatus().getStatusValue()));
-		  existingTaskSub.setStatusDate(LocalDate.now());
-		  LocalDate date=task.getDueDate();
-//		  if(LocalDate.now().isAfter(date)&&(!taskSub.getTaskStatus().getStatusValue().toLowerCase().equals("close".toLowerCase()))) {
-//			  scheduledMailWithDueDates.sendSimpleMail(task.getSalesPerson().getUser(), task);
-//		  }
+			newTaskSub.setTaskStatus(statusRepo.findByStatusTypeAndStatusValue("Task_Status", taskSub.getTaskStatus().getStatusValue()));
+			newTaskSub.setStatusDate(LocalDate.now());
+		}
+		else 
+		{
+			newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
 		}
 		if(!taskSub.getTaskOutcome().equals(null))
 		{
-			existingTaskSub.setTaskOutcome(statusRepo.findByStatusTypeAndStatusValue("Task_Outcome", taskSub.getTaskOutcome().getStatusValue()));
+			newTaskSub.setTaskOutcome(statusRepo.findByStatusTypeAndStatusValue("Task_Outcome", taskSub.getTaskOutcome().getStatusValue()));
+		}
+		else
+		{
+			newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
 		}
 		if(!taskSub.getFollowUpDate().equals(null)) 
 		{
-		 existingTaskSub.setFollowUpDate(taskSub.getFollowUpDate());
+		 newTaskSub.setFollowUpDate(taskSub.getFollowUpDate());
 		}
-		existingTaskSub.setTaskFeedback(taskSub.getTaskFeedback());
-		existingTaskSub.setLeadFeedback(taskSub.getLeadFeedback());
-		if(!(taskSub.getLeadFeedback().equals(null))||!(taskSub.getLeadFeedback().equals(null)))
+		else
+		{
+			newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
+		}
+		if(!taskSub.getTaskFeedback().equals(null)||!taskSub.getTaskFeedback().equals(""))
+		{
+			newTaskSub.setTaskFeedback(taskSub.getTaskFeedback());
+		}
+		else
+		{
+			newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
+		}
+		if(!(taskSub.getLeadFeedback().equals(null))||!(taskSub.getLeadFeedback().equals("")))
 				{
-					existingTaskSub.setFeedbackDate(LocalDate.now());
+					newTaskSub.setLeadFeedback(taskSub.getLeadFeedback());
+					
 				}
+		else
+		{
+			newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
+		}
+		if(!taskSub.getLeadFeedback().equals(null)||!taskSub.getTaskFeedback().equals(null)||!(taskSub.getLeadFeedback().equals(""))||!taskSub.getTaskFeedback().equals(""))
+		{
+			newTaskSub.setFeedbackDate(LocalDate.now());
+		}
+		else
+		{
+			newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
+		}
 		if(!taskSub.getSalesActivity().equals(null))
 		{
-			existingTaskSub.setSalesActivity(statusRepo.findByStatusTypeAndStatusValue("Sales_ActivityStatus", taskSub.getSalesActivity().getStatusValue()));
+			newTaskSub.setSalesActivity(statusRepo.findByStatusTypeAndStatusValue("Sales_ActivityStatus", taskSub.getSalesActivity().getStatusValue()));
 		}
+		else {
+			newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
+		}
+		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
+		newTaskSub.setTask(task);
 //		if(!taskSub.getOfferingId().equals(null)) {
 //			existingTaskSub.setOfferingId(offeringRepository.findByOfferingTypeAndOfferingCategory(taskSub.getOfferingId().getOfferingType(),taskSub.getOfferingId().getOfferingCategory()));
 //		}
-		TaskSub newTaskSub=new TaskSub();
-		newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
-		newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
-		newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
-		newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
-		newTaskSub.setTask(existingTaskSub.getTask());
-		newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
-		newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
-		newTaskSub.setStatusDate(existingTaskSub.getStatusDate());
-		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
-		newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
-		User user=task.getSalesPerson().getUser();
-		// Schedule an email for the follow-up date
-		if(!taskSub.getFollowUpDate().equals(null)) {
-		scheduleMAilWithFollowUpDate.scheduleEmailForTask(newTaskSub.getTask(),newTaskSub.getFollowUpDate());
-		}
-//		else if(LocalDate.now().isBefore(existingTaskSub.getFollowUpDate())){
-//			scheduleMAilWithFollowUpDate.sendSimpleMail(user, task, existingTaskSub.getFollowUpDate());
-//		}
+//		TaskSub newTaskSub=new TaskSub();
+//		newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
+//		newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
+//		newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
+//		newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
+//		newTaskSub.setTask(existingTaskSub.getTask());
+//		newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
+//		newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
+//		newTaskSub.setStatusDate(existingTaskSub.getStatusDate());
+//		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
+//		newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
+		
 		return taskSubRepository.save(newTaskSub);
 	}
 	

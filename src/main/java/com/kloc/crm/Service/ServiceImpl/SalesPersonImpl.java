@@ -155,15 +155,27 @@ public class SalesPersonImpl implements SalesPersonService {
 	@Override
 	public String getSalesPersonIdByEmail(String email) {
 	User user	=userRepository.findByEmail(email);
+	if(user.equals(null)) {
+		throw new InvalidInput("No users foud with mail id");
+	}
 	String userId = user.getUserId();
-	String 	salesPersonId = null;
+	String 	salesPersonId =null;
 	//salesPersonRepository.findBy
 	List<SalesPerson> salesPersons =salesPersonRepository.findAll();
+	if(salesPersons.isEmpty()) {
+		throw new InvalidInput("No salesPerson Available in SalesPerson Table");
+	}
 		for(SalesPerson sp:salesPersons) {
 			if(sp.getUser().getUserId().equals(userId)) {
 				salesPersonId	 = sp.getSalespersonId();
+				System.out.println(salesPersonId);
+//				if( salesPersonId.equals(""))
+//					throw new InvalidInput("No SalesPerson has been added to salesperson table");
 			}
 	  
+		}
+		if(salesPersonId.equals(null)) {
+			throw new InvalidInput("No SalesPerson available with this mail Id in SalesPerson table. Need to add Salesperson corresponding to this mail id in salesperson Table ");
 		}
 	return salesPersonId;
 	

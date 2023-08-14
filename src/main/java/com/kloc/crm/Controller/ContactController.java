@@ -165,7 +165,17 @@ public class ContactController
 	{
 		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactOnContactCreatedBy(contactCreatedBy),HttpStatus.OK);
 	}
-	
+	/**
+	 * Retrieves all contacts from a contact created by.
+	 *
+	 * @PathVariableountry  The user mail of the contact created by.
+	 * @return				A list of contacts from the contact created by Mail.
+	 */
+	@GetMapping("get_all_contact_by_contact_created_by_Mail/{contactCreatedBy}")
+	private ResponseEntity<List<ContactDTO>> GetAllContactContactCreatedByMail(@PathVariable String contactCreatedBy) 
+	{
+		return new ResponseEntity<List<ContactDTO>>(contactService.getAllContactCreateddByMail(contactCreatedBy),HttpStatus.OK);
+	}
 	/**
 	 * Updates a contact by their contact ID.
 	 *

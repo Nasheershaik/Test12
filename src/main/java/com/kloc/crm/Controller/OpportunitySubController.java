@@ -35,7 +35,7 @@ import com.kloc.crm.Service.OpportunitySubServcie;
 @SuppressWarnings("unused")
 @RestController
 @CrossOrigin("*")
-@RequestMapping("api/app")
+@RequestMapping("/app")
 public class OpportunitySubController 
 {
 	@Autowired

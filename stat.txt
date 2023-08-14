@@ -3,6 +3,7 @@ The User is DeActive,User_Type,DeActive,User
 The Task is Open,Task_Status,Open,Task
 The Task is OverDue,Task_Status,OverDue,Task
 The Task is Completed,Task_Status,Completed,Task
+The Task is Completed,Task_Status,In Progress,Task
 The Sales is Qualified,Sales_Status,Qualified,Sales
 The Sales is Negotiating ,Sales_Status,Negotiation,Sales
 The Sales is Lost,Sales_Status,Lost,Sales
@@ -41,7 +42,7 @@ The Source is Other,Contact_Source,Other,Contact
 The Contact is Intrested,Task_Outcome,Intrested,Task
 The Contact is Left Message,Task_Outcome,Left Message,Task
 The Contact is not Responding,Task_Outcome,Not Responding,Task
-The Contact is not Intrested,Task_Outcome,Intrested,Task
+The Contact is not Intrested,Task_Outcome,Not Interested,Task
 The Contact is not able to reach,Task_Outcome,Not able to reach,Task
 The Contact has postponed,Task_Outcome,Postponed,Task
 The Contact is other,Task_Outcome,Other,Task

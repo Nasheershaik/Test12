@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 	 * @return The created User object
 	 */
 	@Override
-	public User createUser(User user, String reportingTo)// ,String value)
+	public UserNDto createUser(User user, String reportingTo)// ,String value)
 	{	
 		if(user.getEmail()==null || user.getEmail().equals("")) {
 			throw new InvalidInput("Please enter valid mail id");
@@ -75,13 +75,16 @@ public class UserServiceImpl implements UserService {
 					User user1 = new User();
 					user1.setUserName("Abhisarika Das");
 					user1.setEmail("abhisarika.das459@kloctechnologies.com");
-					user1.setPassword("abhisarikadas3469");
+					user1.setPassword(passwordEncoder.encode( "abhisarikadas3469"));
 					user1.setMobileNo(9999999999L);
+					user1.setAltMobileNo(9009056789L);
 					user1.setRole(statusRepository.findByStatusValue("Administrator"));
 					user1.setReportingTo(null);
 					user1.setStatus(statusRepository.findByStatusValue("Active"));
 					
 					// user1.setReportingTo(reportingTo);
+					User usernew=userRepository.save(user1);
+					user1.setReportingTo(usernew);
 					userRepository.save(user1);
 				}
 				User existingUser = userRepository.findById(reportingTo)
@@ -105,8 +108,21 @@ public class UserServiceImpl implements UserService {
 				// Status
 				// status=statusRepository.findAll().stream().filter(e->e.getTableName().toLowerCase().equals("User".toLowerCase())&&e.getStatusValue().toLowerCase().equals("active".toLowerCase())&&e.getStatusType().toLowerCase().equals(user.getRole().toLowerCase())).findFirst().get();
 				// user.setStatus(status);
-				User save = userRepository.save(user);
-				return save;
+				User savedUser = userRepository.save(user);
+				String userId =savedUser.getUserId();
+				String uname =savedUser.getUserName();
+				String email =savedUser.getEmail();
+				long mobileNo =savedUser.getMobileNo();
+				long altMobileNo=savedUser.getAltMobileNo();
+				String role =savedUser.getRole().getStatusValue();
+				String svalue =savedUser.getStatus().getStatusValue();
+				String reportingUserId =savedUser.getReportingTo().getUserId();
+				String reportingUserName =savedUser.getReportingTo().getUserName();
+				return 	new UserNDto(userId, uname, email, mobileNo, altMobileNo, role, svalue, reportingUserId, reportingUserName);
+				
+				
+				
+				
 			}
 		}
 	}
@@ -147,7 +163,7 @@ public class UserServiceImpl implements UserService {
 	 * @throws DataNotFoundException if the User with the specified ID is not found
 	 */
 	@Override
-	public User updateUser(User user, String userId) 
+	public UserNDto updateUser(User user, String userId) 
 	{
 		User existingUser = userRepository.findById(userId)
 				.orElseThrow(() -> new DataNotFoundException("User", "id", userId));
@@ -188,8 +204,19 @@ public class UserServiceImpl implements UserService {
 //		Status status = statusRepository.findAll().stream().filter(e -> e.getStatusValue().toLowerCase().equals(statusValue.toLowerCase())).findFirst().get();
 //		Status status = statusRepository.findByStatusTypeAndStatusValue("User_Type", statusValue);
 //		existingUser.setStatus(status);
-		User save = userRepository.save(existingUser);
-		return save;
+		userRepository.save(existingUser);
+		String userid =existingUser.getUserId();
+		String uname =existingUser.getUserName();
+		String email =existingUser.getEmail();
+		long mobileNo =existingUser.getMobileNo();
+		long altMobileNo=existingUser.getAltMobileNo();
+		String role =existingUser.getRole().getStatusValue();
+		String svalue =existingUser.getStatus().getStatusValue();
+		String reportingUserId =existingUser.getReportingTo().getUserId();
+		String reportingUserName =existingUser.getReportingTo().getUserName();
+		return 	new UserNDto(userId, uname, email, mobileNo, altMobileNo, role, svalue, reportingUserId, reportingUserName);
+		 
+		
 	}
 
 	/**
@@ -252,7 +279,7 @@ public class UserServiceImpl implements UserService {
 		if(reportingTo.equals("") || reportingTo ==null)
 			throw new InvalidInput("please enter manager id");
 		List<User> list = userRepository.findAll().stream()
-				.filter(e -> e.getReportingTo() != null && e.getReportingTo().equals(reportingTo)).toList();
+				.filter(e -> e.getReportingTo() != null && e.getReportingTo().getUserId().equals(reportingTo)).toList();
 		if (list.isEmpty())
 			throw new DataNotFoundException("no user available");
 		else
@@ -269,7 +296,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByEmail(String email) 
 	{
-		if(!email.equals("") && !email.equals(null)) 
+	if(!email.equals("") && !email.equals(null)) 
 		{
 			User user = userRepository.findByEmail(email);
 			if (user == null)
@@ -282,13 +309,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updateStatus(String userId, String statusValue) {
+	public UserNDto updateStatus(String userId, String statusValue) {
 		
 		if(!userId.equals("") && userId != null || statusValue.equals("") && statusValue !=null ) {
 		User existingUser	=userRepository.findById(userId).orElseThrow(()-> new DataNotFoundException("User","id",userId));
 		Status newStatus	=statusRepository.findByStatusValue(statusValue);
+		System.out.println(newStatus.getStatusValue());
 		existingUser.setStatus(newStatus);
-		return userRepository.save(existingUser);
+		userRepository.save(existingUser);
+		String userid =existingUser.getUserId();
+		String uname =existingUser.getUserName();
+		String email =existingUser.getEmail();
+		long mobileNo =existingUser.getMobileNo();
+		long altMobileNo=existingUser.getAltMobileNo();
+		String role =existingUser.getRole().getStatusValue();
+		String svalue =existingUser.getStatus().getStatusValue();
+		String reportingUserId =existingUser.getReportingTo().getUserId();
+		String reportingUserName =existingUser.getReportingTo().getUserName();
+		return 	new UserNDto(userId, uname, email, mobileNo, altMobileNo, role, svalue, reportingUserId, reportingUserName); 
 		}
 		else {
 			throw new DataNotFoundException("please enter valid id");
@@ -312,20 +350,27 @@ public class UserServiceImpl implements UserService {
 	public UserNDto getUserRoleAndStatusValueById(String userId) {
 		if(userId!=null && !userId.equals("")) {
 	User existingUser	=userRepository.findById(userId).orElseThrow(()-> new DataNotFoundException("User","id",userId));
+		String userid =existingUser.getUserId();
 		String uname =existingUser.getUserName();
 		String uemail=existingUser.getEmail();
 		long umobileNo =existingUser.getMobileNo();
 		long ualtMobileNo = existingUser.getAltMobileNo();
 		String role  = existingUser.getRole().getStatusValue();
 		String value =existingUser.getStatus().getStatusValue();
-		String reportingToUserId = "";
-		String reportingToUserName ="";
-		if (!userId.equals("user_0001"))
-		{
-			reportingToUserId = existingUser.getReportingTo().getUserId();
-			reportingToUserName =existingUser.getReportingTo().getUserName();	
+		String reportingToUserId ;
+		String reportingToUserName ;
+		if (userId.equals("user_0001") && existingUser.getReportingTo().equals(null))
+		{	
+			reportingToUserId="";
+			reportingToUserName="";
+			
+				
 		}
-		return new UserNDto(uname,uemail,umobileNo,ualtMobileNo,role,value,reportingToUserId,reportingToUserName);
+		else {
+			reportingToUserId = existingUser.getReportingTo().getUserId();
+			reportingToUserName =existingUser.getReportingTo().getUserName();
+		}
+		return new UserNDto(userid,uname,uemail,umobileNo,ualtMobileNo,role,value,reportingToUserId,reportingToUserName);
 		}
 		else {
 			throw new InvalidInput("User with this id not found");
@@ -340,14 +385,14 @@ public class UserServiceImpl implements UserService {
 		}
 	User existingUser	=userRepository.findByEmail(email);
 	if(existingUser!=null) {
-	String role = existingUser.getRole().getStatusValue();
-	String value = existingUser.getStatus().getStatusValue();
-	String reportingToUserId = existingUser.getReportingTo().getUserId();
-	 User managerUser     =userRepository.findById(reportingToUserId).get();
-	 String managerName =managerUser.getUserName();
-	String mEmail =managerUser.getEmail();
-	
-	UserDto demoUser =new UserDto(role,value,reportingToUserId,managerName,mEmail);
+	String userId =existingUser.getUserId()	;
+	String uname =existingUser.getUserName();
+	String urole = existingUser.getRole().getStatusValue();
+	String svalue = existingUser.getStatus().getStatusValue();
+	String managerId = existingUser.getReportingTo().getUserId();
+	 String managerName =existingUser.getReportingTo().getUserName();
+	String mEmail =existingUser.getReportingTo().getEmail();
+	UserDto demoUser =new UserDto(userId,uname,urole,svalue,managerId,managerName,mEmail);
 	return demoUser;
 	//return "User's role is "+role+","+"Value is"+" "+value+" "+"And user is reporting to this userId"+" "+reportingToUserId;
 	}	
@@ -388,9 +433,10 @@ public class UserServiceImpl implements UserService {
  }
 	@Override
 	public List<UserNDto> getAllUserNDto(){
-		List<User> users =userRepository.findAll().stream().filter(e->!e.getReportingTo().equals(null)).toList();
+		List<User> users =userRepository.findAll();
 		List<UserNDto> usersNdtos = new ArrayList<>();
 		for(User user:users) {
+		String userId =user.getUserId()	;
 		String uname =	user.getUserName();
 		String email =user.getEmail();
 		long phoneNo =user.getMobileNo();
@@ -398,14 +444,14 @@ public class UserServiceImpl implements UserService {
 		String role =user.getRole().getStatusValue();
 		String sValue =user.getStatus().getStatusValue();
 		String reportingToId;
-		
-			 reportingToId =user.getReportingTo().getUserId();
-	
-		
-		String reportingUserName =user.getReportingTo().getUserName();
-		
-		usersNdtos.add(new UserNDto(uname,email,phoneNo,altphoneNo,role,sValue,reportingToId,reportingUserName));
-		
+		String reportingUserName;
+		if(userId.equals("user_0001") && user.getReportingTo().equals(null)){
+			reportingToId ="";
+			 reportingUserName ="";
+		}
+		reportingToId =user.getReportingTo().getUserId();
+		 reportingUserName =user.getReportingTo().getUserName();
+		 usersNdtos.add(new UserNDto(userId,uname,email,phoneNo,altphoneNo,role,sValue,reportingToId,reportingUserName));
 		}
 		return usersNdtos;
 		
@@ -422,6 +468,7 @@ public class UserServiceImpl implements UserService {
 		throw new InvalidInput("No users Found with this Role");
 	List<UserNDto> nUsers = new ArrayList<>();
 	for(User user:mUsers) {
+		String userId =user.getUserId();
 		String name = user.getUserName();
 		String email =user.getEmail();
 		long mobileNo = user.getMobileNo();
@@ -436,12 +483,12 @@ public class UserServiceImpl implements UserService {
 		}
 		String reportingUserName =user.getReportingTo().getUserName();
 		
-		nUsers.add(new UserNDto(name,email,mobileNo,altMobileNo,nrole,nvalue,reportingUserId,reportingUserName));
+		nUsers.add(new UserNDto(userId,name,email,mobileNo,altMobileNo,nrole,nvalue,reportingUserId,reportingUserName));
 		
 	}
 		
 		return nUsers;
-	}
+	 }
 	}
 
 	@Override
@@ -458,6 +505,7 @@ public class UserServiceImpl implements UserService {
 		System.out.println("----users is not empty----");
 		
 		for(User user : users) {
+			String userId =user.getUserId();
 			String uname = user.getUserName();
 			String email =user.getEmail();
 			long mobileNo = user.getMobileNo();
@@ -465,14 +513,14 @@ public class UserServiceImpl implements UserService {
 			String nrole = user.getRole().getStatusValue();
 			String nvalue = user.getStatus().getStatusValue();
 			String reportingUserId;
-			if(user.getReportingTo().getUserId()!=null) {
+			if(!user.getReportingTo().equals(null)) {
 				 reportingUserId =user.getReportingTo().getUserId();
 			}else {
 				reportingUserId ="null";
 			}
 			String reportingUserName =user.getReportingTo().getUserName();
 			
-			nUsersNDto.add(new UserNDto(uname,email,mobileNo,altMobileNo,nrole,nvalue,reportingUserId,reportingUserName));
+			nUsersNDto.add(new UserNDto(userId,uname,email,mobileNo,altMobileNo,nrole,nvalue,reportingUserId,reportingUserName));
 			
 		}
 		System.out.println("--------- aaaaaabbbbbbbcccccc");
@@ -485,22 +533,50 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserNDto getUserBasedOnTheirid(String userId) {
 	User user =	userRepository.findById(userId).orElseThrow(()-> new DataNotFoundException("User Not Found With this id"));
-		
+	String userid = user.getUserId();	
 	String uname =user.getUserName();
 	String uemail =user.getEmail();
 	long mobileNo = user.getMobileNo();
 	long altMobileNo = user.getAltMobileNo();
 	String urole = user.getRole().getStatusValue();
 	String uvalue =user.getStatus().getStatusValue();
-	String reportingUserId;
-	if(user.getReportingTo().getUserId()!=null) {
-		 reportingUserId =user.getReportingTo().getUserId();
-	}else {
-		reportingUserId ="null";
+	String reportingToId="";
+	String reportingUserName="";
+	if(!user.getReportingTo().equals(null)){
+		reportingToId =user.getReportingTo().getUserId();
+		 reportingUserName =user.getReportingTo().getUserName();
 	}
-	String reportingUserName =user.getReportingTo().getUserName();
+	 return new UserNDto(userid,uname,uemail,mobileNo,altMobileNo,urole,uvalue,reportingToId,reportingUserName);
+	}
 	
+	
+	@Override
+	public List<UserNDto> getAllUsersWhoAreReportingToThisId(String reportingToId) {
+		if(reportingToId.equals("") || reportingToId==null) {
+			throw new InvalidInput("Please enter correctId ");
+		}
+		List<User> users =userRepository.findAll().stream().filter(e->(!e.getReportingTo().equals(null) && e.getReportingTo().getUserId().equals(reportingToId))).collect(Collectors.toList());
+		System.out.println(users);
+		List<UserNDto> nusers = new ArrayList<>();
+		for(User user:users) {
+		String userId =user.getUserId();
+		String uname	=user.getUserName();
+		String uemail = user.getEmail();
+		long mobileNo =user.getMobileNo();
+		long altMobileNo =user.getAltMobileNo();
+		String urole =user.getRole().getStatusValue();
+		String uvalue =user.getStatus().getStatusValue();
+		String reportingUserId="";
+		String reportingUserName="";
+		if(!user.getReportingTo().equals(null)){
+			reportingUserId =user.getReportingTo().getUserId();
+			 reportingUserName =user.getReportingTo().getUserName();
+		}
 		
-		return new UserNDto(uname, uemail, mobileNo, altMobileNo, urole, uvalue, reportingUserId, reportingUserName);
+		nusers.add( new UserNDto(userId,uname, uemail, mobileNo, altMobileNo, urole, uvalue, reportingUserId, reportingUserName));
+		
+		}
+		
+		return nusers;
 	}
 }

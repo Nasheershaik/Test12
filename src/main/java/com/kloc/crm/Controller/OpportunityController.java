@@ -90,7 +90,7 @@ public class OpportunityController
    * @GetMapping is the responsible for handling HTTP GET Request
    * @return all the Opportunities
    */
-	@GetMapping("/opportunties") // to fetch all data
+	@GetMapping("/getAllOpportunities") // to fetch all data
 	@ResponseStatus(HttpStatus.OK)
 	public List<Opportunity> getAllOpportunities()
 	{

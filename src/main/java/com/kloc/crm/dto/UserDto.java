@@ -14,6 +14,8 @@ import lombok.Setter;
 @Component
 public class UserDto {
 	
+	private String userId;
+	private String uname;
 	private String role;
 	private String value;
 	private String reportingToUserId;

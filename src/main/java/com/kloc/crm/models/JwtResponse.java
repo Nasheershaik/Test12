@@ -24,4 +24,6 @@ public class JwtResponse {
 	private String jwtToken;
 	
 	private String username;
+	
+	private String userId;
 }

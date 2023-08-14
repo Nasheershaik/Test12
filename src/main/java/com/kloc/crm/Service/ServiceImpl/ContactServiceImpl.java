@@ -500,6 +500,52 @@ public class ContactServiceImpl implements ContactService {
 			throw e; // Rethrow the exception
 		}
 	}
+	@Override
+	public List<ContactDTO> getAllContactCreateddByMail(String contactCreatedBy) {
+		logger.info("Fetching contacts created by user...");
+
+		if (contactCreatedBy == null || contactCreatedBy.isEmpty()) {
+			throw new InvalidInput("Please provide a valid mail ID.");
+		}
+		try {
+			User user=	userRepository.findAll().stream().filter(e->e.getEmail().equals(contactCreatedBy)).findFirst().get();
+			
+					
+
+			List<Contact> findAll = contactRepository.findAll().stream()
+					.filter(contact -> contact.getContactCreatedBy().equals(user)).collect(Collectors.toList());
+
+			List<ContactDTO> contactDTOs = findAll.stream().map(contact -> {
+				ContactDTO contactDTO = new ContactDTO();
+				contactDTO.setContactId(contact.getContactId());
+				contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
+				contactDTO.setFirstName(contact.getFirstName());
+				contactDTO.setLastName(contact.getLastName());
+				contactDTO.setEmail(contact.getEmail());
+				contactDTO.setCompany(contact.getCompany());
+				contactDTO.setAddress(contact.getAddress());
+				contactDTO.setCountry(contact.getCountry());
+				if (contact.getSource().getStatusValue().equalsIgnoreCase("other"))
+					contactDTO.setOtherSourcetype(contact.getOtherSourcetype());
+				contactDTO.setSource(contact.getSource().getStatusValue());
+				contactDTO.setOtherSourcetype(contact.getOtherSourcetype());
+				contactDTO.setWebsiteURL(contact.getWebsiteURL());
+				contactDTO.setContactDestination(contact.getContactDestination());
+				contactDTO.setContactDepartment(contact.getContactDepartment());
+				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+				contactDTO.setDate(contact.getDate());
+				contactDTO.setStageDate(contact.getStageDate());
+				contactDTO.setMobileNumber(contact.getMobileNumber());
+				return contactDTO;
+			}).collect(Collectors.toList());
+
+			logger.info("Contacts fetched successfully created by user.");
+			return contactDTOs;
+		} catch (Exception e) {
+			logger.severe("An error occurred while fetching contacts created by user: " + e.getMessage());
+			throw e; // Rethrow the exception
+		}
+	}
 
 	// Create a new contact
 	@Override
@@ -737,5 +783,7 @@ public class ContactServiceImpl implements ContactService {
 			throw new InternalError("Something went wrong.");
 		}
 	}
+
+	
 
 }
