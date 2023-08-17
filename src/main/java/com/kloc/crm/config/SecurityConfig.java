@@ -45,7 +45,7 @@ public class SecurityConfig {
 				// Configure authorization rules for different URLs
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/**").authenticated()
 						.requestMatchers("/auth/login").permitAll().requestMatchers("/auth/saveUser/{reportingTo}")
-						.permitAll().requestMatchers("/app/**").authenticated().requestMatchers("/forget/**").permitAll().requestMatchers("/statuses/**").authenticated().requestMatchers("/task/**")
+						.authenticated().requestMatchers("/app/**").authenticated().requestMatchers("/forget/**").permitAll().requestMatchers("/statuses/**").authenticated().requestMatchers("/task/**")
 						.authenticated().requestMatchers("/OfferingController/**").authenticated()
 						.requestMatchers("/ContactController/**").authenticated().requestMatchers("/statuses")
 						.authenticated().requestMatchers("/notifications/**").authenticated()

@@ -30,6 +30,13 @@ public interface OpportunitySubServcie
 	/**to fetch all opportunities based on date**/
 	List<OpportunitySub> getOpportunityByDate(LocalDate date);
 	
+	
+	List<OpportunitySub>  getAllOpportuntiySubByOpportunityId(String opportunity_id);
+	
+	
+	
+	
+	
 	/**
 	 *abstract methods to update  based on id and oppotunitySub_id
 	 */
@@ -43,5 +50,9 @@ public interface OpportunitySubServcie
 	 *abstract methods to update opportunitySub  based on id and oppotunity_id
 	 */
 	OpportunitySub updateOpportunitySubByOpportunityId(String opportunitySubId,String opportunityId);
+	
+	
+	
+	void deleteOpportunitySub(String id);
 	
 }

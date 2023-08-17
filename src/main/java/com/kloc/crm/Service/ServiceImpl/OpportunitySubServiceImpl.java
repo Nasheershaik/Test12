@@ -21,6 +21,7 @@ import com.kloc.crm.Entity.Opportunity;
 import com.kloc.crm.Entity.OpportunitySub;
 import com.kloc.crm.Entity.Status;
 import com.kloc.crm.Exception.DataNotFoundException;
+import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Exception.NullDataException;
 import com.kloc.crm.Repository.OpportunityRepository;
 import com.kloc.crm.Repository.OpportunitySubRepository;
@@ -29,13 +30,12 @@ import com.kloc.crm.Service.OpportunitySubServcie;
 @Service
 public class OpportunitySubServiceImpl implements OpportunitySubServcie
 {
-	@Autowired
-	private OpportunitySubRepository opportunitySubRepository;
-	@Autowired
-	private OpportunityRepository opportunityRepository;
+	  @Autowired
+	  private OpportunitySubRepository opportunitySubRepository;
+	  @Autowired
+	  private OpportunityRepository opportunityRepository;
 	  @Autowired
 	  private StatusRepo statusRepository;
-	
 	/**
 	 * @param opportunitySubRepository
 	 */
@@ -65,15 +65,14 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		{
 			throw new NullDataException("write status of opportunity");
 		}
-		
 		Status status=statusRepository.findByStatusTypeAndStatusValue("opportunity/deal",opportunitySub.getStatus().getStatusValue());
-
+		
+//		opportunitySub.setStatus(status);
 		opportunitySub.setStatus(status);
 		opportunitySub.setOpportunityId(opportunity);
 		opportunitySub.setOpportunityCreatedDate(LocalDate.now());
 		return opportunitySubRepository.save(opportunitySub);
 	}
-		
 //		if(opportunityId==null || opportunityId.equals(" "))
 //			 throw new NullDataException("opportunity id should not be null");
 //		else
@@ -82,7 +81,7 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 //				throw new DataNotFoundException("Data can't be empty please enter data.");
 //			else
 //			{
-//				if(statusType==null || statusType.equals(""))
+//				if(opportunitySub.getStatus()==null || opportunitySub.getStatus().equals(""))
 //				{
 //					throw new NullDataException("Status_id should not b empty please enter status_id");
 //				}
@@ -90,12 +89,11 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 //		
 //		    opportunitySub.setStatus(statusRepository.findById(status_id).orElseThrow(()-> new DataNotFoundException("Status","Status_id",status_id)));
 ////		        
-//		    if(statusRepository.findById(status_id).stream().filter(e->e.getStatusType().toLowerCase().equals("Deal"))
+//		    if(statusRepository.findById(status_id).stream().filter(e->e.getStatusType().toLowerCase().equals("Deal")))
 //		    {
 //		     opportunitySub.setOpportunityId(opportunityRepository.findById(opportunityId).orElseThrow(()->new DataNotFoundException("opportunity", "opportunityId", opportunityId)));
 //		     return opportunitySubRepository.save(opportunitySub);
 //			}
-
 	 /**
       * Retrieves all opportunities
       */
@@ -108,7 +106,6 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		else
 			return findAll;
 	}
-	
 	 /**
       * Retrieves a opportunity entity by the provided id.
       *
@@ -122,7 +119,6 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		else
 			return opportunitySubRepository.findById(id).orElseThrow(()->new DataNotFoundException("Opportunity","id",id));
 	}
-	
 	/**get all opportunities by date**/
 	@Override
 	public List<OpportunitySub> getOpportunityByDate(LocalDate date) 
@@ -132,7 +128,6 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		else
 			return opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityCreatedDate().isEqual(date)).toList();
 	}
-	
 	 /**
       * Update  a Opportunity entity by the provided id.
       *
@@ -180,7 +175,6 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
        
 	       opportunitySubRepository.save(opportunitySubFromDatabase);
 	       return opportunitySubFromDatabase;
-		
 	}
 	/**update based on opportunity  id**/
 	@Override
@@ -258,11 +252,11 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		    
 		    
 		    // Update the status if provided in the updatedOpportunitySub
-		    if (opportunitySub.getStatus() != null && opportunitySub.getStatus().getStatusValue() != null
-		            && !opportunitySub.getStatus().getStatusValue().equals("")) {
-		        Status status = statusRepository.findByStatusTypeAndStatusValue("opportunity/deal",
-		                opportunitySub.getStatus().getStatusValue());
-		        existingOpportunitySub.setStatus(status);
+//		    if (opportunitySub.getStatus() != null && opportunitySub.getStatus().getStatusValue() != null
+//		            && !opportunitySub.getStatus().getStatusValue().equals("")) {
+//		        Status status = statusRepository.findByStatusTypeAndStatusValue("opportunity/deal",
+//		                opportunitySub.getStatus().getStatusValue());
+//		        existingOpportunitySub.setStatus(status);
 		    
 		        if(opportunitySub.getCurrency()!=null && !opportunitySub.getCurrency().isEmpty())
 		        {
@@ -292,18 +286,36 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		    Opportunity opportunityFromDatabase= opportunityRepository.findById(opportunityId).orElseThrow(()-> new DataNotFoundException("opoortunity","opportunity_id",opportunityId));
 		   
 		    existingOpportunitySub.setOpportunityId(opportunityFromDatabase);
-		    }
+		    
 		    // Save the changes
 		    return opportunitySubRepository.save(existingOpportunitySub);
 	}
-	
-
-
-
-	
-	
-	
-	
 //	======================================================================================================================================
+	@Override
+	public void deleteOpportunitySub(String id)
+	{
+		if(id==null || id.equals(" ")) 
+		{
+			throw new NullDataException("opportunity Sub id is not present should eneter valid id");
+		}
+		else
+		{
+			opportunitySubRepository.findById(id).orElseThrow(()-> new DataNotFoundException("OpportuntitySub","id",id));
+			opportunitySubRepository.deleteById(id);
+		}
+		
+	}
+	@Override
+	public List<OpportunitySub> getAllOpportuntiySubByOpportunityId(String opportunity_id)
+	{
+		if(opportunity_id==null || opportunity_id.equals(""))
+		{
+			throw new InvalidInput("opportuntiy id should not be null");
+		}
+		else
+		{
+			return opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityId().toLowerCase().equals(opportunity_id.toLowerCase())).toList();
+		}
+	}
 
 }

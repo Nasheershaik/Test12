@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kloc.crm.Entity.Opportunity;
 import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Service.OpportunityService;
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/app")
@@ -65,9 +64,8 @@ public class OpportunityController
 			}
 		Opportunity opportunityFromDatabase=oppartunityService.saveOppartunity(opportunity, contact_Id);
 		logger.info("Successfully saved opportunity based on contact_id");
-	 return new ResponseEntity<>( opportunityFromDatabase,HttpStatus.CREATED);	
+	 return new ResponseEntity<>( opportunityFromDatabase,HttpStatus.OK);	
 	}
-
 	
 	/**create opportunity based on contact and offering**/
    @PostMapping("saveOpportunity/{contact_Id}/{offering_id}")
@@ -82,15 +80,13 @@ public class OpportunityController
       
       Opportunity OpportunityFromdata=oppartunityService.saveOpportunities(opportunity, contact_Id, offering_id);
       logger.info("Successfully saved opportunity based on contact_id and offering id:{}",contact_Id,offering_id);
-	 return new ResponseEntity<>( OpportunityFromdata,HttpStatus.CREATED);	
+	 return new ResponseEntity<>( OpportunityFromdata,HttpStatus.OK);	
 	}
-   
-   
   /**Responsible for Retrieving endPoint Opportunities 
    * @GetMapping is the responsible for handling HTTP GET Request
    * @return all the Opportunities
    */
-	@GetMapping("/getAllOpportunities") // to fetch all data
+	@GetMapping("getAllOpportunities") // to fetch all data
 	@ResponseStatus(HttpStatus.OK)
 	public List<Opportunity> getAllOpportunities()
 	{
@@ -126,8 +122,6 @@ public class OpportunityController
 	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  
 		}
 	}
-	
-	
 	/**get all opportunities based on contact id**/
 	@GetMapping("getopportunityByContactId/{contact_id}")
 	public ResponseEntity<List<Opportunity>>getOpportunityByContactId(@PathVariable String contact_id)
@@ -142,8 +136,6 @@ public class OpportunityController
 		logger.info("Retrieved opportunities based on contact id: {}", contact_id);
 	 return new ResponseEntity<>(opportunityFromdatabase,HttpStatus.OK);
 	}
-	
-	
 	/**Responsible for Updating endPoint Opportunities 
 	 * @PUTMapping is the responsible for handling HTTP Put Request
 	 * @return all the updated  Opportunities
@@ -161,8 +153,6 @@ public class OpportunityController
   	    logger.info("Successfully updated the opportunity based on opportunity_id: {}, contact_id: {}, and offering_id: {}", id, contact_id, offering_id);
   	  return new ResponseEntity<>(opportunitiesfromdatabase,HttpStatus.OK)	;
 	}
-  	
-  	
 	/**update contact id based on opportunity id**/
 	@PutMapping("updateContactIdBased/{opportunity_id}/{contact_id}")
 	public ResponseEntity<Opportunity> updateByContactId(@PathVariable("opportunity_id") String opportunity_id,@PathVariable("contact_id") String contact_id)
@@ -182,20 +172,19 @@ public class OpportunityController
 		  else
 		  {
 			  logger.warn("Opportunity not found for provided opportunity id and contact id");
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  
+	            return new ResponseEntity<>(HttpStatus.OK);  
 		  }
 	 }
-	
 	/**Responsible for deleting endPoint Opportunities based on id,if id not found through RunTime exception
 	 * @DeleteMapping is the responsible for handling HTTP DELETE Request
 	 * @return all the  Opportunities except deleted
 	 */	
-	@DeleteMapping("/opportunityid/{id}")
+	@DeleteMapping("deleteOpportunityAndSub/{id}")
 	public ResponseEntity<String> deleteOpportunity(@PathVariable("id") String id)
 	{
 		//to delete from database
 		oppartunityService.deleteOpportunity(id);
 		logger.info("Opportunites deleted successfully");
 		return new ResponseEntity<String>("Opprtunity deleted successfully",HttpStatus.OK);
-	}
+  }
 }

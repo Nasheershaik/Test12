@@ -212,15 +212,18 @@ public class OpportunityServiceImpl implements OpportunityService
 	@Override
 	public  void deleteOpportunity(String id) 
 	{
-		if(id==null|| id.equals(" "))
-		{
-		 throw new NullDataException("id should not be empty please enter valid id");
-		}
-		else
-		{
-		opportunityRepo.findById(id)
-		.orElseThrow(()->new DataNotFoundException("Department","id",id));
-		opportunityRepo.deleteById(id);
-		}
+		 if (id == null || id.trim().isEmpty()) {
+		        throw new NullDataException("Opportunity ID should not be empty. Please enter a valid ID.");
+		    } else {
+		        Opportunity opportunity = opportunityRepo.findById(id)
+		                .orElseThrow(() -> new DataNotFoundException("Opportunity", "id", id));
+
+		        // Delete associated records in opportunity_sub table if present
+		        // Replace "OpportunitySub" with the actual class name for opportunity_sub table
+		        List<OpportunitySub> associatedSubRecords = opportunitySubRepository.findByOpportunityId(opportunity);
+		        opportunitySubRepository.deleteAll(associatedSubRecords);
+		        // Delete the Opportunity record
+		        opportunityRepo.delete(opportunity);
+		    }
 	}
 }

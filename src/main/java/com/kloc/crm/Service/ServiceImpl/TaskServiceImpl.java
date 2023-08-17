@@ -18,8 +18,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.kloc.crm.Entity.Contact;
+import com.kloc.crm.Entity.Customer;
 import com.kloc.crm.Entity.Email;
 import com.kloc.crm.Entity.Offering;
+import com.kloc.crm.Entity.Opportunity;
+import com.kloc.crm.Entity.OpportunitySub;
 import com.kloc.crm.Entity.SalesPerson;
 import com.kloc.crm.Entity.Status;
 import com.kloc.crm.Entity.Task;
@@ -29,8 +32,11 @@ import com.kloc.crm.Exception.DataNotFoundException;
 import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Exception.NullDataException;
 import com.kloc.crm.Repository.ContactRepository;
+import com.kloc.crm.Repository.CustomerRepository;
 import com.kloc.crm.Repository.EmailRepo;
 import com.kloc.crm.Repository.OfferingRepository;
+import com.kloc.crm.Repository.OpportunityRepository;
+import com.kloc.crm.Repository.OpportunitySubRepository;
 import com.kloc.crm.Repository.SalesPersonRepository;
 import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.TaskRepository;
@@ -73,7 +79,12 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	private OfferingRepository offeringRepository;
 	@Autowired
 	private EmailRepo emailRepository;
-	
+	@Autowired
+	private OpportunityRepository opportunityRepository;
+	@Autowired
+	private OpportunitySubRepository opportunitySubRepository;
+	@Autowired
+	private CustomerRepository customerRepository;
 	@Override
 	public List<TaskSub> getAllTaskStatusByTaskId(String taskId) 
 	{
@@ -228,6 +239,10 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		taskSub.setStatusDate(LocalDate.now());
 		taskSub.setOfferingId(offering);
 		taskSubRepository.save(taskSub);
+		// updating lifecycle stage to Lead,new state
+		Status lifecycleStage=statusRepo.findByStatusTypeAndStatusValue("Lead", "New");
+		contact.setLifeCycleStage(lifecycleStage);
+		contactRepository.save(contact);
 //		User user1=task.getSalesPerson().getUser();
 //		if(!taskSub.getFollowUpDate().equals(null)) {
 //		scheduleMAil.sendSimpleMail(user1,taskSub.getFollowUpDate());
@@ -433,25 +448,67 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		}
 		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
 		newTaskSub.setTask(task);
-//		if(!taskSub.getOfferingId().equals(null)) {
-//			existingTaskSub.setOfferingId(offeringRepository.findByOfferingTypeAndOfferingCategory(taskSub.getOfferingId().getOfferingType(),taskSub.getOfferingId().getOfferingCategory()));
-//		}
-//		TaskSub newTaskSub=new TaskSub();
-//		newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
-//		newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
-//		newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
-//		newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
-//		newTaskSub.setTask(existingTaskSub.getTask());
-//		newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
-//		newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
-//		newTaskSub.setStatusDate(existingTaskSub.getStatusDate());
-//		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
-//		newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
-		
+		Contact contact=contactRepository.findById(task.getContactId().getContactId()).get();
+		if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Interested"))
+		{
+			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
+			contactRepository.save(contact);
+		}
+		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Not Interested"))
+		{
+			
+			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
+			contactRepository.save(contact);
+		}
+		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Qualified"))
+		{
+			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Qualified"));
+			contactRepository.save(contact);
+			Opportunity opportunity=new Opportunity();
+			opportunity.setContact(contact);
+			opportunity.setOffering(newTaskSub.getOfferingId());
+			Opportunity opportunity1=opportunityRepository.save(opportunity);
+			OpportunitySub opportunitySub=new OpportunitySub();
+			opportunitySub.setOpportunityCreatedDate(LocalDate.now());
+			opportunitySub.setOpportunityId(opportunity1);
+			opportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Opportunity"));
+			opportunitySubRepository.save(opportunitySub);
+		}
+		else if(newTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed"))
+		{
+			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer","Won"));
+			contactRepository.save(contact);
+			Opportunity opportunity3=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equals(task.getContactId().getContactId())).findFirst().get();
+			List<OpportunitySub> opportunitySubList=opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityId().equalsIgnoreCase(opportunity3.getOpportunityId())).toList();
+			OpportunitySub opportunitySub=opportunitySubList.get(opportunitySubList.size()-1);
+			OpportunitySub newOpportunitySub=new OpportunitySub();
+			newOpportunitySub.setCurrency(opportunitySub.getCurrency());
+			newOpportunitySub.setDuration(opportunitySub.getDuration());
+			newOpportunitySub.setNoOfInstallements(opportunitySub.getNoOfInstallements());
+			newOpportunitySub.setOpportunityCreatedDate(opportunitySub.getOpportunityCreatedDate());
+			newOpportunitySub.setOpportunityId(opportunity3);
+			newOpportunitySub.setPrice(opportunitySub.getPrice());
+			newOpportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Deal"));
+			opportunitySubRepository.save(newOpportunitySub);
+			Customer customer=new Customer();
+			customer.setContact(contact);
+			customer.setCustomerCreatedDate(LocalDate.now());
+			customer.setOpportunity(opportunity3);
+			customerRepository.save(customer);
+			
+		}
+		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Lost"))
+		{
+			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Lost"));
+			contactRepository.save(contact);
+		}
+		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Negotiation"))
+		{
+			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Negotiation"));
+			contactRepository.save(contact);
+		}
 		return taskSubRepository.save(newTaskSub);
 	}
-	
-
 	@Scheduled(cron = "0 0 7 * * ?")
 	public void scheduledMailBasedOnDueDates() {
 	    taskRepository.findAll().stream().forEach(e -> {

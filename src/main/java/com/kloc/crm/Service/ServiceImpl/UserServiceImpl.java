@@ -65,28 +65,7 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidInput("Please enter manager Id.");
 		else
 		{
-			if (user == null)
-				throw new InvalidInput("please enter user details.");
-			else
-			{
-				List<User> users = userRepository.findAll();
-				if (users.isEmpty()) 
-				{
-					User user1 = new User();
-					user1.setUserName("Abhisarika Das");
-					user1.setEmail("abhisarika.das459@kloctechnologies.com");
-					user1.setPassword(passwordEncoder.encode( "abhisarikadas3469"));
-					user1.setMobileNo(9999999999L);
-					user1.setAltMobileNo(9009056789L);
-					user1.setRole(statusRepository.findByStatusValue("Administrator"));
-					user1.setReportingTo(null);
-					user1.setStatus(statusRepository.findByStatusValue("Active"));
-					
-					// user1.setReportingTo(reportingTo);
-					User usernew=userRepository.save(user1);
-					user1.setReportingTo(usernew);
-					userRepository.save(user1);
-				}
+			
 				User existingUser = userRepository.findById(reportingTo)
 						.orElseThrow(() -> new DataNotFoundException("User", "userId", reportingTo));
 				user.setReportingTo(existingUser);
@@ -123,7 +102,7 @@ public class UserServiceImpl implements UserService {
 				
 				
 				
-			}
+			
 		}
 	}
 
@@ -555,8 +534,7 @@ public class UserServiceImpl implements UserService {
 		if(reportingToId.equals("") || reportingToId==null) {
 			throw new InvalidInput("Please enter correctId ");
 		}
-		List<User> users =userRepository.findAll().stream().filter(e->(!e.getReportingTo().equals(null) && e.getReportingTo().getUserId().equals(reportingToId))).collect(Collectors.toList());
-		System.out.println(users);
+		List<User> users =userRepository.findAll().stream().filter(e-> e.getReportingTo().getUserId().equals(reportingToId)).collect(Collectors.toList());
 		List<UserNDto> nusers = new ArrayList<>();
 		for(User user:users) {
 		String userId =user.getUserId();
@@ -566,15 +544,9 @@ public class UserServiceImpl implements UserService {
 		long altMobileNo =user.getAltMobileNo();
 		String urole =user.getRole().getStatusValue();
 		String uvalue =user.getStatus().getStatusValue();
-		String reportingUserId="";
-		String reportingUserName="";
-		if(!user.getReportingTo().equals(null)){
-			reportingUserId =user.getReportingTo().getUserId();
-			 reportingUserName =user.getReportingTo().getUserName();
-		}
-		
-		nusers.add( new UserNDto(userId,uname, uemail, mobileNo, altMobileNo, urole, uvalue, reportingUserId, reportingUserName));
-		
+		String reportingUserId=user.getReportingTo().getUserId();
+		String reportingUserName=user.getReportingTo().getUserName();
+		nusers.add( new UserNDto(userId,uname, uemail, mobileNo, altMobileNo, urole, uvalue, reportingUserId, reportingUserName));		
 		}
 		
 		return nusers;

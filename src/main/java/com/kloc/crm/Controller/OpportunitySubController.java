@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,8 +76,6 @@ public class OpportunitySubController
 		logger.info("Successfully saved opportunity sub absed on oppportunity id:{}",opportunityId);
 		return new ResponseEntity<>(opportunitySubFromDatabase,HttpStatus.CREATED);
 	}
-	
-	
 	/**
 	 * Responsible for Retrieving endPoint Opportunities
 	 * 
@@ -100,8 +99,6 @@ public class OpportunitySubController
 	        	    }
 	       return opportunitySubFromDatabase;
 	}
-
-	
 	/**
 	 * Responsible for Retrieving endPoint Opportunities based on id.
 	 * 
@@ -146,7 +143,6 @@ public class OpportunitySubController
 		return new ResponseEntity<List<OpportunitySub>>(opportunitySubFromDatabase,
 				HttpStatus.OK);
 	}
-
 	/**
 	 * Responsible for Updating endPoint Opportunities
 	 * 
@@ -188,9 +184,6 @@ public class OpportunitySubController
 				opportunitySubFromDatabase,
 				HttpStatus.OK);
 	}
-	
-	
-	
 	/** this is the controller to execute opportunity sub entities**/
 	@PutMapping("latestUpdate/{opportunitySubId}/{opportunityId}")
     public  ResponseEntity< OpportunitySub>updateOpportunitySubEntity(@RequestBody OpportunitySub opportunitySub,
@@ -207,7 +200,6 @@ public class OpportunitySubController
 		logger.info("Successfully updated OpportunitySub with id: {} and associated Opportunity with id: {}", opportunitySubId, opportunityId);
 		return new ResponseEntity<OpportunitySub>(opportunitySubFromDatabase,HttpStatus.OK);
     }
-	
 //	/** trail and error API for updating of opportunity sub **/
 //	@PutMapping("updating/{opportunitySub_id}/id/{opportunity_id}")
 //	public ResponseEntity<OpportunitySub> updateOpportunitySubandOpportunityId(
@@ -217,4 +209,32 @@ public class OpportunitySubController
 //				.updateOpportunitySubWithOpportunityIdAndOpprtunitySub(opportunitySub_id, id, opportunity_id),
 //				HttpStatus.OK);
 //	}
+
+	@DeleteMapping("deleteOpportunitySub/id")
+	public ResponseEntity<String> deleteOpportuntiySub(@PathVariable ("id") String id)
+	{
+		opportunitySubServcie.deleteOpportunitySub(id);
+		logger.info("Opportunity SUb deleted Successfully");
+		return new ResponseEntity<String>("Opportunity Sub Deleted",HttpStatus.OK);
+	}
+	
+	@GetMapping("getAllOpportunitySubByOpportunity/{opportunity_id}")
+	public ResponseEntity<List<OpportunitySub>> getOpportunitySubByOpportunityId(@PathVariable ("opportunity_id") String opportunity_id)
+	{
+		logger.trace("Request to fetch all the opportunity Sub by opportunity id",opportunity_id);
+		if(opportunity_id==null ||opportunity_id.equals(" "))
+		{
+			throw new InvalidInput("Please enter opportunity_id");
+		}
+		List<OpportunitySub> opportunitySubByOpportunity=opportunitySubServcie.getAllOpportuntiySubByOpportunityId(opportunity_id);
+		if(!opportunitySubByOpportunity.isEmpty())
+		{
+			logger.info("Sucessfully retrived all the opportunitySub based on opportunity_Id");
+			return new ResponseEntity<>(opportunitySubByOpportunity,HttpStatus.OK);
+		}
+		else
+		{
+			return ResponseEntity.notFound().build();
+		}
+	}
 }

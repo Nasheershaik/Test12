@@ -68,13 +68,13 @@ public class OpportunitySub
 	@Column(name="Installments")
 	private int noOfInstallements;
 	
-	@Column(name="Price",nullable = false)
+
 	private double price;
 	
 	@Column
 	private LocalDate duration;
 	
-	@Column(nullable = false)
+	
 	private String currency;
 	
 }

@@ -551,15 +551,12 @@ public class ContactServiceImpl implements ContactService {
 	@Override
 	public ResponseEntity<String> CreateContact(Contact contact) {
 		logger.info("Creating contact...");
-
 		logger.info("Contact details: " + contact.toString());
-
 		if (contact != null && !contact.toString().equals(new Contact().toString())) {
 			// Check 'contact' status
 			logger.info("Checking 'contact' status...");
 			List<Status> allStatus = statusRepository.findAll().stream()
 					.filter(e -> e.getStatusValue().toLowerCase().equals("contact")).collect(Collectors.toList());
-
 			if (allStatus.size() > 1) {
 				logger.warning("Multiple 'contact' statuses found.");
 				throw new InternalError("Something went wrong.");
@@ -570,14 +567,12 @@ public class ContactServiceImpl implements ContactService {
 				contact.setLifeCycleStage(allStatus.get(0));
 				logger.info("'Contact' status set.");
 			}
-
 			// Validate first name
 			logger.info("Validating first name...");
 			if (contact.getFirstName() == null || contact.getFirstName().equals("")) {
 				logger.warning("First name is missing.");
 				throw new NullDataException("Please enter first name.");
 			}
-
 			// Validate source
 			logger.info("Validating source...");
 			if (contact.getSource() == null || contact.getSource().getStatusValue() == null
@@ -589,7 +584,6 @@ public class ContactServiceImpl implements ContactService {
 						.filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue()
 								.toLowerCase().equals(contact.getSource().getStatusValue().toLowerCase()))
 						.collect(Collectors.toList());
-
 				if (sourceStatus.size() > 1) {
 					logger.warning("Multiple matching source statuses found.");
 					throw new InternalError("Something went wrong.");
@@ -615,32 +609,21 @@ public class ContactServiceImpl implements ContactService {
 				logger.warning("Contact creator information is missing.");
 				throw new NullDataException("Please enter who created.");
 			} else {
-				User user = userRepository.findById(contact.getContactCreatedBy().getUserId())
-						.orElseThrow(() -> new InvalidInput("User not present."));
-				if (user == null || user.toString().equals(new User().toString())) {
-					logger.warning("User not found.");
-					throw new InvalidInput("User not present.");
-				} else {
-					contact.setContactCreatedBy(user);
-				}
+					contact.setContactCreatedBy(userRepository.findById(contact.getContactCreatedBy().getUserId())
+							.orElseThrow(() -> new InvalidInput("User not present.")));
+				
 			}
-
 			// Validate mobile number
 			logger.info("Validating mobile number...");
 			if (contact.getMobileNumber() <= 999999999) {
 				logger.warning("Invalid mobile number.");
 				throw new InvalidInput("Please enter valid mobile number.");
 			}
-
 			logger.info("All validations successful. Creating contact...");
-
 			contact.setDate(LocalDate.now());
 			contact.setStageDate(LocalDate.now());
-
 			Contact savedContact = contactRepository.save(contact);
-
 			logger.info("Contact created with ID: " + savedContact.getContactId());
-
 			return new ResponseEntity<>("Contact added. Your contact ID is: " + savedContact.getContactId(),
 					HttpStatus.OK);
 		} else {
@@ -648,7 +631,6 @@ public class ContactServiceImpl implements ContactService {
 			throw new NullDataException("Data can't be empty. Please check it.");
 		}
 	}
-
 	// Update a contact by contact ID
 	@Override
 	public ResponseEntity<String> UpdateContactByContactId(Contact contact, String contactId) {
