@@ -33,4 +33,6 @@ public class ContactDTO
 	private LocalDate date;
 	private LocalDate stageDate;
 	private long mobileNumber;
+	private String contactCreatedByName;
+	private String contactCreatedByEmail;
 }

@@ -56,3 +56,5 @@ The Offering Category is Variable Bid Project,Offering_Status,Variable Bid Proje
 The Notificationtype is Email,Notification_Status,Email,Notification
 The OpportunityType is Opportunity or deal,opportunity/deal,Deal,OpportunitySub
 The OpportunityType is Opportunity or deal,opportunity/deal,Opportunity,OpportunitySub
+The Notificationtype is OverDue,Notification_Status,OverDueTemplate,Notification
+The Notificationtype is followup,Notification_Status,followupTemplate,Notification

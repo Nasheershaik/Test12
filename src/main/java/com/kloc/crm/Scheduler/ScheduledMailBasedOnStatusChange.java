@@ -1,9 +1,7 @@
 package com.kloc.crm.Scheduler;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +30,7 @@ public class ScheduledMailBasedOnStatusChange
 		private TaskSubRepository taskSubRepository;
 	    @Value("${spring.mail.username}")
 	    private String sender;
-	    private Map<String, Integer> reminderSent=new HashMap<>();
+
 	
 	@Scheduled(cron="0 0 7 * * ?")
 	public void schMailBasedOnStatusChange() {
@@ -43,7 +41,7 @@ public class ScheduledMailBasedOnStatusChange
                 if (!lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("completed")
                         && lastTaskSub.getFollowUpDate() != null
                         && lastTaskSub.getFollowUpDate().isBefore(LocalDate.now())) {
-                    int sentReminders = emailRepository.countByTaskAndEmailType(task, "Pending");
+                    int sentReminders = emailRepository.countByTaskAndEmailType(task, "Pending "+lastTaskSub.getFollowUpDate());
                     if (sentReminders < 3) {
                         sendPendingMail(task);
                     }

@@ -74,6 +74,8 @@ public class ContactServiceImpl implements ContactService {
 					contactDTO.setContactDestination(contact.getContactDestination());
 					contactDTO.setContactDepartment(contact.getContactDepartment());
 					contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+					contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+					contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 					contactDTO.setDate(contact.getDate());
 					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -118,7 +120,9 @@ public class ContactServiceImpl implements ContactService {
 			contactDTO.setWebsiteURL(contact.getWebsiteURL());
 			contactDTO.setContactDestination(contact.getContactDestination());
 			contactDTO.setContactDepartment(contact.getContactDepartment());
-			contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+			contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+			contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+			contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 			contactDTO.setDate(contact.getDate());
 			contactDTO.setStageDate(contact.getStageDate());
 			contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -168,7 +172,9 @@ public class ContactServiceImpl implements ContactService {
 					contactDTO.setWebsiteURL(contact.getWebsiteURL());
 					contactDTO.setContactDestination(contact.getContactDestination());
 					contactDTO.setContactDepartment(contact.getContactDepartment());
-					contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+					contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+					contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+					contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 					contactDTO.setDate(contact.getDate());
 					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -220,7 +226,9 @@ public class ContactServiceImpl implements ContactService {
 					contactDTO.setWebsiteURL(contact.getWebsiteURL());
 					contactDTO.setContactDestination(contact.getContactDestination());
 					contactDTO.setContactDepartment(contact.getContactDepartment());
-					contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+					contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+					contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+					contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 					contactDTO.setDate(contact.getDate());
 					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -281,7 +289,9 @@ public class ContactServiceImpl implements ContactService {
 							contactDTO.setWebsiteURL(contact.getWebsiteURL());
 							contactDTO.setContactDestination(contact.getContactDestination());
 							contactDTO.setContactDepartment(contact.getContactDepartment());
-							contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+							contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+							contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+							contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 							contactDTO.setDate(contact.getDate());
 							contactDTO.setStageDate(contact.getStageDate());
 							contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -309,8 +319,7 @@ public class ContactServiceImpl implements ContactService {
 		} else {
 			try {
 				List<Status> allStatus = statusRepository.findAll().stream()
-						.filter(e -> e.getStatusValue().equalsIgnoreCase(statusValue))
-						.collect(Collectors.toList());
+						.filter(e -> e.getStatusValue().equalsIgnoreCase(statusValue)).collect(Collectors.toList());
 
 				if (allStatus.size() > 1) {
 					logger.warning("Duplicate status values in database.");
@@ -344,7 +353,9 @@ public class ContactServiceImpl implements ContactService {
 							contactDTO.setWebsiteURL(contact.getWebsiteURL());
 							contactDTO.setContactDestination(contact.getContactDestination());
 							contactDTO.setContactDepartment(contact.getContactDepartment());
-							contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+							contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+							contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+							contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 							contactDTO.setDate(contact.getDate());
 							contactDTO.setStageDate(contact.getStageDate());
 							contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -396,7 +407,9 @@ public class ContactServiceImpl implements ContactService {
 				contactDTO.setWebsiteURL(contact.getWebsiteURL());
 				contactDTO.setContactDestination(contact.getContactDestination());
 				contactDTO.setContactDepartment(contact.getContactDepartment());
-				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+				contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+				contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 				contactDTO.setDate(contact.getDate());
 				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -444,6 +457,8 @@ public class ContactServiceImpl implements ContactService {
 				contactDTO.setContactDestination(contact.getContactDestination());
 				contactDTO.setContactDepartment(contact.getContactDepartment());
 				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+				contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+				contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 				contactDTO.setDate(contact.getDate());
 				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -486,7 +501,9 @@ public class ContactServiceImpl implements ContactService {
 				contactDTO.setWebsiteURL(contact.getWebsiteURL());
 				contactDTO.setContactDestination(contact.getContactDestination());
 				contactDTO.setContactDepartment(contact.getContactDepartment());
-				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+				contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+				contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 				contactDTO.setDate(contact.getDate());
 				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -500,6 +517,7 @@ public class ContactServiceImpl implements ContactService {
 			throw e; // Rethrow the exception
 		}
 	}
+
 	@Override
 	public List<ContactDTO> getAllContactCreateddByMail(String contactCreatedBy) {
 		logger.info("Fetching contacts created by user...");
@@ -508,9 +526,8 @@ public class ContactServiceImpl implements ContactService {
 			throw new InvalidInput("Please provide a valid mail ID.");
 		}
 		try {
-			User user=	userRepository.findAll().stream().filter(e->e.getEmail().equals(contactCreatedBy)).findFirst().get();
-			
-					
+			User user = userRepository.findAll().stream().filter(e -> e.getEmail().equals(contactCreatedBy)).findFirst()
+					.get();
 
 			List<Contact> findAll = contactRepository.findAll().stream()
 					.filter(contact -> contact.getContactCreatedBy().equals(user)).collect(Collectors.toList());
@@ -532,7 +549,9 @@ public class ContactServiceImpl implements ContactService {
 				contactDTO.setWebsiteURL(contact.getWebsiteURL());
 				contactDTO.setContactDestination(contact.getContactDestination());
 				contactDTO.setContactDepartment(contact.getContactDepartment());
-				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUsername());
+				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
+				contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
+				contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 				contactDTO.setDate(contact.getDate());
 				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -551,12 +570,15 @@ public class ContactServiceImpl implements ContactService {
 	@Override
 	public ResponseEntity<String> CreateContact(Contact contact) {
 		logger.info("Creating contact...");
+
 		logger.info("Contact details: " + contact.toString());
+
 		if (contact != null && !contact.toString().equals(new Contact().toString())) {
 			// Check 'contact' status
 			logger.info("Checking 'contact' status...");
 			List<Status> allStatus = statusRepository.findAll().stream()
 					.filter(e -> e.getStatusValue().toLowerCase().equals("contact")).collect(Collectors.toList());
+
 			if (allStatus.size() > 1) {
 				logger.warning("Multiple 'contact' statuses found.");
 				throw new InternalError("Something went wrong.");
@@ -567,12 +589,14 @@ public class ContactServiceImpl implements ContactService {
 				contact.setLifeCycleStage(allStatus.get(0));
 				logger.info("'Contact' status set.");
 			}
+
 			// Validate first name
 			logger.info("Validating first name...");
 			if (contact.getFirstName() == null || contact.getFirstName().equals("")) {
 				logger.warning("First name is missing.");
 				throw new NullDataException("Please enter first name.");
 			}
+
 			// Validate source
 			logger.info("Validating source...");
 			if (contact.getSource() == null || contact.getSource().getStatusValue() == null
@@ -584,6 +608,7 @@ public class ContactServiceImpl implements ContactService {
 						.filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue()
 								.toLowerCase().equals(contact.getSource().getStatusValue().toLowerCase()))
 						.collect(Collectors.toList());
+
 				if (sourceStatus.size() > 1) {
 					logger.warning("Multiple matching source statuses found.");
 					throw new InternalError("Something went wrong.");
@@ -609,20 +634,25 @@ public class ContactServiceImpl implements ContactService {
 				logger.warning("Contact creator information is missing.");
 				throw new NullDataException("Please enter who created.");
 			} else {
-					contact.setContactCreatedBy(userRepository.findById(contact.getContactCreatedBy().getUserId())
-							.orElseThrow(() -> new InvalidInput("User not present.")));
-				
+				contact.setContactCreatedBy(userRepository.findById(contact.getContactCreatedBy().getUserId())
+						.orElseThrow(() -> new InvalidInput("User not present.")));
+
 			}
+
 			// Validate mobile number
 			logger.info("Validating mobile number...");
 			if (contact.getMobileNumber() <= 999999999) {
 				logger.warning("Invalid mobile number.");
 				throw new InvalidInput("Please enter valid mobile number.");
 			}
+
 			logger.info("All validations successful. Creating contact...");
+
 			contact.setDate(LocalDate.now());
 			contact.setStageDate(LocalDate.now());
+
 			Contact savedContact = contactRepository.save(contact);
+
 			logger.info("Contact created with ID: " + savedContact.getContactId());
 			return new ResponseEntity<>("Contact added. Your contact ID is: " + savedContact.getContactId(),
 					HttpStatus.OK);
@@ -631,6 +661,7 @@ public class ContactServiceImpl implements ContactService {
 			throw new NullDataException("Data can't be empty. Please check it.");
 		}
 	}
+
 	// Update a contact by contact ID
 	@Override
 	public ResponseEntity<String> UpdateContactByContactId(Contact contact, String contactId) {
@@ -765,7 +796,4 @@ public class ContactServiceImpl implements ContactService {
 			throw new InternalError("Something went wrong.");
 		}
 	}
-
-	
-
 }
