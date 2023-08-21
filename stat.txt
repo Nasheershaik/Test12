@@ -3,7 +3,8 @@ The User is DeActive,User_Type,DeActive,User
 The Task is Open,Task_Status,Open,Task
 The Task is OverDue,Task_Status,OverDue,Task
 The Task is Completed,Task_Status,Completed,Task
-The Task is Completed,Task_Status,In Progress,Task
+The Task is Transferred,Task_Status,Transferred,Task
+The Task is in progress,Task_Status,In Progress,Task
 The Sales is Qualified,Sales_Status,Qualified,Sales
 The Sales is Negotiating ,Sales_Status,Negotiation,Sales
 The Sales is Lost,Sales_Status,Lost,Sales

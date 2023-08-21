@@ -299,6 +299,8 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			taskSub.setSalesActivity(a.getSalesActivity());
 			taskSub.setStatusDate(a.getStatusDate());
 			taskSub.setTask(task2);
+			a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
+			 taskSubRepository.save(a);
 			taskSub.setTaskFeedback(a.getTaskFeedback());
 			taskSub.setTaskOutcome(a.getTaskOutcome());
 			taskSub.setTaskStatus(a.getTaskStatus());	
@@ -337,7 +339,13 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			taskSub.setTaskOutcome(a.getTaskOutcome());
 			taskSub.setTaskStatus(a.getTaskStatus());	
 			taskSubRepository.save(taskSub);
-		
+			a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
+			 taskSubRepository.save(a);
+			contact.setLifeCycleStage(task.getContactId().getLifeCycleStage());	
+			Contact contact1=contactRepository.save(contact);
+			Opportunity opportunity1=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equalsIgnoreCase(task.getContactId().getContactId())).findFirst().get();
+			opportunity1.setContact(contact1);
+			opportunityRepository.save(opportunity1);
 		return task2;
 	}
 	@Override
@@ -373,7 +381,13 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			taskSub.setTaskOutcome(a.getTaskOutcome());
 			taskSub.setTaskStatus(a.getTaskStatus());	
 			 taskSubRepository.save(taskSub);
-		
+			 a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
+			 taskSubRepository.save(a);
+		contact.setLifeCycleStage(task.getContactId().getLifeCycleStage());	
+		Contact contact1=contactRepository.save(contact);
+		Opportunity opportunity1=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equalsIgnoreCase(task.getContactId().getContactId())).findFirst().get();
+		opportunity1.setContact(contact1);
+		opportunityRepository.save(opportunity1);
 		return task2;
 	}
 	@Override
@@ -516,7 +530,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	        List<TaskSub> tasksub = taskSubRepository.findByTask(e);
 	        if (!tasksub.isEmpty()) {
 	            TaskSub lastTaskSub = tasksub.get(tasksub.size() - 1);
-	            if (!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("completed")) {
+	            if (!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("completed")&&!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("Transferred")) {
 	                // Check if the due date has passed
 	                if (e.getDueDate().isBefore(LocalDate.now())) {
 	                    String emailType = "OverDue"; // Set the emailType here

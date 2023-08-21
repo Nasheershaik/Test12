@@ -32,24 +32,24 @@ public class ScheduledMailBasedOnStatusChange
 	    private String sender;
 
 	
-	@Scheduled(cron="0 0 7 * * ?")
+	@Scheduled(cron="0 0/2 15 * * ?")
 	public void schMailBasedOnStatusChange() {
         taskRepository.findAll().forEach(task -> {
             List<TaskSub> taskSubs = taskSubRepository.findByTask(task);
             if (!taskSubs.isEmpty()) {
                 TaskSub lastTaskSub = taskSubs.get(taskSubs.size() - 1);
-                if (!lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("completed")
+                if (!lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("completed")&&!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("Transferred")
                         && lastTaskSub.getFollowUpDate() != null
                         && lastTaskSub.getFollowUpDate().isBefore(LocalDate.now())) {
                     int sentReminders = emailRepository.countByTaskAndEmailType(task, "Pending "+lastTaskSub.getFollowUpDate());
                     if (sentReminders < 3) {
-                        sendPendingMail(task);
+                        sendPendingMail(task,lastTaskSub);
                     }
                 }
             }
         });
     }
-	 public String sendPendingMail(Task task)
+	 public String sendPendingMail(Task task,TaskSub taskSub)
 	    {
 	    	try {
 	            // Creating a simple mail message
@@ -69,7 +69,7 @@ public class ScheduledMailBasedOnStatusChange
 	            Email email = new Email();
 	            email = new Email();
 	            email.setTask(task); // Assuming there's a constructor for Task that accepts taskId
-	            email.setEmailType("Pending");
+	            email.setEmailType("Pending "+taskSub.getFollowUpDate());
 	            email.setToAddress(task.getAssignedManager().getEmail());
 	            email.setEmailMsg(task.getSalesPerson().getUser().getUserName()+"This salesperson is not doing followup");
 	       

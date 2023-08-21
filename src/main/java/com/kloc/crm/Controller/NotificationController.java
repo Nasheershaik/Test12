@@ -80,6 +80,7 @@ public class NotificationController {
    //         existingNotification.setNotificationType(updatedNotification.getNotificationType());
             existingNotification.setNotificationTemplate(updatedNotification.getNotificationTemplate());
             existingNotification.setRemindBefore(updatedNotification.getRemindBefore());
+            existingNotification.setRole(updatedNotification.getRole());
             Notification updatedNotification1 = notificationService.saveNotification(existingNotification);
             Log.info("Notification values updated successfully for ID: " + notificationId);
             return new ResponseEntity<>(updatedNotification1, HttpStatus.OK);

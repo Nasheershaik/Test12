@@ -41,7 +41,7 @@ public class ScheduledMailWithFollowUpDates {
             List<TaskSub> taskSubs = taskSubRepository.findByTask(task);
             if (!taskSubs.isEmpty()) {
                 TaskSub lastTaskSub = taskSubs.get(taskSubs.size() - 1);
-                if (!lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("completed")
+                if (!lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("completed")&&!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("Transferred")
                         && lastTaskSub.getFollowUpDate() != null
                         && LocalDate.now().plusDays(2).isEqual(lastTaskSub.getFollowUpDate())) {
                     sendFollowUpMail(task);
