@@ -216,6 +216,7 @@ public class OfferingServiceImpl implements OfferingService
 
     
 	// Update the offer details with the corresponding offering id and provided data.
+    @Override
     public ResponseEntity<String> updateOfferingByOfferingId(Offering offering, String offeringId)
     {
     	System.out.println("-----------------------------------"+offeringId+"---------------------------------------------");
@@ -321,6 +322,7 @@ public class OfferingServiceImpl implements OfferingService
 
 
 	// Delete the offer with the corresponding provided offering id.
+    @Override
     public ResponseEntity<String> deleteOfferingByOfferingId(String offeringId)
     {
         logger.info("Deleting offering with ID: " + offeringId);

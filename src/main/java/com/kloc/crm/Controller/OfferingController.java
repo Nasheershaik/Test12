@@ -52,6 +52,17 @@ public class OfferingController
 	}
 	
 	/**
+	 * Retrieves all offerings.
+	 *
+	 * @return 	: 	A list of all offerings.
+	 */
+	
+	@GetMapping("get_all_offering")
+	private ResponseEntity<List<OfferingDTO>> GetAllOffering() 
+	{
+		return new ResponseEntity<List<OfferingDTO>>(offeringService.GetAllOffering(),HttpStatus.OK);
+	}
+	/**
 	 * Retrieves an offering by its offering ID.
 	 *
 	 * @PathVariable offeringId		: 	offeringId The ID of the offering to retrieve.
@@ -61,17 +72,6 @@ public class OfferingController
 	private ResponseEntity<OfferingDTO> GetOfferingByOfferingID(@PathVariable String offeringId)
 	{
 		return new ResponseEntity<OfferingDTO>(offeringService.GetOfferingByOfferingID(offeringId),HttpStatus.OK);
-	}
-	
-	/**
-	 * Retrieves all offerings.
-	 *
-	 * @return 	: 	A list of all offerings.
-	 */
-	@GetMapping("get_all_offering")
-	private ResponseEntity<List<OfferingDTO>> GetAllOffering() 
-	{
-		return new ResponseEntity<List<OfferingDTO>>(offeringService.GetAllOffering(),HttpStatus.OK);
 	}
 	
 	/**

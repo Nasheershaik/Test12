@@ -30,9 +30,9 @@ public class ContactDTO
 	private String contactDestination;
 	private String contactDepartment;
 	private String contactCreatedBy;
+	private String contactCreatedByName;
+	private String contactCreatedByEmail;
 	private LocalDate date;
 	private LocalDate stageDate;
 	private long mobileNumber;
-	private String contactCreatedByName;
-	private String contactCreatedByEmail;
 }

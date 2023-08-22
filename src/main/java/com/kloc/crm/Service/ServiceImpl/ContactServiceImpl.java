@@ -502,8 +502,6 @@ public class ContactServiceImpl implements ContactService {
 				contactDTO.setContactDestination(contact.getContactDestination());
 				contactDTO.setContactDepartment(contact.getContactDepartment());
 				contactDTO.setContactCreatedBy(contact.getContactCreatedBy().getUserId());
-				contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
-				contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 				contactDTO.setDate(contact.getDate());
 				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setMobileNumber(contact.getMobileNumber());
@@ -687,15 +685,11 @@ public class ContactServiceImpl implements ContactService {
 				logger.info("Updating last name...");
 				contactFromDatabase.setLastName(contact.getLastName());
 			}
-			if (contact.getEmail() != null && !contact.getEmail().equals("")) {
+			if (contact.getEmail() != null && !contact.getEmail().equals("")) 
+			{
 				logger.info("Updating email...");
-				if (contactFromDatabase.getEmail().equals(contact.getEmail())) {
-					logger.warning("Attempted to update email with existing value.");
-					throw new InvalidInput("You have entered your existing email. Please enter an updated email.");
-				} else {
-					contactFromDatabase.setEmail(contact.getEmail());
-					logger.info("Email updated.");
-				}
+				contactFromDatabase.setEmail(contact.getEmail());
+				logger.info("Email updated.");
 			}
 
 			if (contact.getCompany() != null && !contact.getCompany().equals("")) {
