@@ -44,13 +44,13 @@ public class TaskSub {
     private String taskSubId;
 
     @ManyToOne
-    @JsonBackReference("taskStatus")
+//    @JsonBackReference("taskStatus")
     private Status taskStatus; // The status of the sub-task
 
     private LocalDate statusDate; // Date of the sub-task status
 
     @ManyToOne
-    @JsonBackReference("taskOutcome")
+//    @JsonBackReference("taskOutcome")
     private Status taskOutcome; // The outcome of the sub-task
 
     private LocalDate followUpDate; // Follow-up date for the sub-task
@@ -62,7 +62,7 @@ public class TaskSub {
     private LocalDate feedbackDate; // Date of the feedback
 
     @ManyToOne
-    @JsonBackReference("salesActivity")
+//    @JsonBackReference("salesActivity")
     private Status salesActivity; // The sales activity associated with the sub-task
 
     @ManyToOne
