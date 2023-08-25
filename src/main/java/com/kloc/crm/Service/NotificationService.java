@@ -22,8 +22,10 @@ public interface NotificationService {
 	
 	List<Notification> getNotificationsByRemindBefore(LocalDate remindBefore);
 
-
+	List<Notification> getAllTemplates(String notificationTemplate);
+	
 	Notification getNotificationTemplatesByRoleAndType(String role, String notificationtype);
-    
+
+	String getNotificationTemplatesByType(String notificationtype);
 	
 }

@@ -63,7 +63,7 @@ public class OpportunitySub
 	private Status status; 
 	
 	@Column
-	private LocalDate opportunityCreatedDate;
+	private LocalDate opportunityStatusDate;
 	
 	@Column(name="Installments")
 	private int noOfInstallements;

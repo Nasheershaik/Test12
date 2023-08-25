@@ -127,5 +127,21 @@ public class NotificationServiceImpl implements NotificationService {
                 .findFirst().orElseThrow(()->new DataNotFoundException("Wrong Value for Type or Role"));
     }
 
+	@Override
+	public List<Notification> getAllTemplates(String notificationTemplate) {
+	  return  notificationRepo.findAll(); 
+	   
+	}
 
+	@Override
+	public String getNotificationTemplatesByType(String notificationtype) {
+		return notificationRepo.findAll().stream()
+                .filter(notification -> notification.getNotificationType().getStatusValue().equalsIgnoreCase(notificationtype))
+                .map(e->e.getNotificationTemplate())
+                .findFirst().orElseThrow(()->new DataNotFoundException("Wrong Value for Type "));
+	}
+
+    
+
+    
 }

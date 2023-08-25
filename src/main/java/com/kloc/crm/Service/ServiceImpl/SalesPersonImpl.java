@@ -65,17 +65,17 @@ public class SalesPersonImpl implements SalesPersonService {
     	        }
     	        else 
     	        {
-    	        	if (sp.getTarget() <= 0) {
+    	        	if (sp.getMaxTarget()<0) {
     	        		logger.error("Invalid input: Please enter a valid target");
     	        		throw new InvalidInput("Please enter a valid target");
     	        	}
     	        	
-    	        	if (sp.getDuration() <= 0) {
+    	        	if (sp.getDuration().equals("")||sp.getDuration()==null) {
     	        		logger.error("Invalid input: Please enter a valid duration");
     	        		throw new InvalidInput("Please enter a valid duration");
     	        	}
     	        	
-    	        	if (sp.getAmount() <= 0) {
+    	        	if (sp.getThreshold() <0) {
     	        		logger.error("Invalid input: Please enter a valid amount");
     	        		throw new InvalidInput("Please enter a valid amount");
     	        	}
@@ -188,12 +188,12 @@ public class SalesPersonImpl implements SalesPersonService {
     	        else 
     	        {
     	        	SalesPerson existingSp = salesPersonRepository.findById(id).orElseThrow(() -> new DataNotFoundException("SalesPerson", "id", id));
-    	    		if (sp.getTarget() > 0)
-    	    			existingSp.setTarget(sp.getTarget());
-    	    		if (sp.getDuration() > 0)
+    	    		if (sp.getMaxTarget() >= 0)
+    	    			existingSp.setMaxTarget(sp.getMaxTarget());
+    	    		if (!sp.getDuration().equals("")|| sp.getDuration()!=null)
     	    			existingSp.setDuration(sp.getDuration());
-    	    		if (sp.getAmount() > 0)
-    	    			existingSp.setAmount(sp.getAmount());
+    	    		if (sp.getThreshold()>= 0)
+    	    			existingSp.setThreshold(sp.getThreshold());
     	    		if (sp.getFrequency() > 0)
     	    			existingSp.setFrequency(sp.getFrequency());
     	    		if (sp.getCurrency() != null && !sp.getCurrency().equals(""))
@@ -210,28 +210,28 @@ public class SalesPersonImpl implements SalesPersonService {
     }
 
 	@Override
-	public List<SalesPerson> getAllSalesPersonsByTarget(int id)
+	public List<SalesPerson> getAllSalesPersonsByTarget(int maxTarget)
 	{
 		 try {
-		        logger.info("Getting all salespersons by target ID: {}", id);
+		        logger.info("Getting all salespersons by target : {}", maxTarget);
 
-		        if (id <= 0) {
-		            throw new InvalidInput("Please enter a valid ID.");
+		        if (maxTarget < 0) {
+		            throw new InvalidInput("Please enter a valid Target.");
 		        } else {
-		            List<SalesPerson> findByTarget = salesPersonRepository.findAllByTarget(id);
+		            List<SalesPerson> findByTarget = salesPersonRepository.findAllByMaxTarget(maxTarget);
 
 		            if (findByTarget.isEmpty()) {
 		                throw new DataNotFoundException("No salesperson found with this target ID.");
 		            } else {
 		                // Log a success message
-		                logger.info("Retrieved salespersons by target ID: {}", id);
+		                logger.info("Retrieved salespersons by target ID: {}", maxTarget);
 
 		                return findByTarget;
 		            }
 		        }
 		    } catch (Exception e) {
 		        // Log the exception if any error occurs
-		        logger.error("Error getting salespersons by target ID {}: {}", id, e.getMessage(), e);
+		        logger.error("Error getting salespersons by target ID {}: {}", maxTarget, e.getMessage(), e);
 		        throw e;
 		    }
 	}

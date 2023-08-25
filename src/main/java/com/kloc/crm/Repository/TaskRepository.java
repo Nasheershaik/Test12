@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.kloc.crm.Entity.SalesPerson;
 import com.kloc.crm.Entity.Task;
 /**
  * The TaskRepository interface is a repository for managing Task entities.
@@ -24,7 +26,7 @@ public interface TaskRepository extends JpaRepository<Task, String>
      * @param salesPersonId The ID of the sales person
      * @return A list of tasks associated with the sales person
      */
-//	List<Task> findAllBySalesPerson(String salesPersonId);
+	List<Task> findBySalesPerson(SalesPerson salesPerson);
 	
 	
 }

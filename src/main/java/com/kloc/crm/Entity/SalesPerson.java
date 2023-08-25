@@ -54,15 +54,15 @@ public class SalesPerson {
     
     // Target set for the salesperson
     @Column(name = "Target")
-    private int target;
+    private int maxTarget;//maxtarget
     
     // Frequency of sales activities
     @Column(name = "Frequency")
     private int frequency;
     
     // Amount achieved by the salesperson
-    @Column(name = "Amount")
-    private double amount;
+    @Column(name = "Threshold")
+    private int threshold;//threshold
     
     // Currency in which the amount is measured
     @Column(name = "Currency")
@@ -70,7 +70,7 @@ public class SalesPerson {
     
     // Duration of the sales period
     @Column(name = "Duration")
-    private int duration;
+    private String duration;//string
     
     // User associated with the salesperson
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)

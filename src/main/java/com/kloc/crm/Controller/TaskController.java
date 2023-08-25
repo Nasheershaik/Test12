@@ -5,6 +5,7 @@
  */
 package com.kloc.crm.Controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -343,22 +344,64 @@ public class TaskController
 
 	        return new ResponseEntity<>(updatedTaskSub, HttpStatus.OK);
 	    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	 /**
+	     * Retrieves a list of tasks within the specified date range.
+	     *
+	     * @param fromDate The start date of the date range.
+	     * @param toDate The end date of the date range.
+	     * @return A ResponseEntity containing a list of tasks within the date range.
+	     */
+	    @GetMapping("/getAllTaskByDateRange/{FromDate}/{ToDate}")
+	    public ResponseEntity<List<Task>> getAllTaskByDateRange(@PathVariable("FromDate") LocalDate fromDate,@PathVariable("ToDate") LocalDate toDate)
+	    {
+	        
+	        // Log the request with the provided date range
+	        logger.info("Request to get tasks from {} to {}", fromDate, toDate);
+	        
+	        List<Task> tasks = taskSubService.getAllTaskByDateRange(fromDate, toDate);
+	        
+	        // Log the number of tasks retrieved
+	        logger.info("Retrieved {} tasks within the date range", tasks.size());
+
+	        return new ResponseEntity<>(tasks, HttpStatus.OK);
+	    }
+	    @GetMapping("/getAllTaskBySalespersonIdAndStatus/{salespersonId}/{taskStatus}")
+	    public ResponseEntity<List<Task>> getAllTaskBySalesPersonIdAndStatus(
+	            @PathVariable("salespersonId") String salespersonId,
+	            @PathVariable("taskStatus") String taskStatus) {
+
+	        logger.info("Request received for tasks with salespersonId: {} and taskStatus: {}", salespersonId, taskStatus);
+
+	        List<Task> tasks = taskSubService.getAllTaskBySalespersonIdAndStatus(salespersonId, taskStatus);
+	        logger.info("Retrieved {} tasks for salespersonId: {} and taskStatus: {}", tasks.size(), salespersonId, taskStatus);
+
+	        return new ResponseEntity<>(tasks, HttpStatus.OK);
+	    }
+
+	    @GetMapping("/getAllTaskBySalespersonIdAndOutcome/{salespersonId}/{taskOutcome}")
+	    public ResponseEntity<List<Task>> getAllTaskBySalesPersonIdAndOutcome(
+	            @PathVariable("salespersonId") String salespersonId,
+	            @PathVariable("taskOutcome") String taskOutcome) {
+
+	        logger.info("Request received for tasks with salespersonId: {} and taskOutcome: {}", salespersonId, taskOutcome);
+
+	        List<Task> tasks = taskSubService.getAllTaskBySalespersonIdAndOutcome(salespersonId, taskOutcome);
+	        logger.info("Retrieved {} tasks for salespersonId: {} and taskOutcome: {}", tasks.size(), salespersonId, taskOutcome);
+
+	        return new ResponseEntity<>(tasks, HttpStatus.OK);
+	    }
+	 @GetMapping("/getAllTaskByDateRangeBySalesperson/{FromDate}/{ToDate}/{salespersonId}")
+	    public ResponseEntity<List<Task>> getAllTaskByDateRangeBySalespersonByStatusBylifecycleStage(@PathVariable("FromDate") LocalDate fromDate,@PathVariable("ToDate") LocalDate toDate,@PathVariable("salespersonId") String salespersonId)
+	    {
+	        
+	        // Log the request with the provided date range
+	        logger.info("Request to get tasks from {} to {}", fromDate, toDate,salespersonId);
+	        
+	        List<Task> tasks = taskSubService.getAllTaskByDateRangeBySalesPersonIdByTaskStatusByLifeCycleStage(fromDate, toDate, salespersonId);
+	        
+	        // Log the number of tasks retrieved
+	        logger.info("Retrieved {} tasks within the date range", tasks.size());
+
+	        return new ResponseEntity<>(tasks, HttpStatus.OK);
+	    }
 }

@@ -118,6 +118,17 @@ public class NotificationController {
     	return new ResponseEntity<Notification>(notificationService.getNotificationTemplatesByRoleAndType(role, notificationtype),HttpStatus.FOUND);
     	
    }
+    @GetMapping("/getalltemplates")
+    public List<Notification> getallnotificationTemplates(String notificationTemplate) {
+       	return  notificationService.getAllTemplates(notificationTemplate);
+    
+    	
+    }
+    @GetMapping("gettemplatebytype/{notificationType}")
+    public ResponseEntity<String> getalltemplatesbyType(@PathVariable ("notificationType") String notificationtype) {
+    	return new ResponseEntity<String>(notificationService.getNotificationTemplatesByType(notificationtype),HttpStatus.FOUND);
+    	
+    }
 }
     
 

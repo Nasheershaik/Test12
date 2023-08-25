@@ -80,9 +80,9 @@ public class SalesPersonsController {
         return new ResponseEntity<>(salesPersonService.updateSalesPerson(salesperson, id), HttpStatus.CREATED);
     }
     
-    @GetMapping("/getByTargets/{target}")
-    public ResponseEntity<List<SalesPerson>> getAllSalesPersonsByTheirTargets(@PathVariable("target") int target){
-    	return new ResponseEntity<List<SalesPerson>>(salesPersonService.getAllSalesPersonsByTarget(target),HttpStatus.OK);
+    @GetMapping("/getByTargets/{maxTarget}")
+    public ResponseEntity<List<SalesPerson>> getAllSalesPersonsByTheirTargets(@PathVariable("maxTarget") int maxTarget){
+    	return new ResponseEntity<List<SalesPerson>>(salesPersonService.getAllSalesPersonsByTarget(maxTarget),HttpStatus.OK);
     }
     
     @GetMapping("/getIdByEmail/{email}")

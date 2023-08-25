@@ -38,7 +38,7 @@ public interface SalesPersonService {
      * @return    The SalesPerson object with the specified ID
      */
     
-    List<SalesPerson> getAllSalesPersonsByTarget(int id);
+    List<SalesPerson> getAllSalesPersonsByTarget(int maxTarget);
     	
     
     SalesPerson getSalePersonById(String id);

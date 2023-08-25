@@ -33,7 +33,14 @@ public class ScheduledMailWithFollowUpDates {
     private TaskSubRepository taskSubRepository;
     @Value("${spring.mail.username}")
     private String sender;
-
+    /**
+     * Scheduled method to send follow-up reminder emails for tasks that are due for follow-up within 2 days.
+     * This method is triggered by a cron expression that runs daily at 7:00 AM.
+     * It retrieves all tasks from the task repository and iterates through each task's associated task submissions.
+     * For each task submission, it checks if the task's status is not "completed" or "Transferred".
+     * If the task has a follow-up date that is exactly 2 days from the current date, a follow-up email is sent using the sendFollowUpMail() method.
+     * The method ensures that timely reminders are sent for tasks requiring follow-up in the next 2 days.
+     */
     @Scheduled(cron="0 0 7 * * ?")
 	public void schMailBasedOnFollowUp()
 	{

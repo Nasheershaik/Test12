@@ -1,4 +1,7 @@
 /**
+ * The DataNotFoundException class represents an exception that is thrown when data is not found.
+ * It is used to return a 404 Not Found HTTP status.
+ * 
  * @Author : RiteshSingh
  * @Date : 06-July-2023
  * @FileName : DataNotFoundException.java
@@ -8,10 +11,6 @@ package com.kloc.crm.Exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * The DataNotFoundException class represents an exception that is thrown when data is not found.
- * It is used to return a 404 Not Found HTTP status.
- */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class DataNotFoundException extends RuntimeException {
 

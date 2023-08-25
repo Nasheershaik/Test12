@@ -78,5 +78,32 @@ public interface TaskSubService
 	 * @return The updated TaskSub object.
 	 */
 	TaskSub updateTaskSubByTaskId(TaskSub taskSub, String taskId);
+	/**
+	 * Retrieves a list of tasks based on the given salesperson ID and task status.
+	 *
+	 * @param salespersonId The ID of the salesperson.
+	 * @param status The status of the tasks to filter by.
+	 * @return A list of tasks matching the criteria.
+	 */
+	List<Task> getAllTaskBySalespersonIdAndStatus(String salespersonId, String status);
+
+	/**
+	 * Retrieves a list of tasks based on the given salesperson ID and task outcome.
+	 *
+	 * @param salespersonId The ID of the salesperson.
+	 * @param outcome The outcome of the tasks to filter by.
+	 * @return A list of tasks matching the criteria.
+	 */
+	List<Task> getAllTaskBySalespersonIdAndOutcome(String salespersonId, String outcome);
+
+	/**
+	 * Retrieves a list of tasks based on the specified date range, salesperson ID, task status, and life cycle stage.
+	 *
+	 * @param initialDate The start date of the date range.
+	 * @param finalDate The end date of the date range.
+	 * @param salespersonId The ID of the salesperson.
+	 * @return A list of tasks matching the criteria.
+	 */
+	List<Task> getAllTaskByDateRangeBySalesPersonIdByTaskStatusByLifeCycleStage(LocalDate initialDate, LocalDate finalDate, String salespersonId);
 
 }

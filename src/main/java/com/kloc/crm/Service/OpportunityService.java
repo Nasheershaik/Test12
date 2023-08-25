@@ -6,8 +6,10 @@
  */
 package com.kloc.crm.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import com.kloc.crm.Entity.Opportunity;
+import com.kloc.crm.Entity.OpportunitySub;
 
 public interface OpportunityService
 {
@@ -37,7 +39,6 @@ public interface OpportunityService
 	 */
 	Opportunity updateOpportunity(Opportunity oppartunity,String id,String contact_id,String offering_id);
 	
-	
 	/**this method is used to update opportunity contact id**/
 	Opportunity updateOpportunityByContactId(String  oppportunity_id,String contact_id);
 
@@ -45,4 +46,18 @@ public interface OpportunityService
 	 *delete opportunity based on id
 	 */
 	void deleteOpportunity(String id);
+	
+	List<Opportunity> getAllOpportunityByType(String Status_type);
+	
+	List<Opportunity> getAllOpportunityByDate(LocalDate fromdate,LocalDate toDate,String opportunityType);
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

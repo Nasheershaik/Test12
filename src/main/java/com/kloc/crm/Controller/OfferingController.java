@@ -1,15 +1,11 @@
 /**
- * This class is the controller for managing offerings in the CRM system.
- */
-package com.kloc.crm.Controller;
-
-/**
  * The controller class that handles HTTP requests related to offerings.
  * 
- * @author_name  : Ankush
- * @File_name	 : OfferingController.java
- * @Created_Date : 5/7/2023
+ * @Author_name: AnkushJadhav
+ * @File_name: OfferingController.java
+ * @Created_Date: 5/7/2023
  */
+package com.kloc.crm.Controller;
 
 // all user and necessary imports for this class
 import java.util.List;
@@ -25,8 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.kloc.crm.Entity.Contact;
 import com.kloc.crm.Entity.Offering;
 import com.kloc.crm.Service.OfferingService;
 import com.kloc.crm.dto.OfferingDTO;
@@ -43,7 +37,8 @@ public class OfferingController
 	/**
 	 * Creates a new offering.
 	 *
-	 * @RequestBody Offering 	: 	offering The offering object to be created.
+	 * @param offering The offering object to be created, provided in the request body.
+	 * @return A ResponseEntity with a status code and message.
 	 */
 	@PostMapping("create_offering")
 	public ResponseEntity<String> CreateOffering(@RequestBody Offering offering)
@@ -54,19 +49,32 @@ public class OfferingController
 	/**
 	 * Retrieves all offerings.
 	 *
-	 * @return 	: 	A list of all offerings.
+	 * @return A ResponseEntity containing a list of all offerings.
 	 */
-	
 	@GetMapping("get_all_offering")
 	private ResponseEntity<List<OfferingDTO>> GetAllOffering() 
 	{
 		return new ResponseEntity<List<OfferingDTO>>(offeringService.GetAllOffering(),HttpStatus.OK);
 	}
+
+	/**
+	 * Retrieves offerings within a specified price range.
+	 *
+	 * @param flooringPrice The minimum price of the offerings to retrieve.
+	 * @param ceilingPrice The maximum price of the offerings to retrieve.
+	 * @return A ResponseEntity containing a list of offerings within the specified price range.
+	 */
+	@GetMapping("get_all_offering_by_price_range/{floorPrice}/{ceilingPrice}")
+	private ResponseEntity<List<OfferingDTO>> GetAllOfferingByPriceRange(@PathVariable long floorPrice,@PathVariable long ceilingPrice) 
+	{
+		return new ResponseEntity<List<OfferingDTO>>(offeringService.GetAllOfferingByPriceRange(floorPrice, ceilingPrice),HttpStatus.OK);
+	}
+	
 	/**
 	 * Retrieves an offering by its offering ID.
 	 *
-	 * @PathVariable offeringId		: 	offeringId The ID of the offering to retrieve.
-	 * @return						:	The offering with the specified ID.
+	 * @param offeringId The ID of the offering to retrieve.
+	 * @return A ResponseEntity containing the offering with the specified ID.
 	 */
 	@GetMapping("get_offering_by_offeringId/{offeringId}")
 	private ResponseEntity<OfferingDTO> GetOfferingByOfferingID(@PathVariable String offeringId)
@@ -75,28 +83,28 @@ public class OfferingController
 	}
 	
 	/**
-	 * Update Offering on Offering Id.
+	 * Updates an offering by its offering ID.
 	 *
-	 * @PathVariable Offering Id 	:	offer id which offer have to be updated.
-	 * @RequestBody offering		:	offering The offering object to be update.
+	 * @param offeringId The ID of the offering to be updated.
+	 * @param offering The offering object with updated details provided in the request body.
+	 * @return A ResponseEntity with a status code and message.
 	 */
 	@PutMapping("update_offering_by_offeringId/{offeringId}")
 	private ResponseEntity<String> updateOfferingByOfferingId(@RequestBody Offering offering, @PathVariable String offeringId)
 	{
 		
-		 return offeringService.updateOfferingByOfferingId(offering,offeringId);
+		 return offeringService.UpdateOfferingByOfferingId(offering,offeringId);
 	}
 	
 	/**
-	 * Delete offering with the provided offering id.
-	 * @return 
+	 * Deletes an offering with the provided offering ID.
 	 *
-	 * @PathVariable offeringId 	:	offering id to delete offer.
-	 * @return 						:	offering id of offer which offer have to be delete.
+	 * @param offeringId The ID of the offering to be deleted.
+	 * @return A ResponseEntity with the ID of the deleted offering.
 	 */
 	@DeleteMapping("delete_offering_by_offeringId/{offeringId}")
 	private ResponseEntity<String> deleteOfferingByOfferingId(@PathVariable String offeringId)
 	{
-		return offeringService.deleteOfferingByOfferingId(offeringId);
+		return offeringService.DeleteOfferingByOfferingId(offeringId);
 	}
 }

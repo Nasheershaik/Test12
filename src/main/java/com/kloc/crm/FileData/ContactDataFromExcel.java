@@ -3,9 +3,9 @@
  * It checks the Excel file format, reads the data from the file, and converts it into Contact objects.
  * The converted list of contacts is returned for further processing.
  *
- * @author Ankush
- * @created_date Jul 26, 2023
- * @file_name ContactDataFromExcel.java
+ * @Author_name: AnkushJadhav
+ * @File_name: ContactDataFromExcel.java
+ * @Created_Date: 26/7/2023
  */
 package com.kloc.crm.FileData;
 
@@ -48,7 +48,7 @@ public class ContactDataFromExcel
      * @param file The file to be checked
      * @return True if the file is in XLSX format, otherwise False
      */
-    public boolean checkExcelFormate(MultipartFile file) 
+    public boolean checkExcelFormat(MultipartFile file) 
     {
         return file.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
@@ -57,6 +57,7 @@ public class ContactDataFromExcel
      * Converts Excel data to a list of Contact objects.
      *
      * @param excelData The InputStream containing the Excel data
+     * @param userId The ID of the user performing the data import
      * @return A list of Contact objects extracted from the Excel data
      * @throws IOException If an IO exception occurs while reading the Excel data
      */
@@ -65,11 +66,15 @@ public class ContactDataFromExcel
         List<Contact> listOfContact = new ArrayList<>();
         XSSFSheet sheet = new XSSFWorkbook(excelData).getSheet("Contacts");
 
+        // Ensure that the sheet exists
+        if (sheet == null)
+            throw new DataNotFoundException("Make sure the sheet name is 'Contacts'.");
+
         // Find the initial status for Contact
         List<Status> contactStatus = statusRepository.findAll().stream()
-                .filter(e -> (e.getTableName().toLowerCase().equals("contact"))
-                        && (e.getStatusType().toLowerCase().equals("contact"))
-                        && (e.getStatusValue().toLowerCase().equals("contact")))
+                .filter(e -> (e.getTableName().equalsIgnoreCase("Contact"))
+                        && (e.getStatusType().equalsIgnoreCase("Contact"))
+                        && (e.getStatusValue().equalsIgnoreCase("Contact")))
                 .collect(Collectors.toList());
 
         // Ensure there is exactly one initial status for Contact
@@ -105,15 +110,30 @@ public class ContactDataFromExcel
                                 if (cell.getCellType() != CellType.NUMERIC)
                                     contact.setFirstName(cell.getStringCellValue());
                                 else
-                                    throw new InvalidInput("No numbers in name.");
+                                    throw new InvalidInput("No numbers in first name.");
                             } else
-                                throw new InvalidInput("Please enter name.");
+                                throw new InvalidInput("Please first name.");
                             break;
                         case 1:
-                            contact.setLastName(cell.getStringCellValue());
-                            break;
+                        	 if (cell.getCellType() != CellType.BLANK) 
+                             {
+                                 if (cell.getCellType() != CellType.NUMERIC)
+                                     contact.setFirstName(cell.getStringCellValue());
+                                 else
+                                     throw new InvalidInput("No numbers in name.");
+                             } else
+                                 throw new InvalidInput("Please last name.");
+                             break;
                         case 2:
-                            contact.setEmail(cell.getStringCellValue());
+                        	if(cell.getCellType() == CellType.BLANK)
+                        		throw new InvalidInput("Email can not be empty.");
+                        	else
+                        	{
+                                String email = cell.getStringCellValue();
+                                if (!email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"))
+                                    throw new InvalidInput("Invalid email format : "+email);
+                                contact.setEmail(email);
+                            }
                             break;
                         case 3:
                             contact.setCompany(cell.getStringCellValue());
@@ -128,33 +148,31 @@ public class ContactDataFromExcel
                         	 if (cell.getCellType() != CellType.BLANK) 
                              {
                         		 String stringCellValue = cell.getStringCellValue();
-                        		 if (stringCellValue == null || stringCellValue.equals(""))
+                        		 List<Status> allAvailableSource = statusRepository.findAll().stream().filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue().equalsIgnoreCase(stringCellValue)).toList();
+                        		 if(allAvailableSource.isEmpty())
                         		 {
-									throw new InvalidInput("Source can not be empty.");
+                        			 contact.setOtherSourcetype(stringCellValue);
+                        			 contact.setSource(statusRepository.findAll().stream().filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue().equalsIgnoreCase("other")).findFirst().get());
                         		 }
                         		 else
-                        		 {
-                        			 List<Status> allAvailableSource = statusRepository.findAll().stream().filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue().equalsIgnoreCase(stringCellValue)).toList();
-                        			 if(allAvailableSource.isEmpty())
-                        			 {
-                        				 contact.setOtherSourcetype(stringCellValue);
-                        				 contact.setSource(statusRepository.findAll().stream().filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue().equalsIgnoreCase("other")).findFirst().get());
-                        			 }
-                        			 else
-                        				 contact.setSource(allAvailableSource.get(0));
-                        		 }
+                        			 contact.setSource(allAvailableSource.get(0));
                              }
                             break;
                         case 7:
                             contact.setWebsiteURL(cell.getStringCellValue());
                             break;
                         case 8:
-                            contact.setContactDestination(cell.getStringCellValue());
+                            contact.setSocialMediaLink(cell.getStringCellValue());
                             break;
                         case 9:
+                            contact.setContactDesignation(cell.getStringCellValue());
+                            break;
+                        case 10: 
                             contact.setContactDepartment(cell.getStringCellValue());
                             break;
-                        case 10:
+                        case 11:
+                        	if(cell.getCellType() == CellType.BLANK)
+                        		throw new InvalidInput("Number can not be null.");
                             if (cell.getCellType() == CellType.NUMERIC)
                                 contact.setMobileNumber((long) cell.getNumericCellValue());
                             else

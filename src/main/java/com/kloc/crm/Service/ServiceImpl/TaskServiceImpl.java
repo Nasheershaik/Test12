@@ -70,15 +70,9 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	@Autowired
 	private StatusRepo statusRepo;
 	@Autowired
-	private ScheduledMailWithFollowUpDates scheduleMAilWithFollowUpDate;
-	@Autowired
-	private ScheduledMailWithDueDates scheduledMailWithDueDates;
-	@Autowired
 	private TaskSubRepository taskSubRepository;
 	@Autowired
 	private OfferingRepository offeringRepository;
-	@Autowired
-	private EmailRepo emailRepository;
 	@Autowired
 	private OpportunityRepository opportunityRepository;
 	@Autowired
@@ -99,52 +93,10 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().equals(taskId)).toList();	
 		return list.get(list.size()-1);
 	}
-//	@Override
-//	public List<TaskSub> getAllTaskByStatus(String taskStatus) {
-//	    return taskRepository.findAll().stream()
-//	        .filter(e -> e.getSalesPerson().getUser().getStatus().getStatusValue().equalsIgnoreCase("active"))
-//	        .flatMap(e -> {
-//	            List<TaskSub> list = taskSubRepository.findAll().stream()
-//	                .filter(a -> a.getTask().equals(e))
-//	                .toList();
-//	            if (!list.isEmpty()) {
-//	                if (list.get(list.size() - 1).getTaskStatus().getStatusValue().equalsIgnoreCase(taskStatus)) {
-//	                    return list.stream();
-//	                }
-//	            }
-//	            return Stream.empty();
-//	        })
-//	        .toList();    
-//	}
+
 	@Override
 	public List<Task> getAllTaskByStatus(String taskStatus) {
-//	    try {
-//	        return taskRepository.findAll().stream()
-//	            .filter(e -> "active".equalsIgnoreCase(
-//	                Optional.ofNullable(e.getSalesPerson())
-//	                        .map(SalesPerson::getUser)
-//	                        .map(User::getStatus)
-//	                        .map(Status::getStatusValue)
-//	                        .orElse("")
-//	            ))
-//	            .flatMap(e -> {
-//	                List<TaskSub> list = taskSubRepository.findAll().stream()
-//	                    .filter(a -> a.getTask().equals(e))
-//	                    .collect(Collectors.toList());
-//
-//	                if (!list.isEmpty()) {
-//	                    TaskSub lastTaskSub = list.get(list.size() - 1);
-//	                    if (lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase(taskStatus)) {
-//	                        return Stream.of(lastTaskSub.getTask());
-//	                    }
-//	                }
-//	                return Stream.empty();
-//	            })
-//	            .collect(Collectors.toList());
-//	    } catch (Exception e) {
-//	        // Handle the exception here (e.g., logging or rethrowing)
-//	        return Collections.emptyList(); // Return an empty list in case of an exception
-//	    }
+
 		try {
 			return taskRepository.findAll().stream()
 			        .filter(e -> e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equals("active"))
@@ -243,10 +195,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		Status lifecycleStage=statusRepo.findByStatusTypeAndStatusValue("Lead", "New");
 		contact.setLifeCycleStage(lifecycleStage);
 		contactRepository.save(contact);
-//		User user1=task.getSalesPerson().getUser();
-//		if(!taskSub.getFollowUpDate().equals(null)) {
-//		scheduleMAil.sendSimpleMail(user1,taskSub.getFollowUpDate());
-//		}
+
 		return task1;
 	}
 	@Override
@@ -466,31 +415,36 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Interested"))
 		{
 			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
+			contact.setStageDate(LocalDate.now());
 			contactRepository.save(contact);
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Not Interested"))
 		{
 			
 			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
+			contact.setStageDate(LocalDate.now());
 			contactRepository.save(contact);
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Qualified"))
 		{
 			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Qualified"));
+			contact.setStageDate(LocalDate.now());
 			contactRepository.save(contact);
 			Opportunity opportunity=new Opportunity();
 			opportunity.setContact(contact);
 			opportunity.setOffering(newTaskSub.getOfferingId());
+			opportunity.setOpportunityCreatedDate(LocalDate.now());
 			Opportunity opportunity1=opportunityRepository.save(opportunity);
 			OpportunitySub opportunitySub=new OpportunitySub();
-			opportunitySub.setOpportunityCreatedDate(LocalDate.now());
+			opportunitySub.setOpportunityStatusDate(LocalDate.now());
 			opportunitySub.setOpportunityId(opportunity1);
 			opportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Opportunity"));
 			opportunitySubRepository.save(opportunitySub);
 		}
-		else if(newTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed"))
+		else if(newTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")&&newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Done"))
 		{
 			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer","Won"));
+			contact.setStageDate(LocalDate.now());
 			contactRepository.save(contact);
 			Opportunity opportunity3=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equals(task.getContactId().getContactId())).findFirst().get();
 			List<OpportunitySub> opportunitySubList=opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityId().equalsIgnoreCase(opportunity3.getOpportunityId())).toList();
@@ -499,7 +453,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			newOpportunitySub.setCurrency(opportunitySub.getCurrency());
 			newOpportunitySub.setDuration(opportunitySub.getDuration());
 			newOpportunitySub.setNoOfInstallements(opportunitySub.getNoOfInstallements());
-			newOpportunitySub.setOpportunityCreatedDate(opportunitySub.getOpportunityCreatedDate());
+			newOpportunitySub.setOpportunityStatusDate(LocalDate.now());
 			newOpportunitySub.setOpportunityId(opportunity3);
 			newOpportunitySub.setPrice(opportunitySub.getPrice());
 			newOpportunitySub.setCurrency("₹ Indian Rupees");
@@ -515,51 +469,92 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Lost"))
 		{
 			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Lost"));
+			contact.setStageDate(LocalDate.now());
 			contactRepository.save(contact);
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Negotiation"))
 		{
 			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Negotiation"));
+			contact.setStageDate(LocalDate.now());
 			contactRepository.save(contact);
 		}
 		return taskSubRepository.save(newTaskSub);
 	}
-	@Scheduled(cron = "0 0 7 * * ?")
-	public void scheduledMailBasedOnDueDates() {
-	    taskRepository.findAll().stream().forEach(e -> {
-	        List<TaskSub> tasksub = taskSubRepository.findByTask(e);
-	        if (!tasksub.isEmpty()) {
-	            TaskSub lastTaskSub = tasksub.get(tasksub.size() - 1);
-	            if (!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("completed")&&!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("Transferred")) {
-	                // Check if the due date has passed
-	                if (e.getDueDate().isBefore(LocalDate.now())) {
-	                    String emailType = "OverDue"; // Set the emailType here
-
-	                    if (isTimeForSendingEmail(e.getTaskId(), emailType)) {
-	                        // Get the task and send the email
-	                        scheduledMailWithDueDates.sendSimpleMail(e);
-	                    }
-	                }
-	            }
-	        }
-	    });
+	@Override
+	public List<Task> getAllTaskBySalespersonIdAndStatus(String salespersonId, String taskstatus) {
+		SalesPerson salesPerson=salesPersonRepository.findById(salespersonId).orElseThrow(()->new DataNotFoundException("salesperson is not found with this id in database"));
+		List<Task> task=taskRepository.findBySalesPerson(salesPerson);
+		if(task.isEmpty())
+		{
+			throw new DataNotFoundException("No task is available for this salesperson");
+		}
+		try {
+			return task.stream()
+			        .filter(e -> e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equals("active"))
+			        .flatMap(e -> {
+			            List<TaskSub> list = taskSubRepository.findAll().stream()
+			                .filter(a -> a.getTask().equals(e))
+			                .toList();
+			            if (!list.isEmpty()) {
+			                if (list.get(list.size() - 1).getTaskStatus().getStatusValue().toLowerCase().equals(taskstatus.toLowerCase())) {
+			                    return Stream.of(list.get(list.size()-1).getTask());
+			                }
+			            }
+			            return Stream.empty();
+			        })
+			        .toList(); 
+			}
+			catch (Exception e) {
+		        // Handle the exception here (e.g., logging or rethrowing)
+		        return Collections.emptyList(); // Return an empty list in case of an exception
+		    }
+		
 	}
-
-	private boolean isTimeForSendingEmail(String taskId, String emailType) {
-	    Email email = emailRepository.findFirstByTaskTaskIdAndEmailTypeOrderByEmailDateDesc(taskId, emailType);
-	    if (email == null || email.getEmailDate().plusDays(7).isBefore(LocalDate.now())) {
-	        if (email == null) {
-	            email = new Email();
-	            email.setTask(taskRepository.findById(taskId).get()); // Assuming there's a constructor for Task that accepts taskId
-	            email.setEmailType(emailType);
-	            email.setToAddress(taskRepository.findById(taskId).get().getAssignedManager().getEmail());
-	            email.setEmailMsg("The Task is Overdue for the salesperson "+taskRepository.findById(taskId).get().getSalesPerson().getUser().getUserName()+".Please take further action on it.");
-	        }
-	        email.setEmailDate(LocalDate.now());
-	        emailRepository.save(email);
-	        return true;
-	    }
-	    return false;
+	@Override
+	public List<Task> getAllTaskBySalespersonIdAndOutcome(String salespersonId, String taskOutcome) {
+		SalesPerson salesPerson=salesPersonRepository.findById(salespersonId).orElseThrow(()->new DataNotFoundException("salesperson is not found with this id in database"));
+		List<Task> task=taskRepository.findBySalesPerson(salesPerson);
+		if(task.isEmpty())
+		{
+			throw new DataNotFoundException("No task is available for this salesperson");
+		}
+		try {
+			return task.stream()
+			        .filter(e -> e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equals("active"))
+			        .flatMap(e -> {
+			            List<TaskSub> list = taskSubRepository.findAll().stream()
+			                .filter(a -> a.getTask().equals(e))
+			                .toList();
+			            if (!list.isEmpty()) {
+			                if (list.get(list.size() - 1).getTaskOutcome().getStatusValue().toLowerCase().equals(taskOutcome.toLowerCase())) {
+			                    return Stream.of(list.get(list.size()-1).getTask());
+			                }
+			            }
+			            return Stream.empty();
+			        })
+			        .toList(); 
+			}
+			catch (Exception e) {
+		        // Handle the exception here (e.g., logging or rethrowing)
+		        return Collections.emptyList(); // Return an empty list in case of an exception
+		    }
+		
+	}
+	@Override
+	public List<Task> getAllTaskByDateRangeBySalesPersonIdByTaskStatusByLifeCycleStage(LocalDate intialdate,
+			LocalDate finalDate, String salespersonId) {
+		
+		if(intialdate.equals(null)||finalDate.equals(null)||salespersonId.equals(null)||salespersonId.equals("")) {throw new NullDataException("compulsory to fill intialDate and finalDate and salespersonid and status type");}
+		salesPersonRepository.findById(salespersonId).orElseThrow(()->new DataNotFoundException("salesperson is not persent in database"));
+		return taskRepository.findAll().stream().filter(e->e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equalsIgnoreCase("active")&&e.getSalesPerson().getSalespersonId().equalsIgnoreCase(salespersonId)).map(e->{
+			List<TaskSub> list=taskSubRepository.findAll().stream().filter(a->a.getTask().equals(e)).toList();
+			LocalDate statusdate=list.get(list.size()-1).getStatusDate();
+			if((statusdate.isBefore(finalDate)||statusdate.isEqual(finalDate))&&(statusdate.isAfter(intialdate)||statusdate.isEqual(intialdate))) 
+			{
+				return list.get(list.size()-1).getTask();
+			}
+			else {return null;}
+		}).toList().stream().filter(a->!a.equals(null)).toList();
 	}
 		
 }

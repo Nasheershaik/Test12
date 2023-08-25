@@ -12,7 +12,9 @@ import lombok.Getter;
  * This exception is thrown when there is a null data input where non-null data is expected.
  * It is used to indicate that the input data is null, which is not allowed.
  *
- * @Author: windows
+ * @Author_name: AnkushJadhav
+ * @File_name: NullDataException.java
+ * @Created_Date: 16/7/2023
  */
 @Getter
 public class NullDataException extends RuntimeException 

@@ -47,6 +47,7 @@ The Contact is not Intrested,Task_Outcome,Not Interested,Task
 The Contact is not Intrested,Task_Outcome,Qualified,Task
 The Contact is not Intrested,Task_Outcome,Negotiation,Task
 The Contact is not Intrested,Task_Outcome,Lost,Task
+The Contact is not Intrested,Task_Outcome,Done,Task
 The Contact is not able to reach,Task_Outcome,Not able to reach,Task
 The Contact has postponed,Task_Outcome,Postponed,Task
 The Contact is other,Task_Outcome,Other,Task
@@ -59,3 +60,4 @@ The OpportunityType is Opportunity or deal,opportunity/deal,Deal,OpportunitySub
 The OpportunityType is Opportunity or deal,opportunity/deal,Opportunity,OpportunitySub
 The Notificationtype is OverDue,Notification_Status,OverDueTemplate,Notification
 The Notificationtype is followup,Notification_Status,followupTemplate,Notification
+The Notificationtype is StatusChange,Notification_Status,statuschangeTemplate,Notification

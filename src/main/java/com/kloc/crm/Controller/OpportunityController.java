@@ -7,6 +7,7 @@
  *for building restful API's.
  */
 package com.kloc.crm.Controller;
+import java.time.LocalDate;
 import java.util.List;
 import org.antlr.v4.runtime.atn.SemanticContext.AND;
 import org.apache.logging.log4j.LogManager;
@@ -136,6 +137,21 @@ public class OpportunityController
 		logger.info("Retrieved opportunities based on contact id: {}", contact_id);
 	 return new ResponseEntity<>(opportunityFromdatabase,HttpStatus.OK);
 	}
+	
+	@GetMapping("/getAllOpportunitesByType/{status_type}")
+	public ResponseEntity<List<Opportunity>> getAllOpportunitesByType(@PathVariable String  status_type)
+	{
+		logger.trace("Request to fecth all opportunties based on Status_type");
+		if(status_type ==null || status_type.equals(""))
+		{
+			logger.debug("Status_type should not br null");
+			throw new InvalidInput("Please enter valid status type");
+		}
+		List<Opportunity> oppportunityFromStatusType=oppartunityService.getAllOpportunityByType(status_type);
+		logger.info("Retrived all opportunites based on opportunitytype");
+		return new ResponseEntity<List<Opportunity>>(oppportunityFromStatusType,HttpStatus.OK);
+	}
+	
 	/**Responsible for Updating endPoint Opportunities 
 	 * @PUTMapping is the responsible for handling HTTP Put Request
 	 * @return all the updated  Opportunities
@@ -187,4 +203,24 @@ public class OpportunityController
 		logger.info("Opportunites deleted successfully");
 		return new ResponseEntity<String>("Opprtunity deleted successfully",HttpStatus.OK);
   }
+	
+	
+	/**Responsible for Retriving endPoint Opportunities based on date range and status type of opportunity
+	 * @GetMapping is the responsible for handling HTTP DELETE Request
+	 * @return all the  Opportunities based on date 
+	 */	
+	@GetMapping("/getAllOpportuntiesByDate/{fromdate}/{toDate}/{opportunity_type}")
+	public ResponseEntity<List<Opportunity>> getAllOpportunityByDates(@PathVariable LocalDate fromdate,@PathVariable LocalDate toDate,
+			@PathVariable String opportunity_type)
+	{
+		logger.trace("Request to Retrive all  opportunities based on date range and status type:{}fromdate,{}toDate,{}opportunity_type",fromdate,toDate,opportunity_type);
+		if(opportunity_type==null || opportunity_type.equals(""))
+		{
+			logger.warn("opportunity_type Should not be null please enter Valid opportuntiy_type");
+			throw new InvalidInput("Please enter Valid Opportunity_type");
+		}
+		List<Opportunity> opportuntiesFromDataBase=oppartunityService.getAllOpportunityByDate(fromdate, toDate,opportunity_type);
+		logger.info("Succesfully retrived  all  opportunities based on date range and status type:{}fromdate,{}toDate,{}opportunity_type",fromdate,toDate,opportunity_type);
+		return new ResponseEntity<List<Opportunity>>(opportuntiesFromDataBase,HttpStatus.OK);
+	}
 }

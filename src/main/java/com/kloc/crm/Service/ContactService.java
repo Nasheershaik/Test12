@@ -1,13 +1,14 @@
-package com.kloc.crm.Service;
 /**
  * Service interface for managing Contact entities in the CRM system.
  *
- * @author_name  : Ankush
- * @File_name	 : ContactService.java
- * @Created_Date : 5/7/2023
+ * @Author_name: AnkushJadhav
+ * @File_name: ContactService.java
+ * @Created_Date: 5/7/2023
  */
+package com.kloc.crm.Service;
 import java.util.List;
 import java.time.LocalDate;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,17 +19,27 @@ public interface ContactService
 	/**
 	 * Creates a new contact.
 	 *
-	 * @param contact The contact object to be created.
+	 * @param contact The contact object to be created. This should be provided in the request body.
+	 * @return A ResponseEntity with a status code and message.
 	 */
 	ResponseEntity<String> CreateContact(Contact contact);
 	
 	/**
-	 * this method to delete contact on contact id.
+	 * Adds new contacts from an Excel file for a specific user.
 	 *
-	 * @param parameter1 contact id which have to be deleter.
-	 * @return understandable responce if contact deleted or not.
+	 * @param contactsFromExcel The Excel file containing contacts.
+	 * @param userId The user ID for whom the contacts are being added.
+	 * @return A ResponseEntity with a status code and message.
 	 */
-	ResponseEntity<String> addContactsFromExcel(MultipartFile file,String userId);
+	ResponseEntity<String> AddContactsFromExcel(MultipartFile excelFile,String userId);
+	
+	/**
+	 * Retrieves a contact by its contact ID.
+	 *
+	 * @param contactId The ID of the contact to retrieve.
+	 * @return A ResponseEntity containing the contact with the specified ID.
+	 */
+	ContactDTO GetContactByContactId(String contactId);
 	
 	/**
 	 * Retrieves all contacts.
@@ -38,84 +49,104 @@ public interface ContactService
 	List<ContactDTO> GetAllContact();
 	
 	/**
-	 * Retrieves a contact by their contact ID.
+	 * Retrieves all contacts within a specified date range.
 	 *
-	 * @param contactId The ID of the contact to retrieve.
-	 * @return The contact with the specified ID.
+	 * @param startDate The starting date of the range.
+	 * @param endDate The ending date of the range.
+	 * @return A list of contacts within the specified date range.
 	 */
-	ContactDTO GetContactByContactId(String contactId);
+	List<ContactDTO> GetAllContactInDateRange(LocalDate startDate,LocalDate endDate); 
 	
 	/**
-	 * Retrieves a contact by their email.
+	 * Retrieves contacts by their status type and status value.
 	 *
-	 * @param email The email of the contact to retrieve.
-	 * @return The contact with the specified email.
+	 * @param statusType The type of the contacts to retrieve.
+	 * @param statusValue The value of the contacts to retrieve.
+	 * @return A list of contacts with the specified status type and value.
 	 */
-	List<ContactDTO> GetAllContactByemail(String email);
+	List<ContactDTO> GetAllContactByStatusTypeAndStatusValue(String statusType, String statusValue);
 	
 	/**
-	 * Retrieves all contacts belonging to a specific company.
+	 * Retrieves all contacts within a date range and a specific status value.
 	 *
-	 * @param company The name of the company.
-	 * @return A list of contacts belonging to the specified company.
+	 * @param startDate The starting date of the range.
+	 * @param endDate The ending date of the range.
+	 * @param statusValue The status value to filter contacts.
+	 * @return A ResponseEntity containing a list of contacts that match the criteria.
+	 */
+	List<ContactDTO> GetAllContactInDateRangeWithStatusValue(LocalDate startDate,LocalDate endDate, String statusValue); 
+	 
+	/**
+	 * Retrieves contacts by their email.
+	 *
+	 * @param email The email of the contact(s) to retrieve.
+	 * @return A list of contacts with the specified email.
+	 */
+	List<ContactDTO> GetAllContactByEmail(String email);
+	
+	/**
+	 * Retrieves contacts by their email.
+	 *
+	 * @param email The email of the contact(s) to retrieve.
+	 * @return A list of contacts with the specified email.
 	 */
 	List<ContactDTO> GetAllContactByCompany(String company);
 	
 	/**
-	 * Retrieves all contacts with a specific source.
+	 * Retrieves contacts by their source.
 	 *
-	 * @param source The source of the contacts.
+	 * @param source The source of the contacts to retrieve.
 	 * @return A list of contacts with the specified source.
 	 */
-	List<ContactDTO> GetAllContactBysource(String source);
+	List<ContactDTO> GetAllContactBySource(String source);
 	
 	/**
-	 * Retrieves all contacts with a specific life cycle stage.
+	 * Retrieves contacts by their stage date.
 	 *
-	 * @param lifeCycleStage The life cycle stage of the contacts.
-	 * @return A list of contacts with the specified life cycle stage.
-	 */
-	List<ContactDTO> GetAllContactByStatusType(String statusValue);
-	
-	/**
-	 * Retrieves all contacts with a specific stage date.
-	 *
-	 * @param stageDate The stage date of the contacts.
+	 * @param stageDate The stage date of the contacts to retrieve.
 	 * @return A list of contacts with the specified stage date.
 	 */
 	List<ContactDTO> GetAllContactByStageDate(LocalDate stageDate);
 	
 	/**
-	 * Retrieves all contacts from a specific country.
+	 * Retrieves contacts by their country.
 	 *
-	 * @param country The name of the country.
+	 * @param country The name of the country to filter contacts.
 	 * @return A list of contacts from the specified country.
 	 */
-	List<ContactDTO> GetAllContactBycountry(String country);
+	List<ContactDTO> GetAllContactByCountry(String country);
 	
 	/**
-	 * Retrieves all contacts from a contact created by.
+	 * Retrieves contacts created by a specific user.
 	 *
-	 * @param country The user id of the contact created by.
-	 * @return A list of contacts from the contact created by.
+	 * @param contactCreatedBy The user ID of the contact creator.
+	 * @return A list of contacts created by the specified user.
 	 */
-	List<ContactDTO> GetAllContactOnContactCreatedBy(String contactCreatedBy);
+	List<ContactDTO> GetAllContactByUserId(String userId);
+	
+	/**
+	 * Retrieves contacts created by a specific user.
+	 *
+	 * @param contactCreatedBy The user ID of the contact creator.
+	 * @return A list of contacts created by the specified user.
+	 */
+	List<ContactDTO> GetAllContactByUserEmail(String userEmail);
 	
 	/**
 	 * Updates a contact by their contact ID.
 	 *
-	 * @param contact    The updated contact details.
-	 * @param contactId  The ID of the contact to be updated.
+	 * @param contact The updated contact details provided in the request body.
+	 * @param contactId The ID of the contact to be updated.
+	 * @return A ResponseEntity with a status code and message.
 	 */
 	ResponseEntity<String> UpdateContactByContactId(Contact contact, String contactId);
 	
 	/**
-	 * this method to delete contact on contact id.
+	 * Deletes a contact by their contact ID.
 	 *
-	 * @param parameter1 contact id which have to be deleter.
-	 * @return understandable responce if contact deleted or not.
+	 * @param contactId The ID of the contact to be deleted.
+	 * @return A ResponseEntity indicating whether the contact was deleted or not.
 	 */
-	ResponseEntity<String> deleteContactByContactId(String contactId);
-	List<ContactDTO> getAllContactCreateddByMail(String contactCreatedBy);
+	ResponseEntity<String> DeleteContactByContactId(String contactId);
 	
 }

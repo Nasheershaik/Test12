@@ -70,7 +70,7 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 //		opportunitySub.setStatus(status);
 		opportunitySub.setStatus(status);
 		opportunitySub.setOpportunityId(opportunity);
-		opportunitySub.setOpportunityCreatedDate(LocalDate.now());
+		opportunitySub.setOpportunityStatusDate(LocalDate.now());
 		return opportunitySubRepository.save(opportunitySub);
 	}
 //		if(opportunityId==null || opportunityId.equals(" "))
@@ -126,7 +126,7 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		if(date.toString()==null || date.toString().equals(""))
 			throw  new NullDataException("Date should not be empty plese eneter valid date in the LocalDate Format");
 		else
-			return opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityCreatedDate().isEqual(date)).toList();
+			return opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityStatusDate().isEqual(date)).toList();
 	}
 	 /**
       * Update  a Opportunity entity by the provided id.
@@ -142,12 +142,12 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		opportunityRepository.findById(opportunity_id).orElseThrow(()->new DataNotFoundException("Opportunity", "Opportunity_id", opportunity_id));
 		
 			OpportunitySub opportunitySubFromDatabase = opportunitySubRepository.findById(id).orElseThrow(()->new DataNotFoundException("OpportunitySub","Id",id));
-	       	if (opportunitySubInput.getOpportunityCreatedDate() != null)
+	       	if (opportunitySubInput.getOpportunityStatusDate() != null)
 	       	{
-	       		opportunitySubFromDatabase.setOpportunityCreatedDate(opportunitySubInput.getOpportunityCreatedDate());
+	       		opportunitySubFromDatabase.setOpportunityStatusDate(opportunitySubInput.getOpportunityStatusDate());
 	       	}
 	       	
-	       	System.out.println(opportunitySubInput.getCurrency()+"================================");
+	       	
 	       	
 	       	if(!opportunitySubInput.getCurrency().equals(null) || !opportunitySubInput.getCurrency().toString().equals(""))
 			{
@@ -273,9 +273,9 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
 		        	existingOpportunitySub.setNoOfInstallements(opportunitySub.getNoOfInstallements());
 				}	
 		        
-		     	if (opportunitySub.getOpportunityCreatedDate() != null)
+		     	if (opportunitySub.getOpportunityStatusDate() != null)
 		       	{
-		     		existingOpportunitySub.setOpportunityCreatedDate(opportunitySub.getOpportunityCreatedDate());
+		     		existingOpportunitySub.setOpportunityStatusDate(opportunitySub.getOpportunityStatusDate());
 		       	}
 		     	
 		    	if(opportunitySub.getPrice() > 0)

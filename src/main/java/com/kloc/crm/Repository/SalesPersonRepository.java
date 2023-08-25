@@ -21,7 +21,7 @@ import com.kloc.crm.Entity.SalesPerson;
 @EnableJpaRepositories
 public interface SalesPersonRepository extends JpaRepository<SalesPerson, String> {
 	
-	List<SalesPerson> findAllByTarget(int target);
+	List<SalesPerson> findAllByMaxTarget(int maxTarget);
 	
 	
 	

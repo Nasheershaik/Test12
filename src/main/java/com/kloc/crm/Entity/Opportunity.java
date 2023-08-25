@@ -6,6 +6,7 @@
  * @NoArgsConstructor and @AllArgsConstructor is used to generate Constructors based on no argument and  all fields
  */
 package com.kloc.crm.Entity;
+import java.time.LocalDate;
 import java.util.List;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -71,4 +72,8 @@ public class Opportunity
 	@ManyToOne
 	@JoinColumn(name="offering_id")
     private Offering offering;
+	
+	@Column
+	private LocalDate opportunityCreatedDate;
+	
 }

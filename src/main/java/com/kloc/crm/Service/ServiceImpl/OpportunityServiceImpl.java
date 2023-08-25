@@ -7,6 +7,7 @@
  * this class will implement service interface to override abstract methods of that interface 
  */
 package com.kloc.crm.Service.ServiceImpl;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,18 +65,10 @@ public class OpportunityServiceImpl implements OpportunityService
 		oppartunity.setContact(contact);
 		return opportunityRepo.save(oppartunity);
 	}
+	
 	@Override
 	public Opportunity saveOpportunities(Opportunity opportunity, String contact_Id, String offering_id)
 	{
-//		List<Offering> offer = opportunity.getO;
-////		List<Offering> offer=opportunityRepo.findAll().stream().filter(e->e.getOffering().equals(offering_id)).toList();
-////		List<Offering> offer=offeringRepository.findById(offering_id).orElseThrow(()-> new DataNotFoundException("offering","offering_id",offering_id));
-//		List<Offering> offer=offeringRepository.findAll().stream().filter(e->e.equals(offering_id)).toList();
-//		opportunity.setOffering(offer);
-//		Contact contact=contactRepository.findById(contact_Id).orElseThrow(()->new DataNotFoundException("contact","contactId", contact_Id));
-//		opportunity.setContact_Id(contact);
-//		return opportunityRepo.save(opportunity);
-		
 		if(contact_Id == null || contact_Id.equals(""))
 		{
 			throw new InvalidInput("Contact_id cannot be empty for opportunity");
@@ -91,19 +84,9 @@ public class OpportunityServiceImpl implements OpportunityService
 		opportunity.setOffering(offer);
 		Contact contacts= contactRepository.findById(contact_Id).orElseThrow(()-> new DataNotFoundException("contact","contact_id", offer));
 		opportunity.setContact(contacts);
+		opportunity.setOpportunityCreatedDate(LocalDate.now());
 		
 		List<OpportunitySub> collect = opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityName().equals(opportunity.getOpportunityName())).collect(Collectors.toList());
-		 System.out.println(collect);
-//		if(collect.isEmpty())
-//			// save
-//		else
-//		{
-//			 collect = collect.stream().filter(e->e.getOpportunityType().equals("deal")).collect(Collectors.toList());
-//			 if(!collect.isEmpty())
-//				 id return
-//						 //save
-//				 else
-	
 		return opportunityRepo.save(opportunity);
 		}
 	}
@@ -152,6 +135,7 @@ public class OpportunityServiceImpl implements OpportunityService
 			return opportunityRepo.findAll().stream().filter(e->e.getContact().getContactId().toLowerCase().equals(contactId.toLowerCase())).toList();
 		}
 	}
+	
 	 /**
      * Update  a Opportunity entity by the provided id.
      * @return The Opportunity entity associated with the provided id, or RuntimeException if not found.
@@ -173,13 +157,10 @@ public class OpportunityServiceImpl implements OpportunityService
 		{
 		   opportunity.setOpportunityName(oppartunity.getOpportunityName());
 		}
-		
-		
 		if(oppartunity.getOpportunitySize()>0)
 		{
 		opportunity.setOpportunitySize(oppartunity.getOpportunitySize());
 		}
-		
 		opportunity.setContact(contact);  
 		
 		opportunity.setOffering(offer);
@@ -225,5 +206,52 @@ public class OpportunityServiceImpl implements OpportunityService
 		        // Delete the Opportunity record
 		        opportunityRepo.delete(opportunity);
 		    }
+	}
+	@Override
+	public List<Opportunity> getAllOpportunityByType(String Status_type)
+	{
+		if(Status_type==null || Status_type.equals(""))
+		{
+			throw new NullDataException("Status-Type should not be empty");
+		}
+		else {
+		return opportunityRepo.findAll().stream().filter(e->{
+			List<OpportunitySub> list=opportunitySubRepository.findByOpportunityId(e);
+			
+			if(!list.isEmpty()) 
+			{
+				OpportunitySub last=list.get(list.size()-1);
+				if(last.getStatus().getStatusValue().equalsIgnoreCase(Status_type)) {
+				return true;
+			}else {
+				return false;
+			}
+				
+			}
+			return false;
+		}).toList();
+	}
+	}
+	@Override
+	public List<Opportunity> getAllOpportunityByDate(LocalDate fromdate, LocalDate toDate,String opportunityType) {
+		if(opportunityType==null || opportunityType.equals(""))
+		{
+			throw new NullDataException("Status-Type should not be empty");
+		}
+		else {
+		return opportunityRepo.findAll().stream().filter(e->{
+			List<OpportunitySub> list=opportunitySubRepository.findByOpportunityId(e);
+			if(!list.isEmpty()) 
+			{
+				OpportunitySub last=list.get(list.size()-1);
+				if(last.getStatus().getStatusValue().equalsIgnoreCase(opportunityType)&&(last.getOpportunityStatusDate().isAfter(fromdate)||last.getOpportunityStatusDate().equals(fromdate))&&(last.getOpportunityStatusDate().isBefore(toDate)||last.getOpportunityStatusDate().equals(toDate))) {
+				return true;
+			}else {
+				return false;
+			}
+			}
+			return false;
+		}).toList();
+	    }
 	}
 }
