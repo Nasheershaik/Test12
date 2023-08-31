@@ -118,7 +118,7 @@ public class ContactDataFromExcel
                         	 if (cell.getCellType() != CellType.BLANK) 
                              {
                                  if (cell.getCellType() != CellType.NUMERIC)
-                                     contact.setFirstName(cell.getStringCellValue());
+                                     contact.setLastName(cell.getStringCellValue());
                                  else
                                      throw new InvalidInput("No numbers in name.");
                              } else

@@ -17,7 +17,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 @Entity
@@ -36,9 +35,10 @@ public class ContactSub
 	private String contactSubId;
 	
 	@ManyToOne
-//	@JsonBackReference("contactId")
+	@JsonBackReference("contactId")
 	@JoinColumn(name = "contact_id")
 	private Contact contactId;
+	 
 	@ManyToOne
 	@JsonBackReference("lifeCycleStage")
 	@JoinColumn(name = "life_cycle_stage_id")
