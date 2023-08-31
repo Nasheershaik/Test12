@@ -29,7 +29,6 @@ import com.kloc.crm.Repository.ContactSubRepository;
 import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.UserRepository;
 import com.kloc.crm.Service.ContactService;
-import com.kloc.crm.Service.ContactSubService;
 import com.kloc.crm.dto.ContactDTO;
 import com.kloc.crm.dto.ContactSubDTO;
 
@@ -40,7 +39,7 @@ public class ContactServiceImpl implements ContactService {
 	@Autowired
 	private ContactRepository contactRepository;
 	@Autowired
-	private ContactSubService contactSubService;
+	private ContactSubRepository contactSubRepository;
 	@Autowired
 	private StatusRepo statusRepository;
 	@Autowired
@@ -59,20 +58,6 @@ public class ContactServiceImpl implements ContactService {
 		try {
 			if (contact != null && !contact.toString().equals(new Contact().toString()))
 			{
-				
-//				List<Status> allStatus = statusRepository.findAll().stream()
-//						.filter(e -> e.getStatusValue().toLowerCase().equals("contact")).collect(Collectors.toList());
-//
-//				if (allStatus.size() > 1)
-//				{
-//					logger.warning("Multiple 'contact' statuses found.");
-//					throw new InternalError("Something went wrong.");
-//				} 
-//				else if (allStatus.isEmpty()) 
-//					throw new NullDataException("Contact can't be created, initial status not found.");
-//				else 
-//					contact.setLifeCycleStage(allStatus.get(0));
-				
 				// Validate first name
 				if (contact.getFirstName() == null || contact.getFirstName().isEmpty()) 
 					throw new NullDataException("Please enter first name.");
@@ -82,7 +67,7 @@ public class ContactServiceImpl implements ContactService {
 				else 
 				{
 					List<Status> sourceStatus = statusRepository.findAll().stream()
-							.filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue().toLowerCase().equals(contact.getSource().getStatusValue().toLowerCase()))
+							.filter(e -> e.getStatusType().equalsIgnoreCase("Contact_Source") && e.getStatusValue().equalsIgnoreCase(contact.getSource().getStatusValue()))
 							.collect(Collectors.toList());
 
 					if (sourceStatus.size() > 1) 
@@ -94,7 +79,7 @@ public class ContactServiceImpl implements ContactService {
 						throw new DataNotFoundException("Source Not Found.");
 					else 
 					{
-						if (contact.getSource().getStatusValue().toLowerCase().equals("other")) 
+						if (contact.getSource().getStatusValue().equalsIgnoreCase("other")) 
 						{
 							if (contact.getOtherSourcetype() == null || contact.getOtherSourcetype().isEmpty()) 
 								throw new InvalidInput("Please enter source manually.");
@@ -114,29 +99,9 @@ public class ContactServiceImpl implements ContactService {
 					throw new InvalidInput("Please enter valid mobile number.");
 
 					contact.setDate(LocalDate.now());
-//				contact.setStageDate(LocalDate.now());
 
 				Contact savedContact = contactRepository.save(contact);
 
-//				List<Status> allStatus = statusRepository.findAll().stream()
-//						.filter(e -> e.getStatusValue().toLowerCase().equals("contact")).collect(Collectors.toList());
-//
-//				if (allStatus.size() > 1)
-//				{
-//					logger.warning("Multiple 'contact' statuses found.");
-//					throw new InternalError("Something went wrong.");
-//				} 
-//				else if (allStatus.isEmpty()) 
-//					throw new NullDataException("Contact can't be created, initial status not found.");
-//				else 
-//				{
-//					ContactSub contactSub = new ContactSub();
-//					contactSub.setContactId(savedContact);
-//					contactSub.setLifeCycleStage(allStatus.get(0));
-//					contactSub.setStageDate(LocalDate.now());
-//					contactSubService.CreateContactSub(contactSub);
-//				}
-				
 				logger.info("Contact created with ID: " + savedContact.getContactId());
 				return new ResponseEntity<>("Contact added. Your contact ID is: " + savedContact.getContactId(), HttpStatus.OK);
 			} else {
@@ -186,14 +151,12 @@ public class ContactServiceImpl implements ContactService {
 			/**
 			 * this is for get life-cycle status from the contact sub table
 			 */
-			List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+			List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 			List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 					.map(contactSub -> {
 						ContactSubDTO dto = new ContactSubDTO();
 						dto.setContactSubId(contactSub.getContactSubId());
 						dto.setContactId(contactSub.getContactId().getContactId());
-						
-							
 						dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 						dto.setStageDate(contactSub.getStageDate());
 						return dto;
@@ -201,8 +164,6 @@ public class ContactServiceImpl implements ContactService {
 					.collect(Collectors.toList());
 			
 			contactDTO.setLifeCycleStage(contactSubDTOList);
-//			contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//			contactDTO.setStageDate(contact.getStageDate());
 			contactDTO.setFirstName(contact.getFirstName());
 			contactDTO.setLastName(contact.getLastName());
 			contactDTO.setEmail(contact.getEmail());
@@ -249,14 +210,12 @@ public class ContactServiceImpl implements ContactService {
 					/**
 					 * this is for get life-cycle status from the contact sub table
 					 */
-					List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+					List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 					List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 							.map(contactSub -> {
 								ContactSubDTO dto = new ContactSubDTO();
 								dto.setContactSubId(contactSub.getContactSubId());
 								dto.setContactId(contactSub.getContactId().getContactId());
-								
-									
 								dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 								dto.setStageDate(contactSub.getStageDate());
 								return dto;
@@ -264,8 +223,6 @@ public class ContactServiceImpl implements ContactService {
 							.collect(Collectors.toList());
 					
 					contactDTO.setLifeCycleStage(contactSubDTOList);
-//					contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setFirstName(contact.getFirstName());
 					contactDTO.setLastName(contact.getLastName());
 					contactDTO.setEmail(contact.getEmail());
@@ -306,7 +263,7 @@ public class ContactServiceImpl implements ContactService {
 				throw new NullDataException("Please enter email.");
 
 			List<Contact> findAll = contactRepository.findAll().stream()
-					.filter(e -> e.getEmail().toLowerCase().equals(email.toLowerCase())).collect(Collectors.toList());
+					.filter(e -> e.getEmail() != null && e.getEmail().equalsIgnoreCase(email)).toList();
 
 			if (findAll.isEmpty()) 
 				throw new DataNotFoundException("Sorry! no account with email : " + email);
@@ -319,14 +276,12 @@ public class ContactServiceImpl implements ContactService {
 					/**
 					 * this is for get life-cycle status from the contact sub table
 					 */
-					List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+					List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 					List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 							.map(contactSub -> {
 								ContactSubDTO dto = new ContactSubDTO();
 								dto.setContactSubId(contactSub.getContactSubId());
 								dto.setContactId(contactSub.getContactId().getContactId());
-								
-									
 								dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 								dto.setStageDate(contactSub.getStageDate());
 								return dto;
@@ -334,9 +289,6 @@ public class ContactServiceImpl implements ContactService {
 							.collect(Collectors.toList());
 					
 					contactDTO.setLifeCycleStage(contactSubDTOList);
-					
-//					contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setFirstName(contact.getFirstName());
 					contactDTO.setLastName(contact.getLastName());
 					contactDTO.setEmail(contact.getEmail());
@@ -378,11 +330,11 @@ public class ContactServiceImpl implements ContactService {
 				throw new NullDataException("Please enter company name.");
 			
 			List<Contact> findAll = contactRepository.findAll().stream()
-					.filter(e -> e.getCompany().toLowerCase().equals(company.toLowerCase()))
-					.collect(Collectors.toList());
+					.filter(e -> e.getCompany() != null && company.equalsIgnoreCase(e.getCompany()))
+					.toList();
 
 			if (findAll.isEmpty())
-				throw new DataNotFoundException("Sorry! no account for company : " + company);
+				throw new DataNotFoundException("Sorry! no contact in company : " + company);
 			else 
 			{
 				List<ContactDTO> contactDTOs = findAll.stream().map(contact -> {
@@ -392,14 +344,12 @@ public class ContactServiceImpl implements ContactService {
 					/**
 					 * this is for get life-cycle status from the contact sub table
 					 */
-					List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+					List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 					List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 							.map(contactSub -> {
 								ContactSubDTO dto = new ContactSubDTO();
 								dto.setContactSubId(contactSub.getContactSubId());
 								dto.setContactId(contactSub.getContactId().getContactId());
-								
-									
 								dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 								dto.setStageDate(contactSub.getStageDate());
 								return dto;
@@ -407,9 +357,6 @@ public class ContactServiceImpl implements ContactService {
 							.collect(Collectors.toList());
 					
 					contactDTO.setLifeCycleStage(contactSubDTOList);
-					
-//					contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setFirstName(contact.getFirstName());
 					contactDTO.setLastName(contact.getLastName());
 					contactDTO.setEmail(contact.getEmail());
@@ -449,23 +396,15 @@ public class ContactServiceImpl implements ContactService {
 			if (source == null || source.isEmpty()) 
 				throw new NullDataException("Please enter source.");
 			
-			List<Status> allStatus = statusRepository.findAll().stream()
-					.filter(e -> e.getTableName().toLowerCase().equals("contact") && e.getStatusType().toLowerCase().equals("contact_source") && e.getStatusValue().toLowerCase().equals(source.toLowerCase()))
-					.collect(Collectors.toList());
-			if (allStatus.size() > 1)
-			{
-				logger.warning("Duplicate source values in database.");
-				throw new InternalError("Something went wrong.");
-			} 
-			else if (allStatus.isEmpty()) 
-				throw new DataNotFoundException("Source Not Found.");
-			else 
-			{
+			Status status = statusRepository.findAll().stream()
+					.filter(e -> e.getTableName().equalsIgnoreCase("contact") && e.getStatusType().equalsIgnoreCase("contact_source") && e.getStatusValue().equalsIgnoreCase(source))
+					.findFirst().orElseThrow(() -> new DataNotFoundException("Source not found."));
+			
 				List<Contact> findAll = contactRepository.findAll().stream()
-						.filter(e -> e.getSource().getStatusId().equals(allStatus.get(0).getStatusId()))
+						.filter(e -> e.getSource().getStatusId().equals(status.getStatusId()))
 						.collect(Collectors.toList());
 					if (findAll.isEmpty()) 
-						throw new DataNotFoundException("No Contact with This Source.");
+						throw new DataNotFoundException("No contact with this source.");
 					else {
 					List<ContactDTO> contactDTOs = findAll.stream().map(contact -> {
 						ContactDTO contactDTO = new ContactDTO();
@@ -474,14 +413,12 @@ public class ContactServiceImpl implements ContactService {
 						/**
 						 * this is for get life-cycle status from the contact sub table
 						 */
-						List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+						List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 						List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 								.map(contactSub -> {
 									ContactSubDTO dto = new ContactSubDTO();
 									dto.setContactSubId(contactSub.getContactSubId());
 									dto.setContactId(contactSub.getContactId().getContactId());
-									
-										
 									dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 									dto.setStageDate(contactSub.getStageDate());
 									return dto;
@@ -489,9 +426,6 @@ public class ContactServiceImpl implements ContactService {
 								.collect(Collectors.toList());
 						
 						contactDTO.setLifeCycleStage(contactSubDTOList);
-						
-//						contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//						contactDTO.setStageDate(contact.getStageDate());
 						contactDTO.setFirstName(contact.getFirstName());
 						contactDTO.setLastName(contact.getLastName());
 						contactDTO.setEmail(contact.getEmail());
@@ -516,7 +450,7 @@ public class ContactServiceImpl implements ContactService {
 
 					logger.info("Contacts fetched successfully by source.");
 					return contactDTOs;
-				}
+				
 			}
 		} catch (Exception e) {
 			logger.severe("An exception occurred while fetching contacts by source.");
@@ -551,14 +485,12 @@ public class ContactServiceImpl implements ContactService {
 						/**
 						 * this is for get life-cycle status from the contact sub table
 						 */
-						List<ContactSub> contactSubListOnContactId = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+						List<ContactSub> contactSubListOnContactId = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 						List<ContactSubDTO> contactSubDTOList = contactSubListOnContactId.stream().filter(e -> e.getLifeCycleStage().getStatusId().equals(allStatus.get(0).getStatusId()))
 								.map(contactSub -> {
 									ContactSubDTO dto = new ContactSubDTO();
 									dto.setContactSubId(contactSub.getContactSubId());
 									dto.setContactId(contactSub.getContactId().getContactId());
-									
-										
 									dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 									dto.setStageDate(contactSub.getStageDate());
 									return dto;
@@ -566,9 +498,6 @@ public class ContactServiceImpl implements ContactService {
 								.collect(Collectors.toList());
 						
 						contactDTO.setLifeCycleStage(contactSubDTOList);	
-						
-//						contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//						contactDTO.setStageDate(contact.getStageDate());
 						contactDTO.setFirstName(contact.getFirstName());
 						contactDTO.setLastName(contact.getLastName());
 						contactDTO.setEmail(contact.getEmail());
@@ -588,10 +517,7 @@ public class ContactServiceImpl implements ContactService {
 						contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 						contactDTO.setDate(contact.getDate());
 						contactDTO.setMobileNumber(contact.getMobileNumber());
-						if (contactSubDTOList.isEmpty())
-							return null;
-						else
-							return contactDTO;
+						return contactSubDTOList.isEmpty() ? null : contactDTO;
 					}).filter(e -> e != null).collect(Collectors.toList());
 
 					logger.info("Contacts fetched successfully by status type and value.");
@@ -613,16 +539,18 @@ public class ContactServiceImpl implements ContactService {
 				if (startDate.isAfter(endDate)) 
 					throw new InvalidInput("Start date should be less than end date.");
 				
+				if (statusType == null || statusType.isEmpty()) 
+					throw new InvalidInput("Status type can not be empty.");
 				if (statusValue == null || statusValue.isEmpty()) 
 					throw new InvalidInput("Status value can not be empty.");
-				List<Status> allStatus = statusRepository.findAll().stream()
+				Status status = statusRepository.findAll().stream()
 						.filter(e -> e.getTableName().equalsIgnoreCase("contact") && e.getStatusType().equalsIgnoreCase(statusType) && e.getStatusValue().equalsIgnoreCase(statusValue))
-						.collect(Collectors.toList());
+						.findFirst().orElseThrow(() -> new DataNotFoundException("Status not found."));
 
-					// Retrieve all contacts and filter them by date range
-					List<Contact> findAll = contactRepository.findAll().stream()
-							.filter(e -> ((e.getDate().isAfter(startDate) || e.getDate().isEqual(startDate)) && (e.getDate().isEqual(endDate) || e.getDate().isBefore(endDate))))
-							.toList();
+				// Retrieve all contacts and filter them by date range
+				List<Contact> findAll = contactRepository.findAll().stream()
+						.filter(e -> (e.getDate().isAfter(startDate) || e.getDate().isEqual(startDate)) && (e.getDate().isEqual(endDate) || e.getDate().isBefore(endDate)))
+						.toList();
 						
 						// Map the filtered contacts to ContactDTO objects
 						List<ContactDTO> contactDTOs = findAll.stream().map(contact -> {
@@ -633,14 +561,12 @@ public class ContactServiceImpl implements ContactService {
 							/**
 							 * this is for get life-cycle status from the contact sub table
 							 */
-							List<ContactSub> contactSubListOnContactId = contactSubService.GetAllContactSubByContactId(contact.getContactId());
-							List<ContactSubDTO> contactSubDTOList = contactSubListOnContactId.stream().filter(e -> e.getLifeCycleStage().getStatusId().equals(allStatus.get(0).getStatusId()))
+							List<ContactSub> contactSubListOnContactId = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
+							List<ContactSubDTO> contactSubDTOList = contactSubListOnContactId.stream().filter(e -> e.getLifeCycleStage().getStatusId().equals(status.getStatusId()))
 									.map(contactSub -> {
 										ContactSubDTO dto = new ContactSubDTO();
 										dto.setContactSubId(contactSub.getContactSubId());
 										dto.setContactId(contactSub.getContactId().getContactId());
-										
-											
 										dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 										dto.setStageDate(contactSub.getStageDate());
 										return dto;
@@ -648,8 +574,6 @@ public class ContactServiceImpl implements ContactService {
 									.collect(Collectors.toList());
 							
 							contactDTO.setLifeCycleStage(contactSubDTOList);	
-							
-//							contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
 							contactDTO.setFirstName(contact.getFirstName());
 							contactDTO.setLastName(contact.getLastName());
 							contactDTO.setEmail(contact.getEmail());
@@ -667,12 +591,8 @@ public class ContactServiceImpl implements ContactService {
 							contactDTO.setContactCreatedByName(contact.getContactCreatedBy().getUserName());
 							contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 							contactDTO.setDate(contact.getDate());
-//							contactDTO.setStageDate(contact.getStageDate());
 							contactDTO.setMobileNumber(contact.getMobileNumber());
-							if (contactSubDTOList.isEmpty())
-								return null;
-							else
-								return contactDTO;
+							return contactSubDTOList.isEmpty() ? null : contactDTO;
 						}).filter(e -> e != null).collect(Collectors.toList());
 
 						// Log success
@@ -692,30 +612,21 @@ public class ContactServiceImpl implements ContactService {
 
 		try {
 			if (stageDate == null || stageDate.toString().isEmpty()) {
-				logger.warning("Stage date is missing.");
 				throw new NullDataException("Please enter stage date.");
 			}
-			List<Contact> findAll = contactRepository.findAll().stream().collect(Collectors.toList());
-
-			if (findAll.isEmpty()) {
-				logger.warning("No accounts found with stage date: " + stageDate.toString());
-				throw new DataNotFoundException("No accounts with stage date: " + stageDate.toString());
-			}
-			List<ContactDTO> contactDTOs = findAll.stream().map(contact -> {
+			List<ContactDTO> contactDTOs = contactRepository.findAll().stream().map(contact -> {
 				ContactDTO contactDTO = new ContactDTO();
 				contactDTO.setContactId(contact.getContactId());
 				
 				/**
 				 * this is for get life-cycle status from the contact sub table
 				 */
-				List<ContactSub> contactSubListOnContactId = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+				List<ContactSub> contactSubListOnContactId = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 				List<ContactSubDTO> contactSubDTOList = contactSubListOnContactId.stream().filter(e -> e.getStageDate().isEqual(stageDate))
 						.map(contactSub -> {
 							ContactSubDTO dto = new ContactSubDTO();
 							dto.setContactSubId(contactSub.getContactSubId());
 							dto.setContactId(contactSub.getContactId().getContactId());
-							
-								
 							dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 							dto.setStageDate(contactSub.getStageDate());
 							return dto;
@@ -723,9 +634,6 @@ public class ContactServiceImpl implements ContactService {
 						.collect(Collectors.toList());
 				
 				contactDTO.setLifeCycleStage(contactSubDTOList);
-				
-//				contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setFirstName(contact.getFirstName());
 				contactDTO.setLastName(contact.getLastName());
 				contactDTO.setEmail(contact.getEmail());
@@ -745,10 +653,7 @@ public class ContactServiceImpl implements ContactService {
 				contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 				contactDTO.setDate(contact.getDate());
 				contactDTO.setMobileNumber(contact.getMobileNumber());
-				if(contactSubDTOList.isEmpty())
-					return null;
-				else
-					return contactDTO;
+				return contactSubDTOList.isEmpty() ? null : contactDTO;
 			}).filter(e -> e != null).collect(Collectors.toList());
 			logger.info("Found contacts by stage date: " + stageDate.toString());
 			return contactDTOs;
@@ -765,16 +670,15 @@ public class ContactServiceImpl implements ContactService {
 		logger.info("Getting contacts by country...");
 		try {
 			if (country == null || country.isEmpty()) {
-				logger.warning("Country name is missing.");
 				throw new NullDataException("Please enter country name.");
-			} else {
+			} else
+			{
 				List<Contact> findAll = contactRepository.findAll().stream()
-						.filter(e -> e.getCountry().equalsIgnoreCase(country)).collect(Collectors.toList());
+					    .filter(e -> e.getCountry() != null && country.equalsIgnoreCase(e.getCountry()))
+					    .toList();
 
-				if (findAll.isEmpty()) {
-					logger.warning("No accounts found in the country: " + country);
+				if (findAll.isEmpty())
 					throw new DataNotFoundException("No accounts in the country: " + country);
-				}
 
 				logger.info("Found contacts in the country: " + country);
 
@@ -785,14 +689,12 @@ public class ContactServiceImpl implements ContactService {
 					/**
 					 * this is for get life-cycle status from the contact sub table
 					 */
-					List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+					List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 					List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 							.map(contactSub -> {
 								ContactSubDTO dto = new ContactSubDTO();
 								dto.setContactSubId(contactSub.getContactSubId());
 								dto.setContactId(contactSub.getContactId().getContactId());
-								
-									
 								dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 								dto.setStageDate(contactSub.getStageDate());
 								return dto;
@@ -800,9 +702,6 @@ public class ContactServiceImpl implements ContactService {
 							.collect(Collectors.toList());
 					
 					contactDTO.setLifeCycleStage(contactSubDTOList);
-					
-//					contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//					contactDTO.setStageDate(contact.getStageDate());
 					contactDTO.setFirstName(contact.getFirstName());
 					contactDTO.setLastName(contact.getLastName());
 					contactDTO.setEmail(contact.getEmail());
@@ -854,14 +753,12 @@ public class ContactServiceImpl implements ContactService {
 				/**
 				 * this is for get life-cycle status from the contact sub table
 				 */
-				List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+				List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 				List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 						.map(contactSub -> {
 							ContactSubDTO dto = new ContactSubDTO();
 							dto.setContactSubId(contactSub.getContactSubId());
 							dto.setContactId(contactSub.getContactId().getContactId());
-							
-								
 							dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 							dto.setStageDate(contactSub.getStageDate());
 							return dto;
@@ -869,9 +766,6 @@ public class ContactServiceImpl implements ContactService {
 						.collect(Collectors.toList());
 				
 				contactDTO.setLifeCycleStage(contactSubDTOList);
-				
-//				contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setFirstName(contact.getFirstName());
 				contactDTO.setLastName(contact.getLastName());
 				contactDTO.setEmail(contact.getEmail());
@@ -911,10 +805,13 @@ public class ContactServiceImpl implements ContactService {
 			if (userEmail == null || userEmail.isEmpty()) {
 				throw new InvalidInput("Please provide a valid mail ID.");
 			}
-			User user = userRepository.findAll().stream().filter(e -> e.getEmail().equals(userEmail)).findFirst().get();
+			List<User> list = userRepository.findAll().stream().filter(e -> e.getEmail().equals(userEmail)).toList();
 
+			if (list.isEmpty())
+				throw new DataNotFoundException("No user with this email id");
+			
 			List<Contact> findAll = contactRepository.findAll().stream()
-					.filter(contact -> contact.getContactCreatedBy().equals(user)).collect(Collectors.toList());
+					.filter(contact -> contact.getContactCreatedBy().equals(list.get(0))).collect(Collectors.toList());
 
 			List<ContactDTO> contactDTOs = findAll.stream().map(contact -> {
 				ContactDTO contactDTO = new ContactDTO();
@@ -923,14 +820,12 @@ public class ContactServiceImpl implements ContactService {
 				/**
 				 * this is for get life-cycle status from the contact sub table
 				 */
-				List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+				List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 				List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 						.map(contactSub -> {
 							ContactSubDTO dto = new ContactSubDTO();
 							dto.setContactSubId(contactSub.getContactSubId());
 							dto.setContactId(contactSub.getContactId().getContactId());
-							
-								
 							dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 							dto.setStageDate(contactSub.getStageDate());
 							return dto;
@@ -938,9 +833,6 @@ public class ContactServiceImpl implements ContactService {
 						.collect(Collectors.toList());
 				
 				contactDTO.setLifeCycleStage(contactSubDTOList);	
-				
-//				contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//				contactDTO.setStageDate(contact.getStageDate());
 				contactDTO.setFirstName(contact.getFirstName());
 				contactDTO.setLastName(contact.getLastName());
 				contactDTO.setEmail(contact.getEmail());
@@ -994,14 +886,12 @@ public class ContactServiceImpl implements ContactService {
 							/**
 							 * this is for get life-cycle status from the contact sub table
 							 */
-							List<ContactSub> contactSubList = contactSubService.GetAllContactSubByContactId(contact.getContactId());
+							List<ContactSub> contactSubList = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contact.getContactId())).toList();
 							List<ContactSubDTO> contactSubDTOList = contactSubList.stream()
 									.map(contactSub -> {
 										ContactSubDTO dto = new ContactSubDTO();
 										dto.setContactSubId(contactSub.getContactSubId());
 										dto.setContactId(contactSub.getContactId().getContactId());
-										
-											
 										dto.setLifeCycleStage(contactSub.getLifeCycleStage().getStatusValue());
 										dto.setStageDate(contactSub.getStageDate());
 										return dto;
@@ -1009,9 +899,6 @@ public class ContactServiceImpl implements ContactService {
 									.collect(Collectors.toList());
 							
 							contactDTO.setLifeCycleStage(contactSubDTOList);	
-							
-//							contactDTO.setLifeCycleStage(contact.getLifeCycleStage().getStatusValue());
-//							contactDTO.setStageDate(contact.getStageDate());
 							contactDTO.setFirstName(contact.getFirstName());
 							contactDTO.setLastName(contact.getLastName());
 							contactDTO.setEmail(contact.getEmail());
@@ -1030,10 +917,7 @@ public class ContactServiceImpl implements ContactService {
 							contactDTO.setContactCreatedByEmail(contact.getContactCreatedBy().getEmail());
 							contactDTO.setDate(contact.getDate());
 							contactDTO.setMobileNumber(contact.getMobileNumber());
-							if (contactSubDTOList.isEmpty())
-								return null;
-							else
-								return contactDTO;
+							return contactDTO;
 						}).filter(e -> e != null).collect(Collectors.toList());
 
 						// Log success
@@ -1097,6 +981,7 @@ public class ContactServiceImpl implements ContactService {
 				contactRepository.save(contactFromDatabase);
 
 				return new ResponseEntity<>("Contact updated, contact ID: " + contactId, HttpStatus.OK);
+
 			} 
 			else
 				throw new NullDataException("Data can't be empty. Please check it.");
@@ -1109,21 +994,21 @@ public class ContactServiceImpl implements ContactService {
 
 	// This is for deleting the contact corresponding to the provided contact id.
 	@Override
-	public ResponseEntity<String> DeleteContactByContactId(String contactId) {
+	public ResponseEntity<String> DeleteContactByContactId(String contactId) 
+	{
 		logger.info("Deleting contact by contact ID...");
 		try {
 			if (contactId == null || contactId.isEmpty()) 
 				throw new NullDataException("Please provide contact ID of the account you want to delete.");
-			else {
-				Contact contact = contactRepository.findById(contactId).orElseThrow(
-						() -> new DataNotFoundException("No account available with contact ID: " + contactId));
-
-				if (contact != null) {
-					contactRepository.deleteById(contactId);
-					logger.info("Contact deleted, contact ID: " + contactId);
-					return new ResponseEntity<>("Contact deleted.", HttpStatus.OK);
-				} else
-					throw new DataNotFoundException("No account available with contact ID: " + contactId);
+			else 
+			{
+				contactRepository.findById(contactId).orElseThrow(() -> new DataNotFoundException("No account available with contact ID: " + contactId));
+				List<ContactSub> list = contactSubRepository.findAll().stream().filter(e -> e.getContactId().getContactId().equals(contactId)).toList();
+				if (!list.isEmpty())
+					list.stream().forEach(delete -> contactSubRepository.deleteById(delete.getContactSubId()));
+				contactRepository.deleteById(contactId);
+				logger.info("Contact deleted, contact ID: " + contactId);
+				return new ResponseEntity<>("Contact deleted.", HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			logger.severe("An exception occurred while deleting contact." + e.getMessage());

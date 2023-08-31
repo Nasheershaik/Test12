@@ -35,12 +35,6 @@ public class Contact
     })
     private String contactId;
 
-    // The life cycle stage of the contact, e.g., new contact.
-//    @ManyToOne
-//    @JsonBackReference("lifeCycleStage")
-//    @JoinColumn(name = "life_cycle_stage_id")
-//    private Status lifeCycleStage;
-
     // The first name of the contact.
     private String firstName;
 
@@ -88,9 +82,6 @@ public class Contact
 
     // The date when the contact was created.
     private LocalDate date;
-
-    // The date representing the stage of the contact.
-//    private LocalDate stageDate;
 
     // The mobile number of the contact.
     private long mobileNumber;
