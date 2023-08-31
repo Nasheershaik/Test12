@@ -74,7 +74,7 @@ public interface ContactService
 	 * @param statusValue The status value to filter contacts.
 	 * @return A ResponseEntity containing a list of contacts that match the criteria.
 	 */
-	List<ContactDTO> GetAllContactInDateRangeWithStatusValue(LocalDate startDate,LocalDate endDate, String statusValue); 
+	List<ContactDTO> GetAllContactInDateRangeWithStatusTypeAndStatusValue(LocalDate startDate,LocalDate endDate, String statusType, String statusValue); 
 	 
 	/**
 	 * Retrieves contacts by their email.

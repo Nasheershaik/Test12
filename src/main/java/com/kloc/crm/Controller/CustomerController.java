@@ -55,17 +55,17 @@ public class CustomerController
 	 * @PostMapping is the responsible for handling HTTP Post request
 	 * @return Newly Created Customers
 	 **/
-	@PostMapping("/save/{opportunityId}/{contact_Id}")
-	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer,@PathVariable("opportunityId") String opportunityId, @PathVariable("contact_Id") String contact_Id)
+	@PostMapping("/save/{contact_Id}")
+	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer, @PathVariable("contact_Id") String contact_Id)
 	{
 		logger.info("Request recived to save customer");
 		
-		 if(opportunityId==null || contact_Id==null || opportunityId.equals(" ")||contact_Id.equals(" "))
+		 if(contact_Id==null ||contact_Id.equals(" "))
 		 {
 			 logger.error("opportunity id or contact id should not be null");
 			 throw new InvalidInput("please enter valid opportunity id or contact id");
 		 }
-	    Customer savedCustomer = customerService.saveCustomer(customer,opportunityId,contact_Id);
+	    Customer savedCustomer = customerService.saveCustomer(customer,contact_Id);
 
 	    logger.info("Customer saved successfully with ID: {}", savedCustomer.getCustomerId());
 
@@ -131,29 +131,29 @@ public class CustomerController
 	}
 	
 	
-	/** getAllCustomersByopportunity id **/
-	@GetMapping("getAllCustomersBy/{opportunity_id}")
-	public ResponseEntity<List<Customer>> getCustomerByOpportunityId(@PathVariable("opportunity_id") String opportunity_id) 
-	{
-		 logger.trace("Request to fetch all the customers based opportunity id:{}",opportunity_id);
-		 if(opportunity_id==null || opportunity_id.equals(" "))
-		 {
-			 logger.error("contact id should not be null");
-			 throw new InvalidInput("Please enter opportunity id");
-		 }
-		 List<Customer> customersByOpportunity=customerService.getCustomerByOpportunityId(opportunity_id);
-		 
-		 if (!customersByOpportunity.isEmpty())
-		  {
-			logger.info("Sucessfully retrived all the customers based on opportunity_id");
-		return new ResponseEntity< >(customersByOpportunity,HttpStatus.OK);
-		  }
-		  else
-		  {
-			  logger.warn("No customers found for opportunity_id: {}", opportunity_id);
-			  return ResponseEntity.notFound().build();
-		  }
-	}
+//	/** getAllCustomersByopportunity id **/
+//	@GetMapping("getAllCustomersBy/{opportunity_id}")
+//	public ResponseEntity<List<Customer>> getCustomerByOpportunityId(@PathVariable("opportunity_id") String opportunity_id) 
+//	{
+//		 logger.trace("Request to fetch all the customers based opportunity id:{}",opportunity_id);
+//		 if(opportunity_id==null || opportunity_id.equals(" "))
+//		 {
+//			 logger.error("contact id should not be null");
+//			 throw new InvalidInput("Please enter opportunity id");
+//		 }
+//		 List<Customer> customersByOpportunity=customerService.getCustomerByOpportunityId(opportunity_id);
+//		 
+//		 if (!customersByOpportunity.isEmpty())
+//		  {
+//			logger.info("Sucessfully retrived all the customers based on opportunity_id");
+//		return new ResponseEntity< >(customersByOpportunity,HttpStatus.OK);
+//		  }
+//		  else
+//		  {
+//			  logger.warn("No customers found for opportunity_id: {}", opportunity_id);
+//			  return ResponseEntity.notFound().build();
+//		  }
+//	}
 	/**
 	 * Responsible for Updating endPoint Customers
 	 * 

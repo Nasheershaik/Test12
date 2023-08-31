@@ -23,10 +23,7 @@ public interface TaskSubRepository extends JpaRepository<TaskSub, String>
      * @param status The task status
      * @return A list of tasks with the specified status
      */
-//	List<Task> findAllByTaskStatus(String status);
-	
-//	@Query(value = "select * from ", nativeQuery = true)
-//	List<TaskSub> getAllTaskByTaskStatus(String status);
 	List<TaskSub> findByTask(Task task);
-	//List<TaskSub> findTasksByFollowUpDateBeforeAndStatusChanged(LocalDate currentDate, boolean statusChanged);
+
+	List<TaskSub> findAllByTaskOrderByStatusDateDesc(Task task);
 }

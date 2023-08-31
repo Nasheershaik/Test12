@@ -64,9 +64,9 @@ public class Customer
 	@Column(name="Date")
 	private LocalDate customerCreatedDate;
 	
-	@ManyToOne
-	@JoinColumn(name="OpportunityId")
-	private Opportunity Opportunity;
+//	@ManyToOne
+//	@JoinColumn(name="OpportunityId")
+//	private Opportunity Opportunity;
 
 //	@OneToOne
 //	@JoinColumn

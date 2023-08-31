@@ -121,10 +121,10 @@ public class ContactController
 	 * @param statusValue The status value to filter contacts.
 	 * @return A ResponseEntity containing a list of contacts that match the criteria.
 	 */
-	@GetMapping("get_all_contact_in_date_range_with_status_value/{startDate}/{endDate}/{statusValue}")
-	private ResponseEntity<List<ContactDTO>> GetAllContactInDateRangeWithStatusValue(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate, @PathVariable String statusValue) 
+	@GetMapping("get_all_contact_in_date_range_with_status_type_and_status_value/{startDate}/{endDate}/{statusType}/{statusValue}")
+	private ResponseEntity<List<ContactDTO>> GetAllContactInDateRangeWithStatusTypeAndStatusValue(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate,@PathVariable String statusType, @PathVariable String statusValue) 
 	{
-		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactInDateRangeWithStatusValue(startDate,endDate,statusValue),HttpStatus.OK);
+		return new ResponseEntity<List<ContactDTO>>(contactService.GetAllContactInDateRangeWithStatusTypeAndStatusValue(startDate,endDate,statusType,statusValue),HttpStatus.OK);
 	}
 	
 	/**

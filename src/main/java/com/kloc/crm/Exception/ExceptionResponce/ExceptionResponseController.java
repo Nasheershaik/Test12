@@ -95,7 +95,7 @@ public class ExceptionResponseController
     private ResponseEntity<String> handleNullDataException(NullDataException nullDataException) 
     {
         logger.log(Level.WARNING, "NullDataException occurred: " + nullDataException.getMessage(), nullDataException);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DATA_NOT_FOUND_MSG + ": " + nullDataException.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DATA_NOT_FOUND_MSG );
     }
 
     /**
@@ -106,7 +106,7 @@ public class ExceptionResponseController
     private ResponseEntity<String> handleNullPointerException(NullPointerException nullPointerException) 
     {
         logger.log(Level.WARNING, "NullPointerException occurred: " + nullPointerException.getMessage(), nullPointerException);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DATA_NOT_FOUND_MSG + ": " + nullPointerException.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DATA_NOT_FOUND_MSG );
     }
 
     /**
@@ -117,7 +117,7 @@ public class ExceptionResponseController
     private ResponseEntity<String> handleInternalError(InternalError internalError)
     {
         logger.log(Level.SEVERE, "InternalError occurred: " + internalError.getMessage(), internalError);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG + ": " + internalError.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG );
     }
 
     /**
@@ -128,7 +128,7 @@ public class ExceptionResponseController
     private ResponseEntity<String> handleInternalServerError(InternalServerError internalServerError)
     {
         logger.log(Level.WARNING, "InternalServerError occurred: " + internalServerError.getMessage(), internalServerError);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG + ": " + internalServerError.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(INTERNAL_SERVER_ERROR_MSG );
     }
 
     /**

@@ -186,9 +186,9 @@ public class ContactDataFromExcel
 
                 // Set the initial lifecycle stage and dates for the contact
                 contact.setContactCreatedBy(userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found")));
-                contact.setLifeCycleStage(contactStatus.get(0));
+//                contact.setLifeCycleStage(contactStatus.get(0));
                 contact.setDate(LocalDate.now());
-                contact.setStageDate(LocalDate.now());
+//                contact.setStageDate(LocalDate.now());
 
                 // Add the contact to the list
                 listOfContact.add(contact);

@@ -60,34 +60,26 @@ public class CustomerServiceImpl implements CustomerService
      * @return The saved  Customer entity.
      */
 	@Override
-     public Customer saveCustomer(Customer customer,String opportunityId,String contactId)
+     public Customer saveCustomer(Customer customer,String contactId)
      {
-	
-		if (opportunityId == null || opportunityId.equals(""))
-		{
-			throw new InvalidInput("opportunity can not be emplty.");
-		}
-		else
-		{
 			if(contactId == null || contactId.equals(""))
 			{
 				throw new InvalidInput("contact id can not be empty");
 			}
-			if(opportunityId!=null || !opportunityId.equals(" ")||contactId!=null||contactId.equals(""))
+			if(contactId!=null||contactId.equals(""))
 			{
-				Opportunity a = opportunityRepository.findById(opportunityId).orElseThrow(
-						() -> new DataNotFoundException("opportunity", "opportunityId", opportunityId));
+//				Opportunity a = opportunityRepository.findById(opportunityId).orElseThrow(
+//						() -> new DataNotFoundException("opportunity", "opportunityId", opportunityId));
 
 				Contact c = contactRepository.findById(contactId)
 						.orElseThrow(() -> new DataNotFoundException("contacts", "contactsId", contactId));
 				
 				
 				customer.setContact(c);
-				customer.setOpportunity(a);
-				logger.info("Customer saved sucessfully with {}:",opportunityId,contactId);
+//				customer.setOpportunity(a);
+				logger.info("Customer saved sucessfully with {}:",contactId);
 				
 		   }
-		}
 	  return customerRepo.save(customer);
 	}
 
@@ -135,7 +127,6 @@ public class CustomerServiceImpl implements CustomerService
 				throw new DataNotFoundException("Customer","id",id);
 		}
 	}
-
 	/**get customer by contact_id**/
 	@Override
 	public List<Customer> getCustomerByContactId(String contact_id)
@@ -149,16 +140,16 @@ public class CustomerServiceImpl implements CustomerService
 		return customerRepo.findAll().stream().filter(e->e.getContact().getContactId().toLowerCase().equals(contact_id.toLowerCase())).toList();
       	}
 	}
-	/**get customer by opportunity id**/
-	@Override
-	public List<Customer> getCustomerByOpportunityId(String opportunityId) 
-	{
-		 if(opportunityId==null || opportunityId.equals(""))
-		 {
-			 throw new InvalidInput("OpportunityId should not be empty");
-		 }
-		 return customerRepo.findAll().stream().filter(e->e.getOpportunity().getOpportunityId().toLowerCase().equals(opportunityId.toLowerCase())).toList();
-	}
+//	/**get customer by opportunity id**/
+//	@Override
+//	public List<Customer> getCustomerByOpportunityId(String opportunityId) 
+//	{
+//		 if(opportunityId==null || opportunityId.equals(""))
+//		 {
+//			 throw new InvalidInput("OpportunityId should not be empty");
+//		 }
+//		 return customerRepo.findAll().stream().filter(e->e.getOpportunity().getOpportunityId().toLowerCase().equals(opportunityId.toLowerCase())).toList();
+//	}
 	 /**
      * Update  a Customer entity by the provided id.
      *

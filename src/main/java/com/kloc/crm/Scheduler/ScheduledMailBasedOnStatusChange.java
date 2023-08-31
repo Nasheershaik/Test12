@@ -14,6 +14,8 @@ import com.kloc.crm.Entity.Email;
 import com.kloc.crm.Entity.Task;
 import com.kloc.crm.Entity.TaskSub;
 import com.kloc.crm.Repository.EmailRepo;
+import com.kloc.crm.Repository.NotificationRepo;
+import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.TaskRepository;
 import com.kloc.crm.Repository.TaskSubRepository;
 
@@ -28,6 +30,10 @@ public class ScheduledMailBasedOnStatusChange
 	    private EmailRepo emailRepository;
 	    @Autowired
 		private TaskSubRepository taskSubRepository;
+	    @Autowired
+	    private NotificationRepo notificationRepository;
+	    @Autowired
+	    private StatusRepo statusRepository;
 	    @Value("${spring.mail.username}")
 	    private String sender;
 
@@ -66,12 +72,12 @@ public class ScheduledMailBasedOnStatusChange
 
 	            // Setting up necessary details
 	            mailMessage.setFrom(sender);
-	            mailMessage.setTo(task.getAssignedManager().getEmail());
-	            mailMessage.setCc(task.getSalesPerson().getUser().getEmail());
-	            mailMessage.setText(
-	                    "Hi.." + task.getSalesPerson().getUser().getUserName() + "\n" + "This is a reminder for FollowUp." + "\n"+"You have not done followup for this task : "+task.getTaskId()+"\n"
-	                            + "Thanks & Regards" + "\n" + "Ritesh Singh");
-	            mailMessage.setSubject("Reminder: Pending Task");
+	            mailMessage.setTo(task.getSalesPerson().getUser().getEmail());
+	            mailMessage.setCc(task.getAssignedManager().getEmail());
+	           String st= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("statuschangeTemplate")).getNotificationTemplate();
+	          String text= String.format(st,task.getSalesPerson().getUser().getUserName(),task.getTaskId(),task.getContactSub().getContactId().getFirstName(),taskSub.getFollowUpDate());
+	            mailMessage.setText(text);
+	            mailMessage.setSubject("Task Update: No Change in "+task.getTaskId()+" Status");
 
 	            // Sending the mail
 	            javaMailSender.send(mailMessage);
@@ -80,7 +86,7 @@ public class ScheduledMailBasedOnStatusChange
 	            email.setTask(task); // Assuming there's a constructor for Task that accepts taskId
 	            email.setEmailType("Pending "+taskSub.getFollowUpDate());
 	            email.setToAddress(task.getAssignedManager().getEmail());
-	            email.setEmailMsg(task.getSalesPerson().getUser().getUserName()+"This salesperson is not doing followup");
+	            email.setEmailMsg(text);
 	       
 	        email.setEmailDate(LocalDate.now());
 	        emailRepository.save(email);

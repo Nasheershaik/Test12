@@ -16,6 +16,8 @@ import com.kloc.crm.Entity.Task;
 import com.kloc.crm.Entity.TaskSub;
 import com.kloc.crm.Entity.User;
 import com.kloc.crm.Repository.EmailRepo;
+import com.kloc.crm.Repository.NotificationRepo;
+import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.TaskRepository;
 import com.kloc.crm.Repository.TaskSubRepository;
 
@@ -29,7 +31,10 @@ public class ScheduledMailWithDueDates {
     private TaskRepository taskRepository;
     @Autowired
     private TaskSubRepository taskSubRepository;
-
+    @Autowired
+    private NotificationRepo notificationRepository;
+    @Autowired
+    private StatusRepo statusRepository;
     @Value("${spring.mail.username}")
     private String sender;
     /**
@@ -88,10 +93,10 @@ public class ScheduledMailWithDueDates {
             mailMessage.setFrom(sender);
             mailMessage.setTo(task.getAssignedManager().getEmail());
             mailMessage.setCc(task.getSalesPerson().getUser().getEmail());
-            mailMessage.setText(
-                    "Hi.." + task.getSalesPerson().getUser().getUserName() + "\n" + "This is a reminder for an overdue task." + "\n"
-                            + "Thanks & Regards" + "\n" + "Ritesh Singh");
-            mailMessage.setSubject("Reminder: Overdue Task");
+            String st= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("OverDueTemplate")).getNotificationTemplate();
+            String text=String.format(st,task.getSalesPerson().getUser().getUserName(),task.getTaskId(),task.getContactSub().getContactId().getFirstName() );
+            mailMessage.setText(text);
+            mailMessage.setSubject(" Urgent: Overdue Task "+task.getTaskId()+" for "+task.getContactSub().getContactId().getFirstName());
 
             // Sending the mail
             javaMailSender.send(mailMessage);

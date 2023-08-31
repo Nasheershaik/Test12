@@ -289,7 +289,7 @@ public class TaskController
 
 	        if (tasksWithStatus.isEmpty()) {
 	            logger.info("No tasks found with status: {}.", taskStatus);
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	            return new ResponseEntity<>(tasksWithStatus, HttpStatus.NOT_FOUND);
 	        }
 
 	        logger.info("Retrieved all tasks with status: {}. Number of tasks: {}.", taskStatus, tasksWithStatus.size());
@@ -312,7 +312,7 @@ public class TaskController
 
 	        if (tasksWithOutcome.isEmpty()) {
 	            logger.info("No tasks found with task outcome: {}.", taskOutcome);
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	            return new ResponseEntity<>(tasksWithOutcome,HttpStatus.NOT_FOUND);
 	        }
 
 	        logger.info("Retrieved all tasks with task outcome: {}. Number of tasks: {}.", taskOutcome, tasksWithOutcome.size());

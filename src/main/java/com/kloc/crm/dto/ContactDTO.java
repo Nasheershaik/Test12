@@ -9,6 +9,8 @@
 package com.kloc.crm.dto;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -18,7 +20,7 @@ public class ContactDTO
     private String contactId;
     
     // The lifecycle stage of the contact.
-    private String lifeCycleStage;
+    private List<ContactSubDTO> lifeCycleStage;
     
     // The first name of the contact.
     private String firstName;
@@ -67,9 +69,6 @@ public class ContactDTO
     
     // The date when the contact was created.
     private LocalDate date;
-    
-    // The date representing the stage of the contact.
-    private LocalDate stageDate;
     
     // The mobile number of the contact.
     private long mobileNumber;

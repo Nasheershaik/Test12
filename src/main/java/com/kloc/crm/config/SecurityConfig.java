@@ -47,7 +47,7 @@ public class SecurityConfig {
 						.requestMatchers("/auth/login").permitAll().requestMatchers("/auth/saveUser/{reportingTo}")
 						.authenticated().requestMatchers("/app/**").authenticated().requestMatchers("/forget/**").permitAll().requestMatchers("/statuses/**").authenticated().requestMatchers("/task/**")
 						.authenticated().requestMatchers("/OfferingController/**").authenticated()
-						.requestMatchers("/ContactController/**").authenticated().requestMatchers("/statuses")
+						.requestMatchers("/ContactController/**").authenticated().requestMatchers("/app/vendorpartners/**").authenticated().requestMatchers("/statuses")
 						.authenticated().requestMatchers("/notifications/**").authenticated()
 						.requestMatchers("/emails/**").authenticated().requestMatchers("/Opr/Opportunity/**")
 						.authenticated().requestMatchers("/opr/opportunitySubController/**").authenticated()

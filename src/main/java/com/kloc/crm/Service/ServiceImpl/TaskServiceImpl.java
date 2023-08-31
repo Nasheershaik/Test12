@@ -6,20 +6,17 @@
 package com.kloc.crm.Service.ServiceImpl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.kloc.crm.Entity.Contact;
+import com.kloc.crm.Entity.ContactSub;
 import com.kloc.crm.Entity.Customer;
-import com.kloc.crm.Entity.Email;
 import com.kloc.crm.Entity.Offering;
 import com.kloc.crm.Entity.Opportunity;
 import com.kloc.crm.Entity.OpportunitySub;
@@ -32,8 +29,8 @@ import com.kloc.crm.Exception.DataNotFoundException;
 import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Exception.NullDataException;
 import com.kloc.crm.Repository.ContactRepository;
+import com.kloc.crm.Repository.ContactSubRepository;
 import com.kloc.crm.Repository.CustomerRepository;
-import com.kloc.crm.Repository.EmailRepo;
 import com.kloc.crm.Repository.OfferingRepository;
 import com.kloc.crm.Repository.OpportunityRepository;
 import com.kloc.crm.Repository.OpportunitySubRepository;
@@ -42,8 +39,6 @@ import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.TaskRepository;
 import com.kloc.crm.Repository.TaskSubRepository;
 import com.kloc.crm.Repository.UserRepository;
-import com.kloc.crm.Scheduler.ScheduledMailWithDueDates;
-import com.kloc.crm.Scheduler.ScheduledMailWithFollowUpDates;
 import com.kloc.crm.Service.TaskService;
 import com.kloc.crm.Service.TaskSubService;
 
@@ -67,6 +62,8 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	private UserRepository userRepository;
 	@Autowired
 	private ContactRepository contactRepository;
+	@Autowired
+	private ContactSubRepository contactSubRepository;
 	@Autowired
 	private StatusRepo statusRepo;
 	@Autowired
@@ -94,54 +91,60 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		return list.get(list.size()-1);
 	}
 
-	@Override
 	public List<Task> getAllTaskByStatus(String taskStatus) {
+	    try {
+	        List<Task> tasksWithStatus = new ArrayList<>();
 
-		try {
-			return taskRepository.findAll().stream()
-			        .filter(e -> e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equals("active"))
-			        .flatMap(e -> {
-			            List<TaskSub> list = taskSubRepository.findAll().stream()
-			                .filter(a -> a.getTask().equals(e))
-			                .toList();
-			            if (!list.isEmpty()) {
-			                if (list.get(list.size() - 1).getTaskStatus().getStatusValue().toLowerCase().equals(taskStatus.toLowerCase())) {
-			                    return Stream.of(list.get(list.size()-1).getTask());
-			                }
-			            }
-			            return Stream.empty();
-			        })
-			        .toList(); 
-			}
-			catch (Exception e) {
-		        // Handle the exception here (e.g., logging or rethrowing)
-		        return Collections.emptyList(); // Return an empty list in case of an exception
-		    }
-	}
+	        List<Task> allTasks = taskRepository.findAll();
+	        for (Task task : allTasks) {
+	            SalesPerson salesPerson = task.getSalesPerson();
+	            if (salesPerson.getUser().getStatus().getStatusValue().equalsIgnoreCase("active")) {
+	                List<TaskSub> taskSubs = taskSubRepository.findAllByTaskOrderByStatusDateDesc(task);
+	                if (!taskSubs.isEmpty()) {
+	                    TaskSub lastTaskSub = taskSubs.get(0);
+	                    if (lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase(taskStatus)) {
+	                        tasksWithStatus.add(task);
+	                    }
+	                }
+	            }
+	        }
 
-	@Override
-	public List<Task> getAllTaskByTaskOutcome(String taskOutcome) {
-		try {
-		return taskRepository.findAll().stream()
-		        .filter(e -> e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equals("active"))
-		        .flatMap(e -> {
-		            List<TaskSub> list = taskSubRepository.findAll().stream()
-		                .filter(a -> a.getTask().equals(e))
-		                .toList();
-		            if (!list.isEmpty()) {
-		                if (list.get(list.size() - 1).getTaskOutcome().getStatusValue().toLowerCase().equals(taskOutcome.toLowerCase())) {
-		                    return Stream.of(list.get(list.size()-1).getTask());
-		                }
-		            }
-		            return Stream.empty();
-		        })
-		        .toList(); 
-		}
-		catch (Exception e) {
+	        return tasksWithStatus;
+	    } catch (Exception e) {
 	        // Handle the exception here (e.g., logging or rethrowing)
 	        return Collections.emptyList(); // Return an empty list in case of an exception
 	    }
 	}
+	@Override
+	public List<Task> getAllTaskByTaskOutcome(String taskOutcome) {
+	    List<Task> taskWithOutcome = new ArrayList<>();
+	    List<Task> allTasks = taskRepository.findAll();
+
+	    for (Task task : allTasks) {
+	        SalesPerson salesPerson = task.getSalesPerson();
+	        
+	        if (salesPerson != null && salesPerson.getUser() != null && 
+	            salesPerson.getUser().getStatus() != null &&
+	            salesPerson.getUser().getStatus().getStatusValue().equalsIgnoreCase("Active")) {
+	            
+	            List<TaskSub> taskSubs = taskSubRepository.findByTask(task);
+	            
+	            if (taskSubs != null && !taskSubs.isEmpty()) {
+	                TaskSub taskSub = taskSubs.get(taskSubs.size() - 1);
+	                
+	                if (taskSub.getTaskOutcome() != null && 
+	                    taskSub.getTaskOutcome().getStatusValue() != null &&
+	                    taskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase(taskOutcome)) {
+	                    
+	                    taskWithOutcome.add(task);
+	                }
+	            }
+	        }
+	    }
+	    
+	    return taskWithOutcome;
+	}
+
 	@Override
 	public List<Task> getAllTaskBySalesActivity(String salesActivity) 
 	{
@@ -181,22 +184,61 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		User user=userRepository.findById(managerId).orElseThrow(()->new DataNotFoundException("manager is not found:Enter the existing managerId"));
 		task.setAssignedManager(user);
 		Contact contact=contactRepository.findById(contactId).orElseThrow(()->new DataNotFoundException("conatct is not found:Enter the existing contactId"));
-		task.setContactId(contact);
 		Offering offering=offeringRepository.findById(offeringId).orElseThrow(()->new DataNotFoundException("Offering is not found:Enter the existing offeringId"));
-		Status status=statusRepo.findAll().stream().filter(e->(e.getTableName().toLowerCase().equals("task"))&&(e.getStatusValue().toLowerCase().equals("open".toLowerCase()))).findFirst().get();
-		TaskSub taskSub=new TaskSub();
-		Task task1=taskRepository.save(task);
-		taskSub.setTaskStatus(status);
-		taskSub.setTask(task1);
-		taskSub.setStatusDate(LocalDate.now());
-		taskSub.setOfferingId(offering);
-		taskSubRepository.save(taskSub);
-		// updating lifecycle stage to Lead,new state
-		Status lifecycleStage=statusRepo.findByStatusTypeAndStatusValue("Lead", "New");
-		contact.setLifeCycleStage(lifecycleStage);
-		contactRepository.save(contact);
-
-		return task1;
+		;
+		if(!customerRepository.existsByContact(contact))
+		{
+			ContactSub contactSub=new ContactSub();
+			contactSub.setContactId(contact);
+			Status lifecycleStage=statusRepo.findByStatusTypeAndStatusValue("Lead", "New");
+			contactSub.setLifeCycleStage(lifecycleStage);
+			contactSub.setStageDate(LocalDate.now());
+			ContactSub contactSub1=contactSubRepository.save(contactSub);
+			task.setContactSub(contactSub1);
+			Task task1=taskRepository.save(task);
+//			contactSub1.setTaskId(task1);
+			contactSubRepository.save(contactSub1);
+			TaskSub taskSub=new TaskSub();
+			Status status=statusRepo.findByStatusTypeAndStatusValue("Task_Status","Open");
+			taskSub.setTaskStatus(status);
+			taskSub.setTask(task1);
+			taskSub.setStatusDate(LocalDate.now());
+			taskSub.setOfferingId(offering);
+			taskSubRepository.save(taskSub);
+			return task1;
+		}
+		else
+		{
+			ContactSub contactSub=new ContactSub();
+			contactSub.setContactId(contact);
+			Status lifecycleStage=statusRepo.findByStatusTypeAndStatusValue("Sales Qualified", "Qualified");
+			contactSub.setLifeCycleStage(lifecycleStage);
+			contactSub.setStageDate(LocalDate.now());
+			ContactSub contactSub1=contactSubRepository.save(contactSub);
+			task.setContactSub(contactSub1);
+			Task task1=taskRepository.save(task);
+//			contactSub1.setTaskId(task1);
+			contactSubRepository.save(contactSub1);
+			TaskSub taskSub=new TaskSub();
+			taskSub.setTask(task1);
+			taskSub.setStatusDate(LocalDate.now());
+			taskSub.setOfferingId(offering);
+			taskSub.setTaskStatus(statusRepo.findByStatusTypeAndStatusValue("Task_status","In Progress"));
+			taskSub.setTaskOutcome(statusRepo.findByStatusTypeAndStatusValue("Task_Outcome", "Qualified"));
+			taskSubRepository.save(taskSub);
+			Opportunity opportunity=new Opportunity();
+			opportunity.setContactSub(contactSub1);
+			opportunity.setOffering(offering);
+			opportunity.setOpportunityCreatedDate(LocalDate.now());
+			Opportunity opportunity1=opportunityRepository.save(opportunity);
+			OpportunitySub opportunitySub=new OpportunitySub();
+			opportunitySub.setOpportunityStatusDate(LocalDate.now());
+			opportunitySub.setOpportunityId(opportunity1);
+			opportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Opportunity"));
+			opportunitySubRepository.save(opportunitySub);
+			return task1;
+		}
+		
 	}
 	@Override
 	public List<Task> getAllTask() {
@@ -211,7 +253,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	}
 	@Override
 	public List<Task> getAllTaskByManagerId(String managerId) {
-		if(managerId.isEmpty()||managerId.equals(null)) {throw new NullDataException("Enter the valid contactId");}
+		if(managerId.isEmpty()||managerId.equals(null)) {throw new NullDataException("Enter the valid managerID");}
 		userRepository.findById(managerId).orElseThrow(()->new DataNotFoundException("Manager is not found:Enter the existing ManagerId"));
 		return taskRepository.findAll().parallelStream().filter(e->e.getAssignedManager().getUserId().toLowerCase().equals(managerId.toLowerCase())).toList();
 	}
@@ -219,7 +261,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	public List<Task> getAllTaskByContactId(String contactId) {
 		if(contactId.isEmpty()||contactId.equals(null)) {throw new NullDataException("Enter the Valid contactId");}
 		contactRepository.findById(contactId).orElseThrow(()->new DataNotFoundException("Contact is not persent:Enter the existing ContactId"));
-		return taskRepository.findAll().stream().filter(e->e.getContactId().getContactId().toLowerCase().equals(contactId.toLowerCase())).toList();
+		return taskRepository.findAll().stream().filter(e->e.getContactSub().getContactId().getContactId().toLowerCase().equals(contactId.toLowerCase())).toList();
 	}
 	@Override
 	public Task updateTaskBySalesPersonId(String taskId, String salesPersonId) 
@@ -228,9 +270,12 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		if(salesPersonId.isEmpty()||salesPersonId.equals(null)) {throw new NullDataException("SalesPerson is not found:Enter the existing salesPersonId");}
 		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("task is not found:Enter the vaild taskId"));
 		SalesPerson salesPerson=salesPersonRepository.findById(salesPersonId).orElseThrow(()->new DataNotFoundException("salesperson is not found:enter the valid salespersonId"));
+		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().toLowerCase().equals(taskId.toLowerCase())).toList();
+		TaskSub a=list.get(list.size()-1);
+		if(a.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
 		Task task1=new Task();
 		task1.setAssignedManager(task.getAssignedManager());
-		task1.setContactId(task.getContactId());
+		task1.setContactSub(task.getContactSub());
 		task1.setDueDate(task.getDueDate());
 		task1.setStartDate(task.getStartDate());
 		task1.setTaskDescription(task.getTaskDescription());
@@ -238,8 +283,6 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		task1.setTaskDescription("continuation of "+task.getTaskId());
 		Task task2=taskRepository.save(task1);
 		task.setTaskDescription("Transferred as "+task2.getTaskId());
-		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().toLowerCase().equals(taskId.toLowerCase())).toList();
-		TaskSub a=list.get(list.size()-1);
 			TaskSub taskSub=new TaskSub();
 			taskSub.setFeedbackDate(a.getFeedbackDate());
 			taskSub.setFollowUpDate(a.getFollowUpDate());
@@ -248,12 +291,12 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			taskSub.setSalesActivity(a.getSalesActivity());
 			taskSub.setStatusDate(a.getStatusDate());
 			taskSub.setTask(task2);
-			a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
-			 taskSubRepository.save(a);
 			taskSub.setTaskFeedback(a.getTaskFeedback());
 			taskSub.setTaskOutcome(a.getTaskOutcome());
 			taskSub.setTaskStatus(a.getTaskStatus());	
 			taskSubRepository.save(taskSub);
+			a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
+			 taskSubRepository.save(a);
 	
 		return task2;
 	}
@@ -264,18 +307,33 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		if(contactId.isEmpty()||contactId.equals(null)) {throw new NullDataException("Enter the valid contactId");}
 		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("Task not found:Enter the existing TaskId"));
 		Contact contact=contactRepository.findById(contactId).orElseThrow(()->new DataNotFoundException("contact is not found:Enter the existing contactId"));
+		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().toLowerCase().equals(taskId.toLowerCase())).toList();
+		TaskSub a=list.get(list.size()-1);
+		if(a.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
 		Task task1=new Task();
 		task1.setAssignedManager(task.getAssignedManager());
-		task1.setContactId(contact);
+		ContactSub contactSub=new ContactSub();
+		contactSub.setContactId(contact);
+		contactSub.setLifeCycleStage(task.getContactSub().getLifeCycleStage());
+		contactSub.setStageDate(LocalDate.now());
+		ContactSub contactSub1=contactSubRepository.save(contactSub);
+		task1.setContactSub(contactSub1);
 		task1.setDueDate(task.getDueDate());
 		task1.setStartDate(task.getStartDate());
 		task1.setTaskDescription(task.getTaskDescription());
 		task1.setSalesPerson(task.getSalesPerson());
 		task1.setTaskDescription("continuation of "+task.getTaskId());
 		Task task2=taskRepository.save(task1);
+//		contactSub1.setTaskId(task2);
+		ContactSub contactSub2=contactSubRepository.save(contactSub1);
+		List<Opportunity> opportunity1=opportunityRepository.findAll().stream().filter(e->e.getContactSub().getContactSubId().equals(task.getContactSub().getContactSubId())).toList();
+		if(!opportunity1.isEmpty()&&!opportunity1.equals(null)) {
+			Opportunity oppor=opportunity1.get(0);
+			oppor.setContactSub(contactSub2);
+			opportunityRepository.save(oppor);
+		}
 		task.setTaskDescription("Transferred as "+task2.getTaskId());
-		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().toLowerCase().equals(taskId.toLowerCase())).toList();
-		TaskSub a=list.get(list.size()-1);
+		
 			TaskSub taskSub=new TaskSub();
 			taskSub.setFeedbackDate(a.getFeedbackDate());
 			taskSub.setFollowUpDate(a.getFollowUpDate());
@@ -290,11 +348,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			taskSubRepository.save(taskSub);
 			a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
 			 taskSubRepository.save(a);
-			contact.setLifeCycleStage(task.getContactId().getLifeCycleStage());	
-			Contact contact1=contactRepository.save(contact);
-			Opportunity opportunity1=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equalsIgnoreCase(task.getContactId().getContactId())).findFirst().get();
-			opportunity1.setContact(contact1);
-			opportunityRepository.save(opportunity1);
+			
 		return task2;
 	}
 	@Override
@@ -306,18 +360,32 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("Task Is Not Found:Enter the Existing TaskId"));
 		Contact contact=contactRepository.findById(contactId).orElseThrow(()->new DataNotFoundException("Contact is not persent:Enter the existing ContactId"));
 		SalesPerson salesPerson=salesPersonRepository.findById(salesPersonId).orElseThrow(()->new DataNotFoundException("salesPerson is not found:Enter the existing salesPersonId"));
+		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().toLowerCase().equals(taskId.toLowerCase())).toList();
+		TaskSub a=list.get(list.size()-1);
+		if(a.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
 		Task task1=new Task();
 		task1.setAssignedManager(task.getAssignedManager());
-		task1.setContactId(contact);
+		ContactSub contactSub=new ContactSub();
+		contactSub.setContactId(contact);
+		contactSub.setLifeCycleStage(task.getContactSub().getLifeCycleStage());
+		contactSub.setStageDate(LocalDate.now());
+		ContactSub contactSub1=contactSubRepository.save(contactSub);
+		task1.setContactSub(contactSub1);
 		task1.setDueDate(task.getDueDate());
 		task1.setStartDate(task.getStartDate());
 		task1.setTaskDescription(task.getTaskDescription());
 		task1.setSalesPerson(salesPerson);
 		task1.setTaskDescription("continuation of "+task.getTaskId());
 		Task task2=taskRepository.save(task1);
+	//	contactSub1.setTaskId(task2);
+		ContactSub contactSub2=contactSubRepository.save(contactSub1);
+		List<Opportunity> opportunity1=opportunityRepository.findAll().stream().filter(e->e.getContactSub().getContactSubId().equals(task.getContactSub().getContactSubId())).toList();
+		if(!opportunity1.isEmpty()&&!opportunity1.equals(null)) {
+			Opportunity oppor=opportunity1.get(0);
+			oppor.setContactSub(contactSub2);
+			opportunityRepository.save(oppor);
+		}
 		task.setTaskDescription("Transferred as "+task2.getTaskId());
-		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().toLowerCase().equals(taskId.toLowerCase())).toList();
-		TaskSub a=list.get(list.size()-1);
 			TaskSub taskSub=new TaskSub();
 			taskSub.setFeedbackDate(a.getFeedbackDate());
 			taskSub.setFollowUpDate(a.getFollowUpDate());
@@ -332,11 +400,6 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			 taskSubRepository.save(taskSub);
 			 a.setTaskStatus(statusRepo.findByStatusValue("Transferred"));
 			 taskSubRepository.save(a);
-		contact.setLifeCycleStage(task.getContactId().getLifeCycleStage());	
-		Contact contact1=contactRepository.save(contact);
-		Opportunity opportunity1=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equalsIgnoreCase(task.getContactId().getContactId())).findFirst().get();
-		opportunity1.setContact(contact1);
-		opportunityRepository.save(opportunity1);
 		return task2;
 	}
 	@Override
@@ -347,6 +410,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("Task is not found:Enter the existing the taskId"));
 		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().equals(taskId)).toList();	
 		TaskSub existingTaskSub=list.get(list.size()-1);
+		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
 		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")) 
 		{
 			throw new InvalidInput(taskId+" is already completed.So, we can't update the task status");
@@ -411,27 +475,27 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		}
 		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
 		newTaskSub.setTask(task);
-		Contact contact=contactRepository.findById(task.getContactId().getContactId()).get();
+		ContactSub contactSub=contactSubRepository.findById(task.getContactSub().getContactSubId()).get();
 		if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Interested"))
 		{
-			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
-			contact.setStageDate(LocalDate.now());
-			contactRepository.save(contact);
+			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
+			contactSub.setStageDate(LocalDate.now());
+			contactSubRepository.save(contactSub);
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Not Interested"))
 		{
 			
-			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
-			contact.setStageDate(LocalDate.now());
-			contactRepository.save(contact);
+			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
+			contactSub.setStageDate(LocalDate.now());
+			contactSubRepository.save(contactSub);
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Qualified"))
 		{
-			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Qualified"));
-			contact.setStageDate(LocalDate.now());
-			contactRepository.save(contact);
+			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Qualified"));
+			contactSub.setStageDate(LocalDate.now());
+			contactSubRepository.save(contactSub);
 			Opportunity opportunity=new Opportunity();
-			opportunity.setContact(contact);
+			opportunity.setContactSub(contactSub);
 			opportunity.setOffering(newTaskSub.getOfferingId());
 			opportunity.setOpportunityCreatedDate(LocalDate.now());
 			Opportunity opportunity1=opportunityRepository.save(opportunity);
@@ -443,10 +507,10 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		}
 		else if(newTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")&&newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Done"))
 		{
-			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer","Won"));
-			contact.setStageDate(LocalDate.now());
-			contactRepository.save(contact);
-			Opportunity opportunity3=opportunityRepository.findAll().stream().filter(e->e.getContact().getContactId().equals(task.getContactId().getContactId())).findFirst().get();
+			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer","Won"));
+			contactSub.setStageDate(LocalDate.now());
+			contactSubRepository.save(contactSub);
+			Opportunity opportunity3=opportunityRepository.findAll().stream().filter(e->e.getContactSub().equals(task.getContactSub())).findFirst().get();
 			List<OpportunitySub> opportunitySubList=opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityId().equalsIgnoreCase(opportunity3.getOpportunityId())).toList();
 			OpportunitySub opportunitySub=opportunitySubList.get(opportunitySubList.size()-1);
 			OpportunitySub newOpportunitySub=new OpportunitySub();
@@ -459,24 +523,26 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			newOpportunitySub.setCurrency("₹ Indian Rupees");
 			newOpportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Deal"));
 			opportunitySubRepository.save(newOpportunitySub);
-			Customer customer=new Customer();
-			customer.setContact(contact);
-			customer.setCustomerCreatedDate(LocalDate.now());
-			customer.setOpportunity(opportunity3);
-			customerRepository.save(customer);
+			if(!customerRepository.existsByContact(contactSub.getContactId()))
+			{
+				Customer customer=new Customer();
+				customer.setContact(contactSub.getContactId());
+				customer.setCustomerCreatedDate(LocalDate.now());
+				customerRepository.save(customer);
+			}
 			
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Lost"))
 		{
-			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Lost"));
-			contact.setStageDate(LocalDate.now());
-			contactRepository.save(contact);
+			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Lost"));
+			contactSub.setStageDate(LocalDate.now());
+			contactSubRepository.save(contactSub);
 		}
 		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Negotiation"))
 		{
-			contact.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Negotiation"));
-			contact.setStageDate(LocalDate.now());
-			contactRepository.save(contact);
+			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Negotiation"));
+			contactSub.setStageDate(LocalDate.now());
+			contactSubRepository.save(contactSub);
 		}
 		return taskSubRepository.save(newTaskSub);
 	}

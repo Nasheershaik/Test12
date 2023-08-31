@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.kloc.crm.Entity.Contact;
+import com.kloc.crm.Entity.ContactSub;
 import com.kloc.crm.Entity.Opportunity;
 
 /**
@@ -24,6 +25,7 @@ public interface OpportunityRepository extends JpaRepository<Opportunity,String>
 	 * This interface will take Entity and Data type of the primary key of an Entity class as an arguments
 	 * 
 	 */
+	Opportunity findByContactSub(ContactSub contactSub);
 }
 
 

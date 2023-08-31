@@ -13,10 +13,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.text.html.CSS;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kloc.crm.Entity.Contact;
+import com.kloc.crm.Entity.ContactSub;
 import com.kloc.crm.Entity.Customer;
 import com.kloc.crm.Entity.Offering;
 import com.kloc.crm.Entity.Opportunity;
@@ -25,6 +28,7 @@ import com.kloc.crm.Exception.DataNotFoundException;
 import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Exception.NullDataException;
 import com.kloc.crm.Repository.ContactRepository;
+import com.kloc.crm.Repository.ContactSubRepository;
 import com.kloc.crm.Repository.CustomerRepository;
 import com.kloc.crm.Repository.OfferingRepository;
 import com.kloc.crm.Repository.OpportunityRepository;
@@ -44,14 +48,17 @@ public class OpportunityServiceImpl implements OpportunityService
 	private OfferingRepository offeringRepository;
 	@Autowired
 	private OpportunitySubRepository opportunitySubRepository;
- 
+    @Autowired
+	private ContactSubRepository contactSubRepository;
+	private List<Opportunity> list;
+	
 	/**Constructor injection */
-	public OpportunityServiceImpl(OpportunityRepository opportunity,CustomerRepository customerRepository,ContactRepository contactRepository,OfferingRepository offeringRepository)
+	public OpportunityServiceImpl(OpportunityRepository opportunity,CustomerRepository customerRepository,ContactSubRepository contactSubRepository,OfferingRepository offeringRepository)
 	{
 		super();
 		this.opportunityRepo=opportunity;
 		this.customerRepository=customerRepository;
-		this.contactRepository=contactRepository;
+		this.contactSubRepository=contactSubRepository;
 		this.offeringRepository=offeringRepository;
 	}
 	 /**
@@ -59,17 +66,21 @@ public class OpportunityServiceImpl implements OpportunityService
      * @return The saved  Opportunity entity.
      */
 	@Override
-	public Opportunity saveOppartunity(Opportunity oppartunity,String contact_Id)
+	public Opportunity saveOppartunity(Opportunity oppartunity,String contact_sub_Id)
 	{
-		Contact contact=contactRepository.findById(contact_Id).orElseThrow(()->new DataNotFoundException("contact","contactId", contact_Id));
-		oppartunity.setContact(contact);
+		ContactSub contactSub=contactSubRepository.findById(contact_sub_Id).orElseThrow(()->new DataNotFoundException("contact","contactId", contact_sub_Id));
+		oppartunity.setContactSub(contactSub);
 		return opportunityRepo.save(oppartunity);
 	}
 	
+	/**
+     * Saves the given Opportunity entity.
+     * @return The saved  Opportunity entity based on ContactSub_id and Offering-id.
+     */
 	@Override
-	public Opportunity saveOpportunities(Opportunity opportunity, String contact_Id, String offering_id)
+	public Opportunity saveOpportunities(Opportunity opportunity, String contactSub_Id, String offering_id)
 	{
-		if(contact_Id == null || contact_Id.equals(""))
+		if(contactSub_Id == null || contactSub_Id.equals(""))
 		{
 			throw new InvalidInput("Contact_id cannot be empty for opportunity");
 		}
@@ -82,8 +93,8 @@ public class OpportunityServiceImpl implements OpportunityService
 		{
 		Offering offer = offeringRepository.findById(offering_id).orElseThrow(()-> new DataNotFoundException("offering","offering_id", offering_id));
 		opportunity.setOffering(offer);
-		Contact contacts= contactRepository.findById(contact_Id).orElseThrow(()-> new DataNotFoundException("contact","contact_id", offer));
-		opportunity.setContact(contacts);
+		ContactSub contactsSub= contactSubRepository.findById(contactSub_Id).orElseThrow(()-> new DataNotFoundException("contact","contact_id", offer));
+		opportunity.setContactSub(contactsSub);
 		opportunity.setOpportunityCreatedDate(LocalDate.now());
 		
 		List<OpportunitySub> collect = opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityName().equals(opportunity.getOpportunityName())).collect(Collectors.toList());
@@ -124,15 +135,15 @@ public class OpportunityServiceImpl implements OpportunityService
      * @return The Opportunity entity associated with the provided id, or exception if not found.
      */
 	@Override
-	public List<Opportunity> getOpportunityByContactId(String contactId) 
+	public List<Opportunity> getOpportunityByContactSubId(String contactSub_id) 
 	{
-		if(contactId==null || contactId=="")
+		if(contactSub_id==null || contactSub_id=="")
 		{
 			throw new NullDataException("contact_id should not be null");
 		}
 		else
 		{
-			return opportunityRepo.findAll().stream().filter(e->e.getContact().getContactId().toLowerCase().equals(contactId.toLowerCase())).toList();
+			return opportunityRepo.findAll().stream().filter(e->e.getContactSub().getContactSubId().toLowerCase().equals(contactSub_id.toLowerCase())).toList();
 		}
 	}
 	
@@ -141,15 +152,15 @@ public class OpportunityServiceImpl implements OpportunityService
      * @return The Opportunity entity associated with the provided id, or RuntimeException if not found.
      */
 	@Override
-	public Opportunity updateOpportunity(Opportunity oppartunity, String id,String contact_id,String offering_id)
+	public Opportunity updateOpportunity(Opportunity oppartunity, String id,String contactSub_id,String offering_id)
 	{
-		if(id==null ||id.equals(" ")||contact_id==null || contact_id.equals(" ")||offering_id==null ||offering_id.equals(" "))
+		if(id==null ||id.equals(" ")||contactSub_id==null || contactSub_id.equals(" ")||offering_id==null ||offering_id.equals(" "))
 		{
 			throw new NullDataException("id should not be null or empty please enter valid id");
 		}
 		else {
 		Offering offer =offeringRepository.findById(offering_id).orElseThrow(()-> new DataNotFoundException("offering","offering_id",offering_id));
-		Contact contact = contactRepository.findById(contact_id).orElseThrow(()-> new DataNotFoundException("contact","contact_id",contact_id));
+		ContactSub contactSub = contactSubRepository.findById(contactSub_id).orElseThrow(()-> new DataNotFoundException("contact","contact_id",contactSub_id));
 		Opportunity opportunity=opportunityRepo.findById(id).orElseThrow(()->new DataNotFoundException("Opportunity","id",id));
 		
 		
@@ -161,7 +172,7 @@ public class OpportunityServiceImpl implements OpportunityService
 		{
 		opportunity.setOpportunitySize(oppartunity.getOpportunitySize());
 		}
-		opportunity.setContact(contact);  
+		opportunity.setContactSub(contactSub);  
 		
 		opportunity.setOffering(offer);
 		/**if we want to change contact**/
@@ -171,18 +182,26 @@ public class OpportunityServiceImpl implements OpportunityService
 		}
 	}
 	/**update opportunity by contact id**/
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	public Opportunity updateOpportunityByContactId(String oppportunity_id, String contact_id)
+	public Opportunity updateOpportunityByContactSubId(Opportunity opportunity,String oppportunity_id, String contactSub_id)
 	{
-		if(oppportunity_id==null || oppportunity_id.equals(" ")||contact_id==null || contact_id.equals(" "))
+		if(oppportunity_id==null || oppportunity_id.equals(" ")||contactSub_id==null || contactSub_id.equals(" "))
 		{
 			throw new NullDataException("contact id and opportunity id should not be null please enter valid data");
 		}
-		Contact contact = contactRepository.findById(contact_id).orElseThrow(()-> new DataNotFoundException("contact","contact_id",contact_id));
-		Opportunity opportunities=opportunityRepo.findById(oppportunity_id).orElseThrow(()-> new DataNotFoundException("opportunity","opportunity_id",oppportunity_id));
-		opportunities.setContact(contact);
-		opportunityRepo.save(opportunities);
-		return opportunities;
+		
+		 Opportunity findFirst = opportunityRepo.findAll().stream().filter(e -> e.getContactSub().getContactSubId().equals(contactSub_id)).findFirst().get();
+		
+		 findFirst.setOpportunityName(opportunity.getOpportunityName());
+		 findFirst.setOpportunitySize(opportunity.getOpportunitySize());
+		 findFirst.setOpportunityCreatedDate(opportunity.getOpportunityCreatedDate());
+		 
+//		ContactSub contactSub = contactSubRepository.findById(contactSub_id).orElseThrow(()-> new DataNotFoundException("contact","contact_id",contactSub_id));
+//		Opportunity opportunities=opportunityRepo.findById(oppportunity_id).orElseThrow(()-> new DataNotFoundException("opportunity","opportunity_id",oppportunity_id));
+//		opportunities.setContact_sub(contactSub);
+		opportunityRepo.save(findFirst);
+		return findFirst;
 	}
 	
 	 /**
@@ -207,6 +226,11 @@ public class OpportunityServiceImpl implements OpportunityService
 		        opportunityRepo.delete(opportunity);
 		    }
 	}
+	 /**
+	    * Retrive all Opportunity entity by the provided status_type
+	    *
+	    * @return The Opportunity entity associated with the provided type, or RuntimeException if not found.
+	    */
 	@Override
 	public List<Opportunity> getAllOpportunityByType(String Status_type)
 	{
@@ -232,6 +256,11 @@ public class OpportunityServiceImpl implements OpportunityService
 		}).toList();
 	}
 	}
+	 /**
+	    * Retrive all Opportunity entity by the provided status_type and dateRange
+	    *
+	    * @return The Opportunity entity associated with the provided type and dateRange, or RuntimeException if not found.
+	    */
 	@Override
 	public List<Opportunity> getAllOpportunityByDate(LocalDate fromdate, LocalDate toDate,String opportunityType) {
 		if(opportunityType==null || opportunityType.equals(""))
@@ -253,5 +282,26 @@ public class OpportunityServiceImpl implements OpportunityService
 			return false;
 		}).toList();
 	    }
+	}
+	
+	 /**
+	    * Retrive all Opportunity for Specific-Customer
+	    *
+	    * @return The Opportunity entity associated with the provided Customer based on Contact_id, or RuntimeException if not found.
+	    */
+	@Override
+	public List<Opportunity> getAllOpportuntiesByCustomer(Customer customer, String contact_id) {
+		if(contact_id==null || contact_id.equals(""))
+		{
+			throw new NullDataException("Contact_id Shpuld not be null please enter Valid Contact_id");
+		}
+		Contact contact=contactRepository.findById(contact_id).orElseThrow(()->new DataNotFoundException("invalid contact"));
+//		contact.getContactId()
+		Customer cust=customerRepository.findAll().stream().filter(e->e.getContact().getContactId().equals(contact_id)).findFirst().get();
+		if(cust == null) 
+		{
+			throw new InvalidInput("this contact is not our customer");
+		}
+		return opportunityRepo.findAll().stream().filter(e -> e.getContactSub().getContactId().getContactId().equals(contact_id)).collect(Collectors.toList());
 	}
 }

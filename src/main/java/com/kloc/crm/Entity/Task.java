@@ -56,5 +56,5 @@ public class Task
 //	@JsonBackReference("assignedManager")
 	private User assignedManager;  // The manager assigned to the task
 	@ManyToOne
-	private Contact contactId;  // The contact associated with the task
+	private ContactSub contactSub;  // The contact associated with the task
 }

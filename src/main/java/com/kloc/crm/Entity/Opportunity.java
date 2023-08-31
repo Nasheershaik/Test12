@@ -66,8 +66,8 @@ public class Opportunity
 //	private Customer customer_Id;
 	
 	@OneToOne
-	@JoinColumn(name = "contact_id")
-	private Contact contact;
+	@JoinColumn(name = "contact_sub_id")
+	private ContactSub contactSub;
 
 	@ManyToOne
 	@JoinColumn(name="offering_id")

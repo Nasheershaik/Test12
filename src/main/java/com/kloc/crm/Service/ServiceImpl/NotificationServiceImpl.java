@@ -5,10 +5,8 @@ package com.kloc.crm.Service.ServiceImpl;
  *@FileName:NotificationServiceImpl.java
  */
 
-
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +34,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private StatusRepo statusRepo;
     
-    private final List<Notification> allNotifications;
+  
     
     /**
      * Constructs a new NotificationServiceImpl with the specified NotificationRepo.
      * @param notificationRepo The NotificationRepo used to interact with notifications.
      */
     public NotificationServiceImpl(NotificationRepo notificationRepo) {
-        this.allNotifications = notificationRepo.findAll();
 		this.notificationRepo = notificationRepo;
     }
     
@@ -75,13 +72,14 @@ public class NotificationServiceImpl implements NotificationService {
         if (notification.getRole() == null || notification.getRole().isEmpty()) {
             throw new InvalidInput("Role cannot be empty.");
         }
-        if(notification.getNotificationType().equals(null)||notification.getNotificationType().getStatusValue().isEmpty())
-        
-        {
-        	throw new InvalidInput("specify the notification type");
-        }
-        Status status=statusRepo.findByStatusValue(notification.getNotificationType().getStatusValue());
-        	notification.setNotificationType(status);
+        if (notification.getNotificationType().equals(null) || 
+        	    notification.getNotificationType().getStatusValue().isEmpty()) {
+        	    throw new InvalidInput("specify the notification type");
+        	}else {
+        		Status status = statusRepo.findByStatusValue(notification.getNotificationType().getStatusValue());
+        		notification.setNotificationType(status);
+        		
+        	}
         
         return  notificationRepo.save(notification);
     }
@@ -127,17 +125,16 @@ public class NotificationServiceImpl implements NotificationService {
                 .findFirst().orElseThrow(()->new DataNotFoundException("Wrong Value for Type or Role"));
     }
 
-	@Override
-	public List<Notification> getAllTemplates(String notificationTemplate) {
-	  return  notificationRepo.findAll(); 
-	   
-	}
+    @Override
+    public List<Notification> getAllTemplates(String notificationTemplate) {
+        return notificationRepo.findAll().stream().limit(3).toList();
+    }
 
 	@Override
 	public String getNotificationTemplatesByType(String notificationtype) {
 		return notificationRepo.findAll().stream()
                 .filter(notification -> notification.getNotificationType().getStatusValue().equalsIgnoreCase(notificationtype))
-                .map(e->e.getNotificationTemplate())
+                .map(Notification::getNotificationTemplate)
                 .findFirst().orElseThrow(()->new DataNotFoundException("Wrong Value for Type "));
 	}
 

@@ -12,7 +12,7 @@ public interface CustomerService
 	/**
 	 *abstract method for creating or inserting the Customer
 	 */
-	Customer saveCustomer(Customer customer,String opportunityId,String contactId);
+	Customer saveCustomer(Customer customer,String contactId);
 	
 	/**
 	 * abstract method to fetch all Customers
@@ -30,7 +30,7 @@ public interface CustomerService
 	List<Customer> getCustomerByContactId(String contactId);
 	
 	/**get customers based o n opportunity id**/
-	List<Customer> getCustomerByOpportunityId(String opportunityId);
+//	List<Customer> getCustomerByOpportunityId(String opportunityId);
 	
 	/**
 	 * abstract method to update based on id

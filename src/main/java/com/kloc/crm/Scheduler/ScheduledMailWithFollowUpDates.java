@@ -19,6 +19,8 @@ import com.kloc.crm.Entity.Task;
 import com.kloc.crm.Entity.TaskSub;
 import com.kloc.crm.Entity.User;
 import com.kloc.crm.Repository.EmailRepo;
+import com.kloc.crm.Repository.NotificationRepo;
+import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.TaskRepository;
 import com.kloc.crm.Repository.TaskSubRepository;
 @Component
@@ -31,6 +33,10 @@ public class ScheduledMailWithFollowUpDates {
     private TaskRepository taskRepository;
     @Autowired
     private TaskSubRepository taskSubRepository;
+    @Autowired
+    private NotificationRepo notificationRepository;
+    @Autowired
+    private StatusRepo statusRepository;
     @Value("${spring.mail.username}")
     private String sender;
     /**
@@ -51,13 +57,13 @@ public class ScheduledMailWithFollowUpDates {
                 if (!lastTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("completed")&&!lastTaskSub.getTaskStatus().getStatusValue().toLowerCase().equals("Transferred")
                         && lastTaskSub.getFollowUpDate() != null
                         && LocalDate.now().plusDays(2).isEqual(lastTaskSub.getFollowUpDate())) {
-                    sendFollowUpMail(task);
+                    sendFollowUpMail(task,lastTaskSub);
                    
                 }
             }
         });
 	}
-    public String sendFollowUpMail(Task task)
+    public String sendFollowUpMail(Task task,TaskSub taskSub)
     {
     	try {
             // Creating a simple mail message
@@ -65,12 +71,12 @@ public class ScheduledMailWithFollowUpDates {
 
             // Setting up necessary details
             mailMessage.setFrom(sender);
-            mailMessage.setTo(task.getAssignedManager().getEmail());
-            mailMessage.setCc(task.getSalesPerson().getUser().getEmail());
-            mailMessage.setText(
-                    "Hi.." + task.getSalesPerson().getUser().getUserName() + "\n" + "You have meeting on this date."+LocalDate.now().plusDays(2)+"for this task id"+task.getTaskId() + "\n"
-                            + "Thanks & Regards" + "\n" + "Ritesh Singh");
-            mailMessage.setSubject("Reminder: FollowUp");
+            mailMessage.setTo(task.getSalesPerson().getUser().getEmail());
+            mailMessage.setCc(task.getAssignedManager().getEmail());
+            String st= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("followupTemplate")).getNotificationTemplate();
+            String text=String.format(st,task.getSalesPerson().getUser().getUserName(),task.getContactSub().getContactId().getFirstName(),task.getTaskId(),taskSub.getFollowUpDate());
+            mailMessage.setText(text);
+            mailMessage.setSubject("Friendly Reminder: Task Update Needed for "+task.getTaskId()+" Assigned to "+task.getContactSub().getContactId().getFirstName());
 
             // Sending the mail
             javaMailSender.send(mailMessage);
@@ -79,7 +85,7 @@ public class ScheduledMailWithFollowUpDates {
             email.setTask(task); // Assuming there's a constructor for Task that accepts taskId
             email.setEmailType("In Progress");
             email.setToAddress(task.getAssignedManager().getEmail());
-            email.setEmailMsg("follow up");
+            email.setEmailMsg(text);
         
         email.setEmailDate(LocalDate.now());
         emailRepository.save(email);

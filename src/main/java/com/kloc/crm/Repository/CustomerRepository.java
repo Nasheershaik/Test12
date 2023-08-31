@@ -7,6 +7,7 @@ package com.kloc.crm.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.kloc.crm.Entity.Contact;
 import com.kloc.crm.Entity.Customer;
 
 import jakarta.persistence.Id;
@@ -19,8 +20,6 @@ import jakarta.persistence.Id;
 public interface CustomerRepository  extends JpaRepository<Customer,String>
 {
 
-	/**
-	 * This interface will take Entity and Data type of the primary key of an Entity class as an arguments
-	 * 
-	 */
+	
+	 boolean existsByContact(Contact contact);
 }
