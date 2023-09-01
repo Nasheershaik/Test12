@@ -35,12 +35,12 @@ public class ContactSub
 	private String contactSubId;
 	
 	@ManyToOne
-	@JsonBackReference("contactId")
+//	@JsonBackReference("contactId")
 	@JoinColumn(name = "contact_id")
 	private Contact contactId;
 	 
 	@ManyToOne
-	@JsonBackReference("lifeCycleStage")
+//	@JsonBackReference("lifeCycleStage")
 	@JoinColumn(name = "life_cycle_stage_id")
 	private Status lifeCycleStage;
 	private LocalDate stageDate;
