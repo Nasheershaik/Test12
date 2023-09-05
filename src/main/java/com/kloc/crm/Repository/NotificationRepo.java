@@ -1,5 +1,4 @@
 package com.kloc.crm.Repository;
-import java.time.LocalDate;
 
 /**
  * @Author :Nasheer
@@ -14,12 +13,13 @@ import com.kloc.crm.Entity.*;
 
 
 public interface NotificationRepo extends JpaRepository<Notification,String >{
-	
-	
-boolean existsByNotificationTemplateAndRoleAndSubject
-	(String notificationTemplate,String role,String subject);
-	
+
+
+	boolean existsByNotificationTemplateAndSubject
+	(String notificationTemplate,String subject);
+
 	Notification findByNotificationType(Status notificationType);
-	
+
+
 }
 

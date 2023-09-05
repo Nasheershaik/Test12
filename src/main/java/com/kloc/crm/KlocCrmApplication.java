@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import com.kloc.crm.Entity.Notification;
 import com.kloc.crm.Entity.StaticData;
 import com.kloc.crm.Entity.User;
@@ -70,9 +68,8 @@ class DataInsertionRunner implements CommandLineRunner {
 			userRepository.save(user);	
 		}
 		//List<Notification> notifications = notificationRepo.findAll();
-		if (!notificationRepo.existsByNotificationTemplateAndRoleAndSubject(
+		if (!notificationRepo.existsByNotificationTemplateAndSubject(
 		        "Sample Template",
-		        "Sample Role",
 		        "Sample Subject")&& notificationRepo.count()<3) {
 		    Notification notification = new Notification();
 		    notification.setNotificationId("notification_0001");
@@ -80,8 +77,8 @@ class DataInsertionRunner implements CommandLineRunner {
 		    		+ "I trust you're doing well. We noticed that your task %s for the Contact %s is not updated for this followUp date:%s. To ensure our workflow remains smooth, kindly update the task status at your earliest convenience.\r\n"
 		    		+ "Thank You !");
 		    notification.setRemindBefore(LocalDate.now().plusDays(1));
-		    notification.setSubject("Sample Subject");
-		    notification.setRole("Sample Role");
+		    notification.setSubject("Task Update: No Change in %S Status");
+		    
 		    notification.setNotificationType(statusRepository.findByStatusValue("statuschangeTemplate"));
 		    notificationRepo.save(notification);
 
@@ -91,8 +88,8 @@ class DataInsertionRunner implements CommandLineRunner {
 		    		+ "I trust you're doing well. We noticed that your task %s for the Contact %s is currently overdue. To ensure our workflow remains smooth, kindly update the task status at your earliest convenience.\r\n"
 		    		+ "Thank You !");
 		    notification1.setRemindBefore(LocalDate.now().plusDays(2));
-		    notification1.setSubject("Sample Subject1");
-		    notification1.setRole("Sample Role1");
+		    notification1.setSubject("Urgent: Overdue Task %S for %S");
+		   
 		    notification1.setNotificationType(statusRepository.findByStatusValue("OverDueTemplate"));
 		    notificationRepo.save(notification1);
 
@@ -102,8 +99,8 @@ class DataInsertionRunner implements CommandLineRunner {
 		    		+ "I hope this message finds you well. This is a gentle reminder regarding the task assigned to you for the Contact %s. The Follow-Up date for %s is %s.\r\n"
 		    		+ "Thank You !");
 		    notification2.setRemindBefore(LocalDate.now().plusDays(3));
-		    notification2.setSubject("Sample Subject2");
-		    notification2.setRole("Sample Role2");
+		    notification2.setSubject("Friendly Reminder: Task Update Needed for %S Assigned to %S");
+		   
 		    notification2.setNotificationType(statusRepository.findByStatusValue("followupTemplate"));
 		    notificationRepo.save(notification2);
 		}
