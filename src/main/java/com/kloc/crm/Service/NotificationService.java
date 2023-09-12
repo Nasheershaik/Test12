@@ -1,5 +1,4 @@
 package com.kloc.crm.Service;
-import java.time.LocalDate;
 /**
  * @Author :Nasheer
  *@Date :06-July-2023
@@ -21,7 +20,7 @@ public interface NotificationService {
 	Notification findByid(String  NotificationId);
 
 	Notification DeleteByid(String  NotificationId);
-
+	
 	List<Notification> getAllTemplates(String notificationTemplate);
 
 	Notification getNotificationTemplatesByRoleAndType( String notificationtype);
