@@ -80,7 +80,6 @@ public class OpportunityController
 	      logger.warn("offering id or  Contact_id should not be null");
 	      throw new  InvalidInput("Please  enter valid contact id and offering id");
 		}
-      
       Opportunity OpportunityFromdata=oppartunityService.saveOpportunities(opportunity, contactSub_Id, offering_id);
       logger.info("Successfully saved opportunity based on contact_id and offering id:{}",contactSub_Id,offering_id);
 	 return new ResponseEntity<>( OpportunityFromdata,HttpStatus.OK);	
@@ -241,4 +240,19 @@ public class OpportunityController
 		 logger.info("Retrived All opportunites for particular customer from Specific contact-id");
 		 return new ResponseEntity<List<Opportunity>>(getAllopportunitesByCustomer,HttpStatus.OK);
 	 }
+
+	  @GetMapping("getAllOpportunitesOfCustomer/{customer_id}")
+	  public ResponseEntity<List<Opportunity>> getAllOportunitesByCustomerId(@PathVariable String customer_id)
+	  {
+		  if(customer_id==null || customer_id.equals(" "))
+		  {
+			  logger.warn("Please enter Valid Cyustomer id");
+		  }
+		  List<Opportunity> listOfOpportuntiesOfCustomer=oppartunityService.getAllOpportunitesByCustomerId(customer_id);
+		  return new ResponseEntity<List<Opportunity>>(listOfOpportuntiesOfCustomer,HttpStatus.OK);
+	  }
+	  
+	  
 }
+	  
+

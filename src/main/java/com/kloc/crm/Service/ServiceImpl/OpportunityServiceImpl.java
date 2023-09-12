@@ -8,6 +8,8 @@
  */
 package com.kloc.crm.Service.ServiceImpl;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -304,4 +306,51 @@ public class OpportunityServiceImpl implements OpportunityService
 		}
 		return opportunityRepo.findAll().stream().filter(e -> e.getContactSub().getContactId().getContactId().equals(contact_id)).collect(Collectors.toList());
 	}
+	
+	
+	
+	
+	@Override
+	public List<Opportunity> getAllOpportunitesByCustomerId(String customer_id) 
+	{
+		if(customer_id==null || customer_id.equals(""))
+		{
+			throw new NullDataException("Please enter Customer_id");
+		}
+		Customer customer=customerRepository.findById(customer_id).get();
+		customer.getContact();
+		List<ContactSub> list2 = contactSubRepository.findAll().stream().filter(e->e.getContactId().equals(customer.getContact())).toList();
+//		
+//		List<Opportunity> list3 = new ArrayList<>();
+//		
+//		for (int i = 0; i < list2.size(); i++)
+//		{
+//			list3.add(opportunityRepo.findByContactSub(list2.get(i)));
+//		}
+		List<Opportunity> list3 = list2.stream()
+			    .map(contact -> opportunityRepo.findByContactSub(contact)).filter(e->e!=null)
+			    .collect(Collectors.toList());
+
+		return list3;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

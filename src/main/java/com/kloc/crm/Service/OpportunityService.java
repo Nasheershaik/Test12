@@ -60,4 +60,12 @@ public interface OpportunityService
 	
 	/**abstract method to getAllOpportunites within the date range along with Opportuntiy_status_type{opportunity?deal}**/
 	List<Opportunity> getAllOpportunityByDate(LocalDate fromdate,LocalDate toDate,String opportunityType);
+	
+	
+	List<Opportunity> getAllOpportunitesByCustomerId(String customer_id);
+	
+	
+	
+	
+	
 }
