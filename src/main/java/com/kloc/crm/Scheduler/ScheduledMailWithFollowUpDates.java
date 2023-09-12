@@ -76,7 +76,9 @@ public class ScheduledMailWithFollowUpDates {
             String st= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("followupTemplate")).getNotificationTemplate();
             String text=String.format(st,task.getSalesPerson().getUser().getUserName(),task.getContactSub().getContactId().getFirstName(),task.getTaskId(),taskSub.getFollowUpDate());
             mailMessage.setText(text);
-            mailMessage.setSubject("Friendly Reminder: Task Update Needed for "+task.getTaskId()+" Assigned to "+task.getContactSub().getContactId().getFirstName());
+            String st1= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("followupTemplate")).getNotificationTemplate();
+            String subject=String.format(st1,task.getTaskId(),task.getContactSub().getContactId().getFirstName());
+            mailMessage.setSubject(subject);
 
             // Sending the mail
             javaMailSender.send(mailMessage);

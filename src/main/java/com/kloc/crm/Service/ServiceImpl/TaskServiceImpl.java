@@ -402,150 +402,338 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 			 taskSubRepository.save(a);
 		return task2;
 	}
+//	@Override
+//	public TaskSub updateTaskSubByTaskId(TaskSub taskSub, String taskId) 
+//	{
+//		if(taskSub.equals(null)) {throw new InvalidInput("TaskSub can't be null");}
+//		if(taskId.isEmpty()||taskId.equals(null)) {throw new NullDataException("Enter The Valid taskId");}
+//		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("Task is not found:Enter the existing the taskId"));
+//		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().equals(taskId)).toList();	
+//		TaskSub existingTaskSub=list.get(list.size()-1);
+//		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
+//		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")) 
+//		{
+//			throw new InvalidInput(taskId+" is already completed.So, we can't update the task status");
+//		}
+//		TaskSub newTaskSub=new TaskSub();
+//		if(!taskSub.getTaskStatus().equals(null))
+//		{
+//			newTaskSub.setTaskStatus(statusRepo.findByStatusTypeAndStatusValue("Task_Status", taskSub.getTaskStatus().getStatusValue()));
+//			newTaskSub.setStatusDate(LocalDate.now());
+//		}
+//		else 
+//		{
+//			newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
+//		}
+//		if(!taskSub.getTaskOutcome().equals(null))
+//		{
+//			newTaskSub.setTaskOutcome(statusRepo.findByStatusTypeAndStatusValue("Task_Outcome", taskSub.getTaskOutcome().getStatusValue()));
+//		}
+//		else
+//		{
+//			newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
+//		}
+//		if(!taskSub.getFollowUpDate().equals(null)) 
+//		{
+//		 newTaskSub.setFollowUpDate(taskSub.getFollowUpDate());
+//		}
+//		else
+//		{
+//			newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
+//		}
+//		if(!taskSub.getTaskFeedback().equals(null)||!taskSub.getTaskFeedback().equals(""))
+//		{
+//			newTaskSub.setTaskFeedback(taskSub.getTaskFeedback());
+//		}
+//		else
+//		{
+//			newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
+//		}
+//		if(!(taskSub.getLeadFeedback().equals(null))||!(taskSub.getLeadFeedback().equals("")))
+//				{
+//					newTaskSub.setLeadFeedback(taskSub.getLeadFeedback());
+//					
+//				}
+//		else
+//		{
+//			newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
+//		}
+//		if(!taskSub.getLeadFeedback().equals(null)||!taskSub.getTaskFeedback().equals(null)||!(taskSub.getLeadFeedback().equals(""))||!taskSub.getTaskFeedback().equals(""))
+//		{
+//			newTaskSub.setFeedbackDate(LocalDate.now());
+//		}
+//		else
+//		{
+//			newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
+//		}
+//		if(!taskSub.getSalesActivity().equals(null))
+//		{
+//			newTaskSub.setSalesActivity(statusRepo.findByStatusTypeAndStatusValue("Sales_ActivityStatus", taskSub.getSalesActivity().getStatusValue()));
+//		}
+//		else {
+//			newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
+//		}
+//		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
+//		newTaskSub.setTask(task);
+//		ContactSub contactSub=contactSubRepository.findById(task.getContactSub().getContactSubId()).get();
+//		if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Interested"))
+//		{
+//			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
+//			contactSub.setStageDate(LocalDate.now());
+//			contactSubRepository.save(contactSub);
+//		}
+//		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Not Interested"))
+//		{
+//			
+//			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
+//			contactSub.setStageDate(LocalDate.now());
+//			contactSubRepository.save(contactSub);
+//		}
+//		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Qualified"))
+//		{
+//			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Qualified"));
+//			contactSub.setStageDate(LocalDate.now());
+//			contactSubRepository.save(contactSub);
+//			if(opportunityRepository.findByContactSub(contactSub).equals(null)) 
+//		  {
+//			Opportunity opportunity=new Opportunity();
+//			opportunity.setContactSub(contactSub);
+//			opportunity.setOffering(newTaskSub.getOfferingId());
+//			opportunity.setOpportunityCreatedDate(LocalDate.now());
+//			Opportunity opportunity1=opportunityRepository.save(opportunity);
+//			OpportunitySub opportunitySub=new OpportunitySub();
+//			opportunitySub.setOpportunityStatusDate(LocalDate.now());
+//			opportunitySub.setOpportunityId(opportunity1);
+//			opportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Opportunity"));
+//			opportunitySubRepository.save(opportunitySub);
+//		  }
+//		}
+//		else if(newTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")&&newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Done"))
+//		{
+//			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer","Won"));
+//			contactSub.setStageDate(LocalDate.now());
+//			contactSubRepository.save(contactSub);
+//			Opportunity opportunity3=opportunityRepository.findAll().stream().filter(e->e.getContactSub().equals(task.getContactSub())).findFirst().get();
+//			List<OpportunitySub> opportunitySubList=opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityId().equalsIgnoreCase(opportunity3.getOpportunityId())).toList();
+//			OpportunitySub opportunitySub=opportunitySubList.get(opportunitySubList.size()-1);
+//			OpportunitySub newOpportunitySub=new OpportunitySub();
+//			newOpportunitySub.setCurrency(opportunitySub.getCurrency());
+//			newOpportunitySub.setDuration(opportunitySub.getDuration());
+//			newOpportunitySub.setNoOfInstallements(opportunitySub.getNoOfInstallements());
+//			newOpportunitySub.setOpportunityStatusDate(LocalDate.now());
+//			newOpportunitySub.setOpportunityId(opportunity3);
+//			newOpportunitySub.setPrice(opportunitySub.getPrice());
+//			newOpportunitySub.setCurrency("₹ Indian Rupees");
+//			newOpportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Deal"));
+//			opportunitySubRepository.save(newOpportunitySub);
+//			if(!customerRepository.existsByContact(contactSub.getContactId()))
+//			{
+//				Customer customer=new Customer();
+//				customer.setContact(contactSub.getContactId());
+//				customer.setCustomerCreatedDate(LocalDate.now());
+//				customerRepository.save(customer);
+//			}
+//			
+//		}
+//		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Lost"))
+//		{
+//			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Lost"));
+//			contactSub.setStageDate(LocalDate.now());
+//			contactSubRepository.save(contactSub);
+//		}
+//		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Negotiation"))
+//		{
+//			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Negotiation"));
+//			contactSub.setStageDate(LocalDate.now());
+//			contactSubRepository.save(contactSub);
+//		}
+//		return taskSubRepository.save(newTaskSub);
+//	}
 	@Override
-	public TaskSub updateTaskSubByTaskId(TaskSub taskSub, String taskId) 
-	{
-		if(taskSub.equals(null)) {throw new InvalidInput("TaskSub can't be null");}
-		if(taskId.isEmpty()||taskId.equals(null)) {throw new NullDataException("Enter The Valid taskId");}
-		Task task=taskRepository.findById(taskId).orElseThrow(()->new DataNotFoundException("Task is not found:Enter the existing the taskId"));
-		List<TaskSub> list=taskSubRepository.findAll().stream().filter(e->e.getTask().getTaskId().equals(taskId)).toList();	
-		TaskSub existingTaskSub=list.get(list.size()-1);
-		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
-		if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")) 
-		{
-			throw new InvalidInput(taskId+" is already completed.So, we can't update the task status");
-		}
-		TaskSub newTaskSub=new TaskSub();
-		if(!taskSub.getTaskStatus().equals(null))
-		{
-			newTaskSub.setTaskStatus(statusRepo.findByStatusTypeAndStatusValue("Task_Status", taskSub.getTaskStatus().getStatusValue()));
-			newTaskSub.setStatusDate(LocalDate.now());
-		}
-		else 
-		{
-			newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
-		}
-		if(!taskSub.getTaskOutcome().equals(null))
-		{
-			newTaskSub.setTaskOutcome(statusRepo.findByStatusTypeAndStatusValue("Task_Outcome", taskSub.getTaskOutcome().getStatusValue()));
-		}
-		else
-		{
-			newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
-		}
-		if(!taskSub.getFollowUpDate().equals(null)) 
-		{
-		 newTaskSub.setFollowUpDate(taskSub.getFollowUpDate());
-		}
-		else
-		{
-			newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
-		}
-		if(!taskSub.getTaskFeedback().equals(null)||!taskSub.getTaskFeedback().equals(""))
-		{
-			newTaskSub.setTaskFeedback(taskSub.getTaskFeedback());
-		}
-		else
-		{
-			newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
-		}
-		if(!(taskSub.getLeadFeedback().equals(null))||!(taskSub.getLeadFeedback().equals("")))
-				{
-					newTaskSub.setLeadFeedback(taskSub.getLeadFeedback());
-					
-				}
-		else
-		{
-			newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
-		}
-		if(!taskSub.getLeadFeedback().equals(null)||!taskSub.getTaskFeedback().equals(null)||!(taskSub.getLeadFeedback().equals(""))||!taskSub.getTaskFeedback().equals(""))
-		{
-			newTaskSub.setFeedbackDate(LocalDate.now());
-		}
-		else
-		{
-			newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
-		}
-		if(!taskSub.getSalesActivity().equals(null))
-		{
-			newTaskSub.setSalesActivity(statusRepo.findByStatusTypeAndStatusValue("Sales_ActivityStatus", taskSub.getSalesActivity().getStatusValue()));
-		}
-		else {
-			newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
-		}
-		newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
-		newTaskSub.setTask(task);
-		ContactSub contactSub=contactSubRepository.findById(task.getContactSub().getContactSubId()).get();
-		if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Interested"))
-		{
-			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
-			contactSub.setStageDate(LocalDate.now());
-			contactSubRepository.save(contactSub);
-		}
-		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Not Interested"))
-		{
-			
-			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
-			contactSub.setStageDate(LocalDate.now());
-			contactSubRepository.save(contactSub);
-		}
-		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Qualified"))
-		{
-			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Qualified"));
-			contactSub.setStageDate(LocalDate.now());
-			contactSubRepository.save(contactSub);
-			Opportunity opportunity=new Opportunity();
-			opportunity.setContactSub(contactSub);
-			opportunity.setOffering(newTaskSub.getOfferingId());
-			opportunity.setOpportunityCreatedDate(LocalDate.now());
-			Opportunity opportunity1=opportunityRepository.save(opportunity);
-			OpportunitySub opportunitySub=new OpportunitySub();
-			opportunitySub.setOpportunityStatusDate(LocalDate.now());
-			opportunitySub.setOpportunityId(opportunity1);
-			opportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Opportunity"));
-			opportunitySubRepository.save(opportunitySub);
-		}
-		else if(newTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")&&newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Done"))
-		{
-			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer","Won"));
-			contactSub.setStageDate(LocalDate.now());
-			contactSubRepository.save(contactSub);
-			Opportunity opportunity3=opportunityRepository.findAll().stream().filter(e->e.getContactSub().equals(task.getContactSub())).findFirst().get();
-			List<OpportunitySub> opportunitySubList=opportunitySubRepository.findAll().stream().filter(e->e.getOpportunityId().getOpportunityId().equalsIgnoreCase(opportunity3.getOpportunityId())).toList();
-			OpportunitySub opportunitySub=opportunitySubList.get(opportunitySubList.size()-1);
-			OpportunitySub newOpportunitySub=new OpportunitySub();
-			newOpportunitySub.setCurrency(opportunitySub.getCurrency());
-			newOpportunitySub.setDuration(opportunitySub.getDuration());
-			newOpportunitySub.setNoOfInstallements(opportunitySub.getNoOfInstallements());
-			newOpportunitySub.setOpportunityStatusDate(LocalDate.now());
-			newOpportunitySub.setOpportunityId(opportunity3);
-			newOpportunitySub.setPrice(opportunitySub.getPrice());
-			newOpportunitySub.setCurrency("₹ Indian Rupees");
-			newOpportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal","Deal"));
-			opportunitySubRepository.save(newOpportunitySub);
-			if(!customerRepository.existsByContact(contactSub.getContactId()))
-			{
-				Customer customer=new Customer();
-				customer.setContact(contactSub.getContactId());
-				customer.setCustomerCreatedDate(LocalDate.now());
-				customerRepository.save(customer);
-			}
-			
-		}
-		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Lost"))
-		{
-			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Lost"));
-			contactSub.setStageDate(LocalDate.now());
-			contactSubRepository.save(contactSub);
-		}
-		else if(newTaskSub.getTaskOutcome().getStatusValue().equalsIgnoreCase("Negotiation"))
-		{
-			contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified","Negotiation"));
-			contactSub.setStageDate(LocalDate.now());
-			contactSubRepository.save(contactSub);
-		}
-		return taskSubRepository.save(newTaskSub);
+	public TaskSub updateTaskSubByTaskId(TaskSub taskSub, String taskId) {
+	    validateInput(taskSub, taskId);
+	    Task task = getTaskById(taskId);
+	    TaskSub existingTaskSub = getLatestTaskSubForTask(taskId);
+	    checkAndUpdateTaskStatus(taskSub, existingTaskSub,taskId);
+
+	    TaskSub newTaskSub = createNewTaskSub(taskSub, existingTaskSub);
+	    newTaskSub.setTask(task);
+
+	    ContactSub contactSub = task.getContactSub();
+	    updateContactSub(contactSub, newTaskSub);
+
+	    return taskSubRepository.save(newTaskSub);
 	}
+
+	private void validateInput(TaskSub taskSub, String taskId) {
+	    if (taskSub == null) {
+	        throw new InvalidInput("TaskSub can't be null");
+	    }
+	    if (taskId == null || taskId.isEmpty()) {
+	        throw new NullDataException("Enter a valid taskId");
+	    }
+	}
+
+	private Task getTaskById(String taskId) {
+	    return taskRepository.findById(taskId)
+	            .orElseThrow(() -> new DataNotFoundException("Task not found: Enter an existing taskId"));
+	}
+
+	private TaskSub getLatestTaskSubForTask(String taskId) {
+	    List<TaskSub> taskSubList = taskSubRepository.findAll()
+	            .stream()
+	            .filter(e -> e.getTask().getTaskId().equals(taskId))
+	            .toList();
+	    return taskSubList.get(taskSubList.size() - 1);
+	}
+
+	private void checkAndUpdateTaskStatus(TaskSub taskSub, TaskSub existingTaskSub,String taskId) {
+	   if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Transferred")) {throw new InvalidInput("this task status is transferred you can't update this task");}
+			if(existingTaskSub.getTaskStatus().getStatusValue().equalsIgnoreCase("Completed")) 
+			{
+				throw new InvalidInput(taskId+" is already completed.So, we can't update the task status");
+			}
+	}
+
+
+	private TaskSub createNewTaskSub(TaskSub taskSub, TaskSub existingTaskSub) 
+		{
+			TaskSub newTaskSub=new TaskSub();
+			if(!taskSub.getTaskStatus().equals(null))
+		
+			{
+				newTaskSub.setTaskStatus(statusRepo.findByStatusTypeAndStatusValue("Task_Status", taskSub.getTaskStatus().getStatusValue()));
+				newTaskSub.setStatusDate(LocalDate.now());
+			}
+			else 
+			{
+				newTaskSub.setTaskStatus(existingTaskSub.getTaskStatus());
+			}
+			if(!taskSub.getTaskOutcome().equals(null))
+			{
+				newTaskSub.setTaskOutcome(statusRepo.findByStatusTypeAndStatusValue("Task_Outcome", taskSub.getTaskOutcome().getStatusValue()));
+			}
+			else
+			{
+				newTaskSub.setTaskOutcome(existingTaskSub.getTaskOutcome());
+			}
+			if(!taskSub.getFollowUpDate().equals(null)) 
+			{
+			 newTaskSub.setFollowUpDate(taskSub.getFollowUpDate());
+			}
+			else
+			{
+				newTaskSub.setFollowUpDate(existingTaskSub.getFollowUpDate());
+			}
+			if(!taskSub.getTaskFeedback().equals(null)||!taskSub.getTaskFeedback().equals(""))
+			{
+				newTaskSub.setTaskFeedback(taskSub.getTaskFeedback());
+			}
+			else
+			{
+				newTaskSub.setTaskFeedback(existingTaskSub.getTaskFeedback());
+			}
+			if(!(taskSub.getLeadFeedback().equals(null))||!(taskSub.getLeadFeedback().equals("")))
+					{
+						newTaskSub.setLeadFeedback(taskSub.getLeadFeedback());
+						
+					}
+			else
+			{
+				newTaskSub.setLeadFeedback(existingTaskSub.getLeadFeedback());
+			}
+			if(!taskSub.getLeadFeedback().equals(null)||!taskSub.getTaskFeedback().equals(null)||!(taskSub.getLeadFeedback().equals(""))||!taskSub.getTaskFeedback().equals(""))
+			{
+				newTaskSub.setFeedbackDate(LocalDate.now());
+			}
+			else
+			{
+				newTaskSub.setFeedbackDate(existingTaskSub.getFeedbackDate());
+			}
+			if(!taskSub.getSalesActivity().equals(null))
+			{
+				newTaskSub.setSalesActivity(statusRepo.findByStatusTypeAndStatusValue("Sales_ActivityStatus", taskSub.getSalesActivity().getStatusValue()));
+			}
+			else {
+				newTaskSub.setSalesActivity(existingTaskSub.getSalesActivity());
+			}
+	    return newTaskSub;
+	}
+
+	private void updateContactSub(ContactSub contactSub, TaskSub newTaskSub) {
+	    String taskOutcomeStatusValue = newTaskSub.getTaskOutcome().getStatusValue();
+	    if ("Qualified".equalsIgnoreCase(taskOutcomeStatusValue)) {
+	        contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified", "Qualified"));
+	        contactSub.setStageDate(LocalDate.now());
+	        createOpportunity(contactSub, newTaskSub);
+	    } else if ("Not Interested".equalsIgnoreCase(taskOutcomeStatusValue)) {
+	        contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Not Interested"));
+	        contactSub.setStageDate(LocalDate.now());
+	    } else if ("Interested".equalsIgnoreCase(taskOutcomeStatusValue)) {
+	        contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Lead", "Interested"));
+	        contactSub.setStageDate(LocalDate.now());
+	    } else if ("Completed".equalsIgnoreCase(newTaskSub.getTaskStatus().getStatusValue()) &&
+	            "Done".equalsIgnoreCase(taskOutcomeStatusValue)) {
+	        contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Customer", "Won"));
+	        contactSub.setStageDate(LocalDate.now());
+	        createOpportunitySubForCompletedTask(contactSub, newTaskSub);
+	        createCustomerIfNotExists(contactSub);
+	    } else if ("Lost".equalsIgnoreCase(taskOutcomeStatusValue)) {
+	        contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified", "Lost"));
+	        contactSub.setStageDate(LocalDate.now());
+	    } else if ("Negotiation".equalsIgnoreCase(taskOutcomeStatusValue)) {
+	        contactSub.setLifeCycleStage(statusRepo.findByStatusTypeAndStatusValue("Sales Qualified", "Negotiation"));
+	        contactSub.setStageDate(LocalDate.now());
+	    }
+	    contactSubRepository.save(contactSub);
+	}
+	private void createOpportunity(ContactSub contactSub, TaskSub newTaskSub) {
+	    Opportunity opportunity = new Opportunity();
+	    opportunity.setContactSub(contactSub);
+	    opportunity.setOffering(newTaskSub.getOfferingId());
+	    opportunity.setOpportunityCreatedDate(LocalDate.now());
+	    Opportunity opportunity1 = opportunityRepository.save(opportunity);
+
+	    OpportunitySub opportunitySub = new OpportunitySub();
+	    opportunitySub.setOpportunityStatusDate(LocalDate.now());
+	    opportunitySub.setOpportunityId(opportunity1);
+	    opportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal", "Opportunity"));
+	    opportunitySubRepository.save(opportunitySub);
+	}
+
+	private void createOpportunitySubForCompletedTask(ContactSub contactSub, TaskSub newTaskSub) {
+	    Opportunity opportunity3 = opportunityRepository.findAll()
+	            .stream()
+	            .filter(e -> e.getContactSub().equals(contactSub))
+	            .findFirst()
+	            .get();
+	    List<OpportunitySub> opportunitySubList = opportunitySubRepository.findAll()
+	            .stream()
+	            .filter(e -> e.getOpportunityId().getOpportunityId().equalsIgnoreCase(opportunity3.getOpportunityId()))
+	            .toList();
+	    OpportunitySub opportunitySub = opportunitySubList.get(opportunitySubList.size() - 1);
+
+	    OpportunitySub newOpportunitySub = new OpportunitySub();
+	    newOpportunitySub.setCurrency(opportunitySub.getCurrency());
+	    newOpportunitySub.setDuration(opportunitySub.getDuration());
+	    newOpportunitySub.setNoOfInstallements(opportunitySub.getNoOfInstallements());
+	    newOpportunitySub.setOpportunityStatusDate(LocalDate.now());
+	    newOpportunitySub.setOpportunityId(opportunity3);
+	    newOpportunitySub.setPrice(opportunitySub.getPrice());
+	    newOpportunitySub.setCurrency("₹ Indian Rupees");
+	    newOpportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal", "Deal"));
+	    opportunitySubRepository.save(newOpportunitySub);
+	}
+
+	private void createCustomerIfNotExists(ContactSub contactSub) {
+	    if (!customerRepository.existsByContact(contactSub.getContactId())) {
+	        Customer customer = new Customer();
+	        customer.setContact(contactSub.getContactId());
+	        customer.setCustomerCreatedDate(LocalDate.now());
+	        customerRepository.save(customer);
+	    }
+	}
+
 	@Override
 	public List<Task> getAllTaskBySalespersonIdAndStatus(String salespersonId, String taskstatus) {
 		SalesPerson salesPerson=salesPersonRepository.findById(salespersonId).orElseThrow(()->new DataNotFoundException("salesperson is not found with this id in database"));

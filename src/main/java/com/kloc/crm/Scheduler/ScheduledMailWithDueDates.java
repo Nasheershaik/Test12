@@ -96,7 +96,9 @@ public class ScheduledMailWithDueDates {
             String st= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("OverDueTemplate")).getNotificationTemplate();
             String text=String.format(st,task.getSalesPerson().getUser().getUserName(),task.getTaskId(),task.getContactSub().getContactId().getFirstName() );
             mailMessage.setText(text);
-            mailMessage.setSubject(" Urgent: Overdue Task "+task.getTaskId()+" for "+task.getContactSub().getContactId().getFirstName());
+            String st1= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("OverDueTemplate")).getSubject();
+            String subject=String.format(st1,task.getTaskId(),task.getContactSub().getContactId().getFirstName());
+            mailMessage.setSubject(subject);
 
             // Sending the mail
             javaMailSender.send(mailMessage);

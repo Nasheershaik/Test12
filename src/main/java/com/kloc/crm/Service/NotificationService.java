@@ -22,8 +22,6 @@ public interface NotificationService {
 
 	Notification DeleteByid(String  NotificationId);
 
-	List<Notification> getNotificationsByRemindBefore(LocalDate remindBefore);
-
 	List<Notification> getAllTemplates(String notificationTemplate);
 
 	Notification getNotificationTemplatesByRoleAndType( String notificationtype);

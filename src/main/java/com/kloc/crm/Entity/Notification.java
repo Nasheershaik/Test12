@@ -32,7 +32,7 @@ public class Notification{
 
 	private String notificationTemplate;
 
-	private LocalDate remindBefore;
+	private int remindBefore;
 
 	private String subject;
 

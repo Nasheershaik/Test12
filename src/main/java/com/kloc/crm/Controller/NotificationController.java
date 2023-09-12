@@ -1,6 +1,6 @@
 package com.kloc.crm.Controller;
 
-import java.time.LocalDate;
+
 import java.util.List;
 
 
@@ -98,19 +98,19 @@ public class NotificationController {
 		return new ResponseEntity<>(deletedNotification, HttpStatus.OK);
 	}
 
-	@GetMapping("/remindbefore/{remindBefore}")
-	public ResponseEntity<List<Notification>> getNotificationsByRemindBefore(
-			@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate remindBefore) {
-		Log.debug("Attempting to retrieve notifications by RemindBefore: " + remindBefore);
-		List<Notification> notifications = notificationService.getNotificationsByRemindBefore(remindBefore);
-		if (notifications.isEmpty()) {
-			Log.info("No notifications found for RemindBefore: " + remindBefore);
-			return ResponseEntity.noContent().build();
-		} else {
-			Log.info("Retrieved notifications successfully for RemindBefore: " + remindBefore);
-			return ResponseEntity.ok(notifications);
-		}
-	}
+//	@GetMapping("/remindbefore/{remindBefore}")
+//	public ResponseEntity<List<Notification>> getNotificationsByRemindBefore(
+//			@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate remindBefore) {
+//		Log.debug("Attempting to retrieve notifications by RemindBefore: " + remindBefore);
+//		List<Notification> notifications = notificationService.getNotificationsByRemindBefore(remindBefore);
+//		if (notifications.isEmpty()) {
+//			Log.info("No notifications found for RemindBefore: " + remindBefore);
+//			return ResponseEntity.noContent().build();
+//		} else {
+//			Log.info("Retrieved notifications successfully for RemindBefore: " + remindBefore);
+//			return ResponseEntity.ok(notifications);
+//		}
+//	}
 
 	@GetMapping("/template/{notificationtype}/{role}")
 	public ResponseEntity<Notification> getNotificationTemplateByRoleAndType(@PathVariable("notificationtype") String notificationtype) {

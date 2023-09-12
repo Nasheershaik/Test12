@@ -64,7 +64,7 @@ public class TaskController
         Task createdTask = taskService.createTask(task, salesPersonId, managerId, contactId, offeringId);
 
         logger.info("Task created successfully. Task ID: {}", createdTask.getTaskId());
-        logger.debug("Created task details: {}", createdTask);
+        logger.debug("Created task details");
 
         return new ResponseEntity<Task>(createdTask, HttpStatus.OK);
 	}
@@ -86,7 +86,7 @@ public class TaskController
         }
 
         logger.info("Retrieved all task statuses for taskId: {}. Number of statuses: {}.", taskId, taskStatusList.size());
-        logger.debug("Retrieved task statuses: {}", taskStatusList);
+        logger.debug("Retrieved task statuses");
 
         return new ResponseEntity<>(taskStatusList, HttpStatus.OK);
     }
@@ -108,7 +108,7 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved the latest task status for taskId: {}.", taskId);
-	        logger.debug("Latest task status: {}", latestTaskStatus);
+	        logger.debug("Latest task status");
 
 	        return new ResponseEntity<>(latestTaskStatus, HttpStatus.OK);
 	    }
@@ -129,7 +129,7 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved all tasks. Number of tasks: {}.", allTasks.size());
-	        logger.debug("Retrieved tasks: {}", allTasks);
+	        logger.debug("Retrieved tasks");
 
 	        return new ResponseEntity<>(allTasks, HttpStatus.OK);
 	    }
@@ -151,7 +151,7 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved all tasks for salesperson with ID: {}. Number of tasks: {}.", salesPersonId, tasksForSalesPerson.size());
-	        logger.debug("Retrieved tasks: {}", tasksForSalesPerson);
+	        logger.debug("Retrieved tasks");
 
 	        return new ResponseEntity<>(tasksForSalesPerson, HttpStatus.OK);
 	    }
@@ -173,7 +173,7 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved all tasks for contact with ID: {}. Number of tasks: {}.", contactId, tasksForContact.size());
-	        logger.debug("Retrieved tasks: {}", tasksForContact);
+	        logger.debug("Retrieved tasks");
 
 	        return new ResponseEntity<>(tasksForContact, HttpStatus.OK);
 	    }
@@ -195,7 +195,7 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved all tasks for manager with ID: {}. Number of tasks: {}.", managerId, tasksForManager.size());
-	        logger.debug("Retrieved tasks: {}", tasksForManager);
+	        logger.debug("Retrieved tasks");
 
 	        return new ResponseEntity<>(tasksForManager, HttpStatus.OK);
 	    }
@@ -218,7 +218,7 @@ public class TaskController
 	        }
 
 	        logger.info("Task with ID: {} updated successfully for salesperson with ID: {}.", taskId, salesPersonId);
-	        logger.debug("Updated task details: {}", updatedTask);
+	        logger.debug("Updated task details");
 
 	        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
 	    }
@@ -241,7 +241,7 @@ public class TaskController
 	        }
 
 	        logger.info("Task with ID: {} updated successfully for contact with ID: {}.", taskId, contactId);
-	        logger.debug("Updated task details: {}", updatedTask);
+	        logger.debug("Updated task details");
 
 	        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
 	    }
@@ -270,7 +270,7 @@ public class TaskController
 
 	        logger.info("Task with ID: {} updated successfully for salesperson with ID: {} and contact with ID: {}.",
 	                taskId, salesPersonId, contactId);
-	        logger.debug("Updated task details: {}", updatedTask);
+	        logger.debug("Updated task details");
 
 	        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
 	    }
@@ -293,7 +293,7 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved all tasks with status: {}. Number of tasks: {}.", taskStatus, tasksWithStatus.size());
-	        logger.debug("Retrieved tasks: {}", tasksWithStatus);
+	        logger.debug("Retrieved tasks");
 
 	        return new ResponseEntity<>(tasksWithStatus, HttpStatus.OK);
 	    }
@@ -316,9 +316,9 @@ public class TaskController
 	        }
 
 	        logger.info("Retrieved all tasks with task outcome: {}. Number of tasks: {}.", taskOutcome, tasksWithOutcome.size());
-	        logger.debug("Retrieved tasks: {}", tasksWithOutcome);
+	        logger.debug("Retrieved tasks");
 
-	        return new ResponseEntity<>(tasksWithOutcome, HttpStatus.OK);
+	        return new ResponseEntity<List<Task>>(tasksWithOutcome, HttpStatus.OK);
 	    }
 	
 	 /**
@@ -340,8 +340,7 @@ public class TaskController
 	        }
 
 	        logger.info("Task with ID: {} updated successfully.", taskId);
-	        logger.debug("Updated task details: {}", updatedTaskSub);
-
+	       logger.debug("Updated task details");
 	        return new ResponseEntity<>(updatedTaskSub, HttpStatus.OK);
 	    }
 	 /**

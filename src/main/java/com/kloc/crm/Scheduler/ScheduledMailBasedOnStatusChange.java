@@ -77,7 +77,9 @@ public class ScheduledMailBasedOnStatusChange
 	           String st= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("statuschangeTemplate")).getNotificationTemplate();
 	          String text= String.format(st,task.getSalesPerson().getUser().getUserName(),task.getTaskId(),task.getContactSub().getContactId().getFirstName(),taskSub.getFollowUpDate());
 	            mailMessage.setText(text);
-	            mailMessage.setSubject("Task Update: No Change in "+task.getTaskId()+" Status");
+	            String st1= notificationRepository.findByNotificationType(statusRepository.findByStatusValue("statuschangeTemplate")).getSubject();
+	            String subject=String.format(st1,task.getTaskId());
+	            mailMessage.setSubject(subject);
 
 	            // Sending the mail
 	            javaMailSender.send(mailMessage);

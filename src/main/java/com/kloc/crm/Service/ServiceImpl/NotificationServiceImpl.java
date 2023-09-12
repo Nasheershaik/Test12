@@ -66,7 +66,7 @@ public class NotificationServiceImpl implements NotificationService {
 			throw new InvalidInput("Subject cannot be empty.");
 		}
 
-		if (notification.getRemindBefore() == null) {
+		if (notification.getRemindBefore() == 0) {
 			throw new InvalidInput("RemindBefore date cannot be empty.");
 		}
 		if (notification.getNotificationType().equals(null) || 
@@ -106,15 +106,15 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		return notification;
 	}
-	@Override
-	public List<Notification> getNotificationsByRemindBefore(LocalDate remindBefore) {
-		List<Notification> allNotifications = notificationRepo.findAll();
-		// Use Java Streams to filter the notifications based on remindBefore
-		List<Notification> filteredNotifications = allNotifications.stream()
-				.filter(notification -> notification.getRemindBefore().isEqual(remindBefore))
-				.collect(Collectors.toList());
-		return filteredNotifications;
-	}
+//	@Override
+//	public List<Notification> getNotificationsByRemindBefore(LocalDate remindBefore) {
+//		List<Notification> allNotifications = notificationRepo.findAll();
+//		// Use Java Streams to filter the notifications based on remindBefore
+//		List<Notification> filteredNotifications = allNotifications.stream()
+//				.filter(notification -> notification.getRemindBefore().isEqual(remindBefore))
+//				.collect(Collectors.toList());
+//		return filteredNotifications;
+//	}
 	@Override
 	public Notification getNotificationTemplatesByRoleAndType( String notificationtype) {
 		return notificationRepo.findAll().stream()
