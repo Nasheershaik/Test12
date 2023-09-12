@@ -720,7 +720,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 	    newOpportunitySub.setOpportunityStatusDate(LocalDate.now());
 	    newOpportunitySub.setOpportunityId(opportunity3);
 	    newOpportunitySub.setPrice(opportunitySub.getPrice());
-	    newOpportunitySub.setCurrency("₹ Indian Rupees");
+	    newOpportunitySub.setCurrency("Indian Rupees");
 	    newOpportunitySub.setStatus(statusRepo.findByStatusTypeAndStatusValue("opportunity/deal", "Deal"));
 	    opportunitySubRepository.save(newOpportunitySub);
 	}
