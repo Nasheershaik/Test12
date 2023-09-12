@@ -558,7 +558,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 
 	    TaskSub newTaskSub = createNewTaskSub(taskSub, existingTaskSub);
 	    newTaskSub.setTask(task);
-
+	    newTaskSub.setOfferingId(existingTaskSub.getOfferingId());
 	    ContactSub contactSub = task.getContactSub();
 	    updateContactSub(contactSub, newTaskSub);
 
