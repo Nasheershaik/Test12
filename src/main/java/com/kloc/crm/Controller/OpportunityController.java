@@ -91,7 +91,7 @@ public class OpportunityController
    */
 	@GetMapping("getAllOpportunities") // to fetch all data
 	@ResponseStatus(HttpStatus.OK)
-	public List<Opportunity> getAllOpportunitiesFromEntity()
+	public List<Opportunity> getAllOpportunityFromEntity()
 	{
 		logger.trace("Request to fetch all the opportunities");
 		List<Opportunity> opportunities=oppartunityService.getAllOppartunities();
@@ -106,7 +106,7 @@ public class OpportunityController
 	
 	
 	@GetMapping("/getOportunity/{id}")
-	public ResponseEntity<Opportunity> getOpportunityByOpportunityId(@PathVariable("id") String id) {
+	public ResponseEntity<Opportunity> getOpportunityFromOpportunityId(@PathVariable("id") String id) {
 	    logger.trace("Request to fetch opportunity by id: {}", id);
 
 	    if (id == null || id.isEmpty()) {
@@ -124,9 +124,13 @@ public class OpportunityController
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
 	}
+	
+	
+	
+	
 	/**get all opportunities based on contact id**/
 	@GetMapping("getopportunityByContactSubId/{contactSub_id}")
-	public ResponseEntity<List<Opportunity>>getOpportunitiesByContactSubId(@PathVariable String contactSub_id)
+	public ResponseEntity<List<Opportunity>>getOpportunitiesFromContactSubId(@PathVariable String contactSub_id)
 	{
 		 logger.trace("Request to fetch opportunities based on contact id: {}", contactSub_id);
 		if(contactSub_id==null || contactSub_id.equals(" "))
@@ -138,8 +142,10 @@ public class OpportunityController
 		logger.info("Retrieved opportunities based on contact id: {}", contactSub_id);
 	 return new ResponseEntity<>(opportunityFromdatabase,HttpStatus.OK);
 	}
+	
+	
 	@GetMapping("/getAllOpportunitesByType/{status_type}")
-	public ResponseEntity<List<Opportunity>> getAllOpportunitesByTypesOfOpportunity(@PathVariable String  status_type)
+	public ResponseEntity<List<Opportunity>> getAllOpportunitesFromTypesOfOpportunity(@PathVariable String  status_type)
 	{
 		logger.trace("Request to fecth all opportunties based on Status_type");
 		if(status_type ==null || status_type.equals(""))
@@ -198,7 +204,7 @@ public class OpportunityController
 	 * @return all the  Opportunities except deleted
 	 */	
 	@DeleteMapping("deleteOpportunityAndSub/{id}")
-	public ResponseEntity<String> deleteOpportunity(@PathVariable("id") String id)
+	public ResponseEntity<String> delete(@PathVariable("id") String id)
 	{
 		//to delete from database
 		oppartunityService.deleteOpportunity(id);
@@ -210,7 +216,7 @@ public class OpportunityController
 	 * @return all the  Opportunities based on date 
 	 */	
 	@GetMapping("/getAllOpportuntiesByDate/{fromdate}/{toDate}/{opportunity_type}")
-	public ResponseEntity<List<Opportunity>> getAllOpportunityByDates(@PathVariable LocalDate fromdate,@PathVariable LocalDate toDate,
+	public ResponseEntity<List<Opportunity>> getAllOpportunityFromDates(@PathVariable LocalDate fromdate,@PathVariable LocalDate toDate,
 			@PathVariable String opportunity_type)
 	{
 		logger.trace("Request to Retrive all  opportunities based on date range and status type:{}fromdate,{}toDate,{}opportunity_type",fromdate,toDate,opportunity_type);
@@ -229,7 +235,7 @@ public class OpportunityController
 	 * @return all the  Opportunities for Particular customer
 	 */	
 	  @GetMapping("getAllopportuntiesByCustomer/{contact_id}")
-	 public ResponseEntity<List<Opportunity>> getAllOppportunitesOfCustomer(Customer customer,@PathVariable String contact_id)
+	 public ResponseEntity<List<Opportunity>> getAllOppportunitesOfSpecificCustomer(Customer customer,@PathVariable String contact_id)
 	 {
 		  logger.trace("Request to Retrive all  opportunities for particular customer based on contact_id:{}contact_id:",contact_id);
 		  if(contact_id==null || contact_id.equals(""))

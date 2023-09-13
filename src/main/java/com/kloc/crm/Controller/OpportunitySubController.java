@@ -82,23 +82,26 @@ public class OpportunitySubController
 	 * @GetMapping is the responsible for handling HTTP GET Request
 	 * @return all the Opportunities
 	 */
-	@GetMapping ("getAllOpportunitySub")// to fetch all data
+	
+	
+	@GetMapping ("getAllOpportunitySub")
 	@ResponseStatus(HttpStatus.OK)
-	public List<OpportunitySub> getAllSubOpportunities() {
+	public List<OpportunitySub> getAllSubOp() {
 		
 		   logger.trace("Received request to fetch all opportunities");
-	        logger.debug("Fetching all opportunities from the database");
-//
 	        List<OpportunitySub> opportunitySubFromDatabase = opportunitySubServcie.getAllOppartunities();
 	        
 	        if (opportunitySubFromDatabase.isEmpty()) {
 	       logger.warn("No opportunities found in the database.");
 	       } else {
 	        	      logger.info("Successfully retrieved all opportunities. Count: {}", opportunitySubFromDatabase.size());
-	        	       logger.trace("Opportunities data: {}", opportunitySubFromDatabase);
 	        	    }
 	       return opportunitySubFromDatabase;
 	}
+	
+	
+	
+	
 	/**
 	 * Responsible for Retrieving endPoint Opportunities based on id.
 	 * 
@@ -106,7 +109,7 @@ public class OpportunitySubController
 	 * @return all the Opportunities based on id.
 	 */
 	@GetMapping("getOpportunitySub/{id}")
-	public ResponseEntity<OpportunitySub> getSubOpportunitiesById(@PathVariable("id") String id) {
+	public ResponseEntity<OpportunitySub> getSubOpportunitiesFromId(@PathVariable("id") String id) {
 	    logger.trace("Request received to retrieve OpportunitySub based on ID: {}", id);
 		if(id==null || id.trim().isEmpty())
 		{
@@ -219,7 +222,7 @@ public class OpportunitySubController
 //	}
 
 	@DeleteMapping("deleteOpportunitySub/id")
-	public ResponseEntity<String> deleteOpportuntiySub(@PathVariable ("id") String id)
+	public ResponseEntity<String> delete(@PathVariable ("id") String id)
 	{
 		opportunitySubServcie.deleteOpportunitySub(id);
 		logger.info("Opportunity SUb deleted Successfully");
