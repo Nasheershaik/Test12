@@ -55,7 +55,7 @@ public class CustomerController
 	 * @PostMapping is the responsible for handling HTTP Post request
 	 * @return Newly Created Customers
 	 **/
-	@PostMapping("/save/{contact_Id}")
+	@PostMapping("saveCustomers/{contact_Id}")
 	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer, @PathVariable("contact_Id") String contact_Id)
 	{
 		logger.info("Request recived to save customer");
@@ -71,7 +71,8 @@ public class CustomerController
 
 	    return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
 	}
-	/**
+	
+/**
 	 * Responsible for Retrieving endPoint Customers
 	 * 
 	 * @GetMapping is the responsible for handling HTTP GET Request
@@ -87,26 +88,45 @@ public class CustomerController
 		logger.info("Successfully retrived all customers");
 		return customers;
 	}
+	
 	/**
 	 * Responsible for Retrieving endPoint Customers based on id.
 	 * 
 	 * @GetMapping is the responsible for handling HTTP GET Request.
 	 * @return all the Customers based on id.
 	 */
-	@GetMapping("getCustomerBy/{id}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable("id") String id) 
-	{
-		 logger.trace("Request to fetch all the customers based on customer id;{}",id);
-		if(id==null || id.equals(" "))
-		{
-		   logger.warn("Customer id should not be null");
-		   throw  new InvalidInput("Please enter customer id");
-         }
-		Customer customer=customerService.getCustomerbyId(id);
-		if(customer!=null)
-			logger.info("Found customer with id {}: {}", id, customer);
-		return  new ResponseEntity<>(customer,HttpStatus.OK);
-	}
+//	@GetMapping("getCustomerBy/{id}")
+//	public ResponseEntity<Customer> getCustomerById(@PathVariable("id") String id) 
+//	{
+//		 logger.trace("Request to fetch all the customers based on customer id;{}",id);
+//		if(id==null || id.isEmpty())
+//		{
+//		   throw  new InvalidInput("Please enter customer id");
+//         }
+//		Customer customer=customerService.getCustomerbyId(id);
+//		
+//		if(customer!=null)
+//		{
+//			logger.info("Found customer with id {}: {}", id);
+//			return  new ResponseEntity<>(customer,HttpStatus.OK);
+//		}
+//		else
+//		{
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//		}
+//	}
+
+	  @GetMapping("getCustomerBy/{id}")
+	    public ResponseEntity<Customer> getCustomerById(@PathVariable("id") String id) {
+	        try {
+	            Customer customer = customerService.getCustomerbyId(id);
+	            return new ResponseEntity<>(customer, HttpStatus.OK);
+	        } catch (InvalidInput | DataNotFoundException e) {
+	            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	        }
+	    }
+
+	  
 	/** this method returns all customers by contact_id **/
 	@GetMapping("getCustomersBycontact/{contact_id}")
 	public ResponseEntity<List<Customer>> getCustomerByContactId(@PathVariable("contact_id") String contact_id)
