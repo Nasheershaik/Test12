@@ -34,6 +34,7 @@ import com.kloc.crm.Exception.InvalidInput;
 import com.kloc.crm.Service.OpportunityService;
 @RestController
 @CrossOrigin("*")
+
 @RequestMapping("/app")
 public class OpportunityController
 {
@@ -90,7 +91,7 @@ public class OpportunityController
    */
 	@GetMapping("getAllOpportunities") // to fetch all data
 	@ResponseStatus(HttpStatus.OK)
-	public List<Opportunity> getAllOpportunities()
+	public List<Opportunity> getAllOpportunitiesFromEntity()
 	{
 		logger.trace("Request to fetch all the opportunities");
 		List<Opportunity> opportunities=oppartunityService.getAllOppartunities();
@@ -102,31 +103,30 @@ public class OpportunityController
 	   * @GetMapping is the responsible for handling HTTP GET Request.
 	   * @return all the Opportunities based on id.
 	   */
-	@GetMapping("{id}") 
-	public ResponseEntity<Opportunity> getOpportunityById(@PathVariable("id") String id)
-	{
-		logger.trace("Request to fetch all opportunities based on opportunity id:{} id",id);
-		if(id==null || id.equals(""))
-		{
-			logger.warn("id should  not be null");
-			throw new InvalidInput("Please enter valid opportunity id to retrive the data");
-		}
-		Opportunity opportunityFromDatabase=oppartunityService.getOpportunitybyId(id);
-		 
-		if(opportunityFromDatabase!=null)
-		{
-		logger.info("Retrieved opportunity based on id: {}", id);
-		return new ResponseEntity<>( opportunityFromDatabase,HttpStatus.OK);
-		}
-		else
-		{
-			 logger.warn("Opportunity not found for provided opportunity id and contact id");
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  
-		}
+	
+	
+	@GetMapping("/getOportunity/{id}")
+	public ResponseEntity<Opportunity> getOpportunityByOpportunityId(@PathVariable("id") String id) {
+	    logger.trace("Request to fetch opportunity by id: {}", id);
+
+	    if (id == null || id.isEmpty()) {
+	        logger.warn("id should not be null or empty");
+	        throw new InvalidInput("Please enter a valid opportunity id to retrieve the data");
+	    }
+
+	    Opportunity opportunityFromDatabase = oppartunityService.getOpportunitybyId(id);
+
+	    if (opportunityFromDatabase != null) {
+	        logger.info("Retrieved opportunity based on id: {}", id);
+	        return new ResponseEntity<>(opportunityFromDatabase, HttpStatus.OK);
+	    } else {
+	        logger.warn("Opportunity not found for provided opportunity id: {}", id);
+	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	    }
 	}
 	/**get all opportunities based on contact id**/
 	@GetMapping("getopportunityByContactSubId/{contactSub_id}")
-	public ResponseEntity<List<Opportunity>>getOpportunityByContactSubId(@PathVariable String contactSub_id)
+	public ResponseEntity<List<Opportunity>>getOpportunitiesByContactSubId(@PathVariable String contactSub_id)
 	{
 		 logger.trace("Request to fetch opportunities based on contact id: {}", contactSub_id);
 		if(contactSub_id==null || contactSub_id.equals(" "))
@@ -139,7 +139,7 @@ public class OpportunityController
 	 return new ResponseEntity<>(opportunityFromdatabase,HttpStatus.OK);
 	}
 	@GetMapping("/getAllOpportunitesByType/{status_type}")
-	public ResponseEntity<List<Opportunity>> getAllOpportunitesByType(@PathVariable String  status_type)
+	public ResponseEntity<List<Opportunity>> getAllOpportunitesByTypesOfOpportunity(@PathVariable String  status_type)
 	{
 		logger.trace("Request to fecth all opportunties based on Status_type");
 		if(status_type ==null || status_type.equals(""))
@@ -229,7 +229,7 @@ public class OpportunityController
 	 * @return all the  Opportunities for Particular customer
 	 */	
 	  @GetMapping("getAllopportuntiesByCustomer/{contact_id}")
-	 public ResponseEntity<List<Opportunity>> getAllOppportunitesByCustomer(Customer customer,@PathVariable String contact_id)
+	 public ResponseEntity<List<Opportunity>> getAllOppportunitesOfCustomer(Customer customer,@PathVariable String contact_id)
 	 {
 		  logger.trace("Request to Retrive all  opportunities for particular customer based on contact_id:{}contact_id:",contact_id);
 		  if(contact_id==null || contact_id.equals(""))
@@ -242,7 +242,7 @@ public class OpportunityController
 	 }
 
 	  @GetMapping("getAllOpportunitesOfCustomer/{customer_id}")
-	  public ResponseEntity<List<Opportunity>> getAllOportunitesByCustomerId(@PathVariable String customer_id)
+	  public ResponseEntity<List<Opportunity>> getAllOportunitesFromCustomerId(@PathVariable String customer_id)
 	  {
 		  if(customer_id==null || customer_id.equals(" "))
 		  {
@@ -251,7 +251,6 @@ public class OpportunityController
 		  List<Opportunity> listOfOpportuntiesOfCustomer=oppartunityService.getAllOpportunitesByCustomerId(customer_id);
 		  return new ResponseEntity<List<Opportunity>>(listOfOpportuntiesOfCustomer,HttpStatus.OK);
 	  }
-	  
 	  
 }
 	  

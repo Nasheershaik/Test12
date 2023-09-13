@@ -84,7 +84,7 @@ public class OpportunitySubController
 	 */
 	@GetMapping ("getAllOpportunitySub")// to fetch all data
 	@ResponseStatus(HttpStatus.OK)
-	public List<OpportunitySub> getAllOpportunities() {
+	public List<OpportunitySub> getAllSubOpportunities() {
 		
 		   logger.trace("Received request to fetch all opportunities");
 	        logger.debug("Fetching all opportunities from the database");
@@ -106,7 +106,7 @@ public class OpportunitySubController
 	 * @return all the Opportunities based on id.
 	 */
 	@GetMapping("getOpportunitySub/{id}")
-	public ResponseEntity<OpportunitySub> getOpportunityById(@PathVariable("id") String id) {
+	public ResponseEntity<OpportunitySub> getSubOpportunitiesById(@PathVariable("id") String id) {
 	    logger.trace("Request received to retrieve OpportunitySub based on ID: {}", id);
 		if(id==null || id.trim().isEmpty())
 		{
@@ -125,6 +125,14 @@ public class OpportunitySubController
 		logger.debug("OpportunitySub data: {}", opportunitySubFromDatabase);
 		return new ResponseEntity< >(opportunitySubFromDatabase, HttpStatus.OK);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/** get opportunitySub entities By date **/
 	@GetMapping("date/{LocalDate}")
 	public ResponseEntity<List<OpportunitySub>> getOpportunitySub(@PathVariable("LocalDate") LocalDate Localdate)
@@ -186,7 +194,7 @@ public class OpportunitySubController
 	}
 	/** this is the controller to execute opportunity sub entities**/
 	@PutMapping("latestUpdate/{opportunitySubId}/{opportunityId}")
-    public  ResponseEntity< OpportunitySub>updateOpportunitySubEntity(@RequestBody OpportunitySub opportunitySub,
+    public  ResponseEntity< OpportunitySub>updateOpportunitySubEntities(@RequestBody OpportunitySub opportunitySub,
                                                      @PathVariable("opportunitySubId") String opportunitySubId,
                                                      @PathVariable("opportunityId") String opportunityId) 
     {
@@ -219,7 +227,7 @@ public class OpportunitySubController
 	}
 	
 	@GetMapping("getAllOpportunitySubByOpportunity/{opportunity_id}")
-	public ResponseEntity<List<OpportunitySub>> getOpportunitySubByOpportunityId(@PathVariable ("opportunity_id") String opportunity_id)
+	public ResponseEntity<List<OpportunitySub>> getOpportunitySubByOpportunity(@PathVariable ("opportunity_id") String opportunity_id)
 	{
 		logger.trace("Request to fetch all the opportunity Sub by opportunity id",opportunity_id);
 		if(opportunity_id==null ||opportunity_id.equals(" "))
