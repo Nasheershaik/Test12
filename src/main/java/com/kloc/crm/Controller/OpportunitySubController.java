@@ -76,6 +76,7 @@ public class OpportunitySubController
 		logger.info("Successfully saved opportunity sub absed on oppportunity id:{}",opportunityId);
 		return new ResponseEntity<>(opportunitySubFromDatabase,HttpStatus.CREATED);
 	}
+	
 	/**
 	 * Responsible for Retrieving endPoint Opportunities
 	 * 
@@ -109,25 +110,27 @@ public class OpportunitySubController
 	 * @return all the Opportunities based on id.
 	 */
 	@GetMapping("getOpportunitySub/{id}")
-	public ResponseEntity<OpportunitySub> getSubOpportunitiesFromId(@PathVariable("id") String id) {
+	public ResponseEntity<OpportunitySub> getSubEntity(@PathVariable("id") String id)
+	{
 	    logger.trace("Request received to retrieve OpportunitySub based on ID: {}", id);
-		if(id==null || id.trim().isEmpty())
+		if(id==null || id.isEmpty())
 		{
 			logger.error("id should not be null");
 			throw new InvalidInput("Please enetr valid opportunity Sub id");
 		}
 		logger.debug("Fetching OpportunitySub with ID: {}", id);
-		OpportunitySub opportunitySubFromDatabase=opportunitySubServcie.getOpportunitybyId(id);
+		OpportunitySub opportunitySubFromDatabase=opportunitySubServcie.getOpportunitySubbyId(id);
 		
 		 if (opportunitySubFromDatabase == null) {
 	            logger.warn("OpportunitySub not found with ID: {}", id);
-	            throw new DataNotFoundException("OpportunitySub not found with ID: " + id);
+	            throw new DataNotFoundException("OpportunitySub not found with ID: ");
 	        }
 		 
 		logger.info("Succesffully retirved all opportunity Sub based on id");
-		logger.debug("OpportunitySub data: {}", opportunitySubFromDatabase);
 		return new ResponseEntity< >(opportunitySubFromDatabase, HttpStatus.OK);
 	}
+	
+	
 	
 	
 	

@@ -112,7 +112,7 @@ public class OpportunitySubServiceImpl implements OpportunitySubServcie
       * @return The Opportunity entity associated with the provided id, or exception if not found.
       */
 	@Override
-	public OpportunitySub getOpportunitybyId(String id)
+	public OpportunitySub getOpportunitySubbyId(String id)
 	{
 		if(id==null || id.equals(" "))
 			throw new NullDataException("id should not be enpty please enter valid id");

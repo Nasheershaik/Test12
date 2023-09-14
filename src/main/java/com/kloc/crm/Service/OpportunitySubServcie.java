@@ -25,7 +25,7 @@ public interface OpportunitySubServcie
 	/**
 	 *abstract method  to fetch based on id
 	 */
-	OpportunitySub getOpportunitybyId(String id);
+	OpportunitySub getOpportunitySubbyId(String id);
 	
 	/**to fetch all opportunities based on date**/
 	List<OpportunitySub> getOpportunityByDate(LocalDate date);
