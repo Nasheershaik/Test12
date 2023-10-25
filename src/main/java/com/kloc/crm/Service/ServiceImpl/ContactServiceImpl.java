@@ -58,7 +58,9 @@ public class ContactServiceImpl implements ContactService {
 		try {
 			if (contact != null && !contact.toString().equals(new Contact().toString()))
 			{
-				// Validate first name
+				List<Contact> collect = contactRepository.findAll().stream().filter(e -> contact.getEmail().equals(e.getEmail()) && contact.getMobileNumber() == e.getMobileNumber()).collect(Collectors.toList());				// Validate first name
+				if (!collect.isEmpty())
+					throw new InvalidInput("This email and mobile is already exist");
 				if (contact.getFirstName() == null || contact.getFirstName().isEmpty()) 
 					throw new NullDataException("Please enter first name.");
 
@@ -258,7 +260,8 @@ public class ContactServiceImpl implements ContactService {
 	public List<ContactDTO> GetAllContactByEmail(String email) {
 		logger.info("Fetching contacts by email...");
 
-		try {
+		try 
+		{
 			if (email == null || email.isEmpty())
 				throw new NullDataException("Please enter email.");
 
@@ -943,6 +946,10 @@ public class ContactServiceImpl implements ContactService {
 
 			if (contact != null && !contact.toString().equals(new Contact().toString())) 
 			{
+				List<Contact> collect = contactRepository.findAll().stream().filter(e -> contact.getEmail().equals(e.getEmail()) && contact.getMobileNumber() == e.getMobileNumber()).collect(Collectors.toList());				// Validate first name
+				if (!collect.isEmpty())
+					throw new InvalidInput("This email and mobile is already exist");
+				
 				Contact contactFromDatabase = contactRepository.findById(contactId).orElseThrow(() -> new DataNotFoundException("No account available with contact ID: " + contactId));
 
 				if (contact.getFirstName() != null && !contact.getFirstName().isEmpty()) 
@@ -982,6 +989,7 @@ public class ContactServiceImpl implements ContactService {
 
 				return new ResponseEntity<>("Contact updated, contact ID: " + contactId, HttpStatus.OK);
 
+				
 			} 
 			else
 				throw new NullDataException("Data can't be empty. Please check it.");

@@ -30,6 +30,7 @@ import com.kloc.crm.Entity.Contact;
 import com.kloc.crm.Entity.Status;
 import com.kloc.crm.Exception.DataNotFoundException;
 import com.kloc.crm.Exception.InvalidInput;
+import com.kloc.crm.Repository.ContactRepository;
 import com.kloc.crm.Repository.StatusRepo;
 import com.kloc.crm.Repository.UserRepository;
 
@@ -41,6 +42,8 @@ public class ContactDataFromExcel
     private StatusRepo statusRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ContactRepository contactRepository;
 
     /**
      * Checks if the given file is in the Excel format (XLSX).
@@ -184,6 +187,9 @@ public class ContactDataFromExcel
                     cellId++;
                 }
 
+                List<Contact> collect = contactRepository.findAll().stream().filter(e -> contact.getEmail().equals(e.getEmail()) && contact.getMobileNumber() == e.getMobileNumber()).collect(Collectors.toList());				// Validate first name
+				if (!collect.isEmpty())
+					throw new InvalidInput("Few contacts email and mobile is already exist");
                 // Set the initial lifecycle stage and dates for the contact
                 contact.setContactCreatedBy(userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found")));
 //                contact.setLifeCycleStage(contactStatus.get(0));
@@ -191,8 +197,12 @@ public class ContactDataFromExcel
 //                contact.setStageDate(LocalDate.now());
 
                 // Add the contact to the list
+                collect = listOfContact.stream().filter(e -> contact.getEmail().equals(e.getEmail()) && contact.getMobileNumber() == e.getMobileNumber()).collect(Collectors.toList());				// Validate first name
+                if (!collect.isEmpty())
+                	throw new InvalidInput("Few contacts email and mobile is duplicate");	
                 listOfContact.add(contact);
             }
+            
             return listOfContact;
         }
     }
