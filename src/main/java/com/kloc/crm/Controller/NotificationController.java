@@ -51,7 +51,7 @@ public class NotificationController {
 		Notification savedNotification = notificationService.saveNotification(notification);
 		if (savedNotification != null) {
 			Log.info("New Notification created successfully.");
-			return new ResponseEntity<>(savedNotification, HttpStatus.CREATED);
+			return new ResponseEntity<>(savedNotification, HttpStatus.OK);
 		} else {
 			Log.error("Failed to create a new Notification.");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -115,7 +115,7 @@ public class NotificationController {
 	@GetMapping("/template/{notificationtype}/{role}")
 	public ResponseEntity<Notification> getNotificationTemplateByRoleAndType(@PathVariable("notificationtype") String notificationtype) {
 
-		return new ResponseEntity<Notification>(notificationService.getNotificationTemplatesByRoleAndType(notificationtype),HttpStatus.FOUND);
+		return new ResponseEntity<Notification>(notificationService.getNotificationTemplatesByRoleAndType(notificationtype),HttpStatus.OK);
 
 	}
 	@GetMapping("/getalltemplates")
@@ -126,7 +126,7 @@ public class NotificationController {
 	}
 	@GetMapping("gettemplatebytype/{notificationType}")
 	public ResponseEntity<Notification> getalltemplatesbyType(@PathVariable ("notificationType") String notificationtype) {
-		return new ResponseEntity<Notification>(notificationService.getNotificationTemplatesByType(notificationtype),HttpStatus.FOUND);
+		return new ResponseEntity<Notification>(notificationService.getNotificationTemplatesByType(notificationtype),HttpStatus.OK);
 
 	}
 
