@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,7 +169,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 				return list.get(list.size()-1).getTask();
 			}
 			else {return null;}
-		}).toList();
+		}).toList().stream().filter(a->a!=null).toList();
 	}
 	@Override
 	public Task createTask(Task task,String salesPersonId, String managerId, String contactId,String offeringId) 
@@ -800,7 +801,7 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 		
 		if(intialdate.equals(null)||finalDate.equals(null)||salespersonId.equals(null)||salespersonId.equals("")) {throw new NullDataException("compulsory to fill intialDate and finalDate and salespersonid and status type");}
 		salesPersonRepository.findById(salespersonId).orElseThrow(()->new DataNotFoundException("salesperson is not persent in database"));
-		return taskRepository.findAll().stream().filter(e->e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equalsIgnoreCase("active")&&e.getSalesPerson().getSalespersonId().equalsIgnoreCase(salespersonId)).map(e->{
+		List<Task> tasklist= taskRepository.findAll().stream().filter(e->e.getSalesPerson().getUser().getStatus().getStatusValue().toLowerCase().equalsIgnoreCase("active")&&e.getSalesPerson().getSalespersonId().equalsIgnoreCase(salespersonId)).map(e->{
 			List<TaskSub> list=taskSubRepository.findAll().stream().filter(a->a.getTask().equals(e)).toList();
 			LocalDate statusdate=list.get(list.size()-1).getStatusDate();
 			if((statusdate.isBefore(finalDate)||statusdate.isEqual(finalDate))&&(statusdate.isAfter(intialdate)||statusdate.isEqual(intialdate))) 
@@ -808,7 +809,38 @@ public class TaskServiceImpl implements TaskService,TaskSubService {
 				return list.get(list.size()-1).getTask();
 			}
 			else {return null;}
-		}).toList().stream().filter(a->!a.equals(null)).toList();
+		}).toList();
+		return tasklist.stream().filter(a->a!=null).toList();
 	}
+//	@Override
+//	public List<Task> getAllTaskByDateRangeBySalesPersonIdByTaskStatusByLifeCycleStage(LocalDate initialDate, LocalDate finalDate, String salespersonId) {
+//	    if (initialDate == null || finalDate == null || salespersonId == null || salespersonId.isEmpty()) {
+//	        throw new NullDataException("Compulsory to fill initialDate, finalDate, salespersonId, and status type");
+//	    }
+//
+//	    SalesPerson salesPerson = salesPersonRepository.findById(salespersonId)
+//	        .orElseThrow(() -> new DataNotFoundException("Salesperson is not present in the database"));
+//
+//	    return taskRepository.findAll().stream()
+//	        .filter(task -> task.getSalesPerson().getUser().getStatus().getStatusValue().equalsIgnoreCase("active")
+//	                && task.getSalesPerson().getSalespersonId().equalsIgnoreCase(salespersonId))
+//	        .map(task -> {
+//	            List<TaskSub> list = taskSubRepository.findAll().stream()
+//	                .filter(subTask -> subTask.getTask().equals(task))
+//	                .collect(Collectors.toList());
+//
+//	            if (!list.isEmpty()) {
+//	                LocalDate statusDate = list.get(list.size() - 1).getStatusDate();
+//	                if ((statusDate.isEqual(finalDate) || statusDate.isAfter(initialDate))
+//	                        && (statusDate.isEqual(initialDate) || statusDate.isBefore(finalDate))) {
+//	                    return task;
+//	                }
+//	            }
+//	            return null;
+//	        })
+//	        .filter(task -> task != null)
+//	        .collect(Collectors.toList());
+//	}
+
 		
 }
