@@ -3,8 +3,11 @@ package com.kloc.crm.Controller;
 import java.util.HashMap;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,15 @@ import jakarta.servlet.http.HttpSession;
 @CrossOrigin("*")
 public class ForgetController
 {
+	
+	
+	
+	@Autowired
+	private JavaMailSender javaMailSender;
+
+	@Value("${spring.mail.username}")
+	private String sender;
+	
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -87,15 +99,47 @@ public class ForgetController
 			if(f)
 			{
 				System.out.println("Matches with old password");
-				currentlyUser.setPassword(passwordEncoder.encode(newPassword) );
-				
+				currentlyUser.setPassword(passwordEncoder.encode(newPassword));
 				userRepository.save(currentlyUser);
+				sendMail(currentlyUser);
 				return new ResponseEntity<String>("Password Changed Successfully",HttpStatus.OK);
 			}
 			else
 				return new ResponseEntity<String>("Check both the Password they are not matching",HttpStatus.UNAUTHORIZED);
 		}
 		return new ResponseEntity<String>("Password can not be null or empty",HttpStatus.BAD_REQUEST);
+	}
+	
+	
+	
+	
+	
+	public String sendMail(User user) {
+		try {
+			// Creating a simple mail message
+			SimpleMailMessage mailMessage = new SimpleMailMessage();
+			String userEmail = user.getEmail();
+			mailMessage.setFrom(sender);
+			mailMessage.setTo(userEmail);
+			mailMessage.setSubject(" Changed Succesfully ");
+			String resetConfirmationMessage = "Hello " + user.getUsername() + ",\n\n" +
+	                "Your password has been successfully reset.\n" +
+	                "We wanted to confirm that the password for your account has been changed.\n" +
+	                "If you did not make this change, please contact our support immediately.\n\n" +
+	                "If you initiated this password reset, no further action is needed.\n\n" +
+	                "Thank you,\nThe Kloc CRM Team";
+			mailMessage.setText(resetConfirmationMessage);
+			javaMailSender.send(mailMessage);
+			return "Welcome Email Sent Successfully";
+		}catch (Exception e) {
+			return "Failed to Send Welcome Email. Please provide valid details.";
+		}
+		
+		
+		//
+		
+		
+   
 	}
 }
 
